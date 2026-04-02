@@ -1,319 +1,260 @@
-# LearningMore
+# Phase 1 – Analysis / Requirements & Design
 
-## 📌 Overview
+## 1. Project Description
 
-**LearningMore** is a secure academic platform designed to manage courses, class sessions, educational resources, assignments, submissions, and communication between students and professors.
+LearningMore is a secure academic platform designed to support course management, class materials distribution, assignment submissions, and communication between students and professors.
 
-This project is developed in the context of **DESOFS (Dependable and Secure Software Systems)** and follows a **Secure Software Development Lifecycle (SSDLC)** approach, with a strong focus on security analysis, threat modeling, and secure design.
-
----
-
-## 🎯 Objectives
-
-The main goal of LearningMore is to provide a backend system that:
-
-* Manages academic entities such as users, courses, and submissions
-* Enforces strict access control based on user roles
-* Ensures secure handling of sensitive data and files
-* Implements security best practices from design to deployment
+The system is developed in the context of DESOFS and follows a Secure Software Development Lifecycle (SSDLC), focusing on secure design, threat modeling, and risk mitigation.
 
 ---
 
-## 👥 Roles
+## 2. System Overview
 
-The system supports three main roles:
+### Actors
 
-* **Admin**
+* Admin
+* Professor
+* Student
 
-    * Manages users and system configuration
+### Core Components
 
-* **Professor**
+* REST API
+* Database (relational)
+* File storage system
 
-    * Creates courses and assignments
-    * Uploads materials
-    * Reviews submissions
+### Assets
 
-* **Student**
+* User credentials
+* Course materials
+* Assignment submissions
+* Grades and feedback
+* Chat messages
+* Logs
 
-    * Enrolls in courses
-    * Accesses materials
-    * Submits assignments
-    * Participates in course discussions
+### System Boundary
+
+The system includes the backend API, database, and file storage. External entities interact through HTTP requests.
 
 ---
 
-## 🧠 Domain Model (High-Level)
+## 3. Functional Requirements
+
+### User Management
+
+* FR1: Admin can create users
+* FR2: Admin can assign roles
+* FR3: Users can authenticate using email and password
+
+### Course Management
+
+* FR4: Professors can create courses
+* FR5: Professors can manage course information
+* FR6: Students can enroll in courses
+* FR7: Users can view enrolled courses
+
+### Resource Management
+
+* FR8: Professors can upload class materials
+* FR9: Students can access course materials
+
+### Assignment Management
+
+* FR10: Professors can create assignments
+* FR11: Assignments must have deadlines
+
+### Submission Management
+
+* FR12: Students can submit assignments
+* FR13: Professors can view submissions
+* FR14: Professors can grade submissions
+
+### Communication
+
+* FR15: Users can send messages in course chat
+* FR16: Users can read course messages
+
+### Logging
+
+* FR17: System logs authentication events
+* FR18: System logs critical actions
+
+---
+
+## 4. Non-Functional Requirements
+
+* NFR1: The system must be implemented as a REST API
+* NFR2: The system must use a relational database
+* NFR3: The system must support concurrent users
+* NFR4: The system must ensure data consistency
+* NFR5: The system must support logging and monitoring
+* NFR6: The system must be modular and maintainable
+* NFR7: The system must support automated testing
+
+---
+
+## 5. Security Requirements
+
+### 5.1 Authentication and Access Control
+
+* SR1: Passwords must be securely hashed
+* SR2: The system must enforce RBAC (Admin, Professor, Student)
+* SR3: Access must be validated per request
+* SR4: Users can only access resources they are authorized for
+
+### 5.2 Data Security
+
+* SR5: Files must be stored outside public directories
+* SR6: File access must be restricted
+* SR7: Sensitive data must not be exposed
+
+### 5.3 Communication Security
+
+* SR8: HTTPS must be enforced in production
+* SR9: Secure headers must be implemented
+
+### 5.4 Input Validation
+
+* SR10: All inputs must be validated server-side
+* SR11: File uploads must be validated (type, size)
+* SR12: Path traversal must be prevented
+
+### 5.5 Dependency Security
+
+* SR13: Dependencies must be monitored for vulnerabilities
+
+### 5.6 Logging and Monitoring
+
+* SR14: Security-relevant events must be logged
+* SR15: Logs must not contain sensitive data
+
+---
+
+## 6. Abuse Cases
+
+* AC1: Unauthorized access to submissions
+* AC2: Unauthorized file download
+* AC3: Brute force login
+* AC4: Malicious file upload
+* AC5: Path traversal
+* AC6: Privilege escalation
+* AC7: Access to solutions before release
+* AC8: Chat spam abuse
+* AC9: Unauthorized course access
+* AC10: Submission timestamp manipulation
+
+---
+
+## 7. General Design
+
+The system follows a layered architecture:
+
+* API layer (controllers)
+* Application layer (use cases)
+* Domain layer (business logic)
+* Infrastructure layer (database, storage)
+
+---
+
+## 8. Domain Model
 
 Main aggregates:
 
-* **User**
-* **Course**
-* **Submission**
-* **Chat**
+* User
+* Course
+* Submission
+* Chat
 
 Supporting entities:
 
 * Enrollment
-* ClassSession
-* Resource
 * Assignment
+* Resource
 * ChatMessage
 
 ---
 
-## 🏗️ Architecture
+## 9. Data Flow Diagrams
 
-The project follows a layered architecture:
+### 9.1 DFD Level 0
 
-```
-api            → REST controllers  
-application    → use cases / business logic orchestration  
-domain         → core domain model  
-infrastructure → persistence, external systems  
-config         → configuration (security, etc.)
-```
+(To be added)
+
+### 9.2 DFD Level 1
+
+(To be added)
 
 ---
 
-## ⚙️ Tech Stack
+## 10. Threat Modeling
 
-* Java
-* Spring Boot
-* Maven
-* Spring Web
-* Spring Security
-* Spring Data JPA (planned)
-* PostgreSQL (planned)
-* Flyway (planned)
+Threat modeling will be performed using the STRIDE methodology applied to DFD elements.
 
 ---
 
-## 📁 Project Structure
+## 11. Risk Assessment
 
-```
-src/
- └── main/
-     ├── java/com/grupo/learningmore/
-     │   ├── api/
-     │   ├── application/
-     │   ├── domain/
-     │   ├── infrastructure/
-     │   └── config/
-     │
-     └── resources/
+Risks will be evaluated based on:
 
-docs/
-Deliverables/
-```
+* Likelihood
+* Impact
+* Severity
 
 ---
 
-## 🚀 Getting Started
+## 12. Mitigations
 
-### Run the application
-
-```bash
-  .\mvnw spring-boot:run
-```
-
-### Test endpoint
-
-```
-GET http://localhost:8080/api/health
-```
-
-Response:
-
-```json
-{
-  "status": "ok"
-}
-```
+Mitigation strategies will be defined for each identified threat.
 
 ---
 
-## 🔐 Security Focus
+## 13. Secure Design
 
-This project is developed with security as a primary concern.
-
-Key areas:
-
-* Authentication and authorization (RBAC)
-* Secure file handling (uploads/downloads)
-* Input validation and sanitization
-* Protection against common attacks (e.g., injection, path traversal)
-* Logging and monitoring
-* Secure dependency management
+* Enforce server-side authorization
+* Validate all inputs
+* Use secure file storage
+* Apply least privilege principle
+* Deny access by default
 
 ---
 
-## 📘 Phase 1 Plan
+## 14. Secure Architecture
 
-### Goal
+The architecture separates concerns between layers and enforces:
 
-Define the system from an analysis and security perspective, including:
-
-* Requirements
-* Domain model
-* Data flows
-* Threat modeling
-* Security controls
-* Test planning
+* controlled access to resources
+* secure communication
+* isolation of sensitive components
 
 ---
 
-### Scope
+## 15. Security Test Planning
 
-* System overview
-* Functional requirements
-* Non-functional requirements
-* Security requirements
-* Domain model
-* Data Flow Diagrams (DFD Level 0 and 1)
-* Abuse cases
-* STRIDE threat modeling
-* Risk assessment
-* Mitigation strategies
-* Secure architecture and design
-* Security testing plan
-* ASVS checklist
+The system will include:
+
+* authentication tests
+* authorization tests
+* input validation tests
+* file handling tests
+* abuse case validation
 
 ---
 
-### Deliverables
+## 16. Traceability Matrix
 
-Located in:
+Each:
 
-```
-Deliverables/Phase1/
-```
+* security requirement
+* threat
+* mitigation
+* test
 
-Includes:
-
-* Phase1-Deliverable.md
-* ASVS-Phase1.md
+will be mapped for traceability.
 
 ---
 
-### Documentation
+## 17. References
 
-Located in:
-
-```
-docs/
-```
-
-Structure:
-
-```
-docs/
- ├── requirements/
- ├── domain-model/
- ├── diagrams/
- ├── abuse-cases/
- ├── threat-model/
- ├── architecture/
- └── testing/
-```
-
----
-
-## ⚠️ Security Requirements (High-Level)
-
-* Passwords stored using secure hashing
-* Role-based access control enforced on all endpoints
-* File access restricted to authorized users only
-* Server-side validation for all inputs
-* Protection against:
-
-    * SQL Injection
-    * Path Traversal
-    * Broken Access Control
-* Logging of critical actions
-
----
-
-## 🔍 Abuse Cases (Examples)
-
-* Unauthorized access to other students' submissions
-* Attempt to download restricted files
-* Brute force login attempts
-* Upload of malicious files
-* Privilege escalation attempts
-* Access to solutions before allowed time
-
----
-
-## 🧪 Security Testing Plan (Preview)
-
-* Authentication testing
-* Authorization testing
-* Input validation testing
-* File handling security testing
-* Abuse case validation
-* Threat mitigation verification
-
----
-
-## 🔄 Development Workflow
-
-### Branching
-
-* `main` → stable
-* `develop` → integration
-* `feature/*` → new features
-
-### Example:
-
-```
-feature/domain-model
-feature/auth-security
-feature/submissions
-```
-
----
-
-### Commits
-
-Use clear messages:
-
-```
-feat: add user entity
-fix: correct authorization logic
-docs: add threat model draft
-refactor: restructure domain layer
-```
-
----
-
-## 📌 Current Status
-
-* Project initialized
-* Spring Boot configured
-* Basic domain structure created
-* Health endpoint implemented
-
----
-
-## 📅 Timeline
-
-* Phase 1: Analysis & Design
-* Phase 2: Implementation & Validation
-
----
-
-## 👨‍💻 Team
-
-
-| Name                | Number        | Contact             |
-|---------------------|---------------|---------------------|
-| Ana Guterres        | 1221933       | 1221933@isep.ipp.pt |
-| Bruno Jesus         | 1221944       | 1221944@isep.ipp.pt |
-| Fábio Carido        | 1250512       | 1250512@isep.ipp.pt |
-| Guilherme Rodrigues | 1211474       | 1211474@isep.ipp.pt |
-
----
-
-## 📄 License
-
-Academic project for DESOFS.
+* Domain Model (PlantUML)
+* Abuse Cases document
+* Requirements documents
+* Repository structure

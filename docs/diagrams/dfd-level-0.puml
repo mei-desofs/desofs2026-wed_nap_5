@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+
+actor Admin
+actor Professor
+actor Student
+
+rectangle "LearningMore System" as LMS
+database "Relational Database" as DB
+folder "File Storage" as FS
+
+Admin --> LMS : User management\nRole management\nAudit access
+Professor --> LMS : Course management\nUpload materials\nCreate assignments\nGrade submissions
+Student --> LMS : Login\nAccess materials\nSubmit assignments\nSend chat messages
+
+LMS --> DB : Store and retrieve\nusers, courses, enrollments,\nassignments, submissions,\nchat metadata
+DB --> LMS : Query results\nand persistent data
+
+LMS --> FS : Store and retrieve\ncourse files and submissions
+FS --> LMS : File content\nand metadata
+
+@enduml
