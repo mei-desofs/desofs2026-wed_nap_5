@@ -8,18 +8,43 @@ actor Admin
 actor Professor
 actor Student
 
-rectangle "LearningMore System" as LMS
-database "Relational Database" as DB
+rectangle "LearningMore Platform" as LMS
+
+database "Domain Data Store" as DB
 folder "File Storage" as FS
 
-Admin --> LMS : User management\nRole management\nAudit access
-Professor --> LMS : Course management\nUpload materials\nCreate assignments\nGrade submissions
-Student --> LMS : Login\nAccess materials\nSubmit assignments\nSend chat messages
+' =========================
+' ACTOR INTERACTIONS
+' =========================
 
-LMS --> DB : Store and retrieve\nusers, courses, enrollments,\nassignments, submissions,\nchat metadata
-DB --> LMS : Query results\nand persistent data
+Admin --> LMS : User management\nRole management\nSystem configuration\nAudit access
 
-LMS --> FS : Store and retrieve\ncourse files and submissions
-FS --> LMS : File content\nand metadata
+Professor --> LMS : Course management\nUpload course materials\nCreate assignments\nGrade submissions\nChat room moderation
+
+Student --> LMS : Authentication\nAccess courses\nView materials\nSubmit assignments\nParticipate in chat
+
+' =========================
+' DOMAIN DATA FLOWS
+' =========================
+
+' --- User Aggregate ---
+LMS --> DB : User data (profile, roles, status)
+DB --> LMS : User information
+
+' --- Course Aggregate ---
+LMS --> DB : Course data\nEnrollments\nClass sessions
+DB --> LMS : Course information
+
+' --- Assignment Aggregate ---
+LMS --> DB : Assignment data\nSubmissions\nGrades & feedback
+DB --> LMS : Assignment state
+
+' --- Chat Aggregate ---
+LMS --> DB : Chat rooms\nMessages metadata
+DB --> LMS : Chat history
+
+' --- File Storage Separation ---
+LMS --> FS : Course materials upload/download\nAssignment submission files
+FS --> LMS : File content & metadata
 
 @enduml

@@ -1,0 +1,92 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
+
+actor Admin
+actor Professor
+actor Student
+
+rectangle "LearningMore Platform" as LMS
+
+database "Domain Data Store" as DB
+folder "File Storage" as FS
+
+' =========================
+' LEVEL 1 PROCESSES
+' =========================
+
+rectangle "1.0 User Management" as P1
+rectangle "2.0 Course Management" as P2
+rectangle "3.0 Assignment Management" as P3
+rectangle "4.0 Chat Management" as P4
+rectangle "5.0 File Management" as P5
+
+' =========================
+' USER MANAGEMENT
+' =========================
+
+Admin --> P1 : Create/Update/Delete Users\nManage Roles\nActivate/Deactivate Accounts
+P1 --> DB : Persist User Aggregate\n(User, roles, status)
+DB --> P1 : User data
+
+P1 --> LMS : Authentication / Authorization results
+
+' =========================
+' COURSE MANAGEMENT
+' =========================
+
+Professor --> P2 : Create/Edit Courses\nManage Enrollments\nCreate Class Sessions
+
+Student --> P2 : View Courses\nEnroll in Course
+
+P2 --> DB : Course Aggregate\nCourses, Enrollments, Sessions
+DB --> P2 : Course data
+
+P2 --> LMS : Course listings & enrollment status
+
+' =========================
+' ASSIGNMENT MANAGEMENT
+' =========================
+
+Professor --> P3 : Create Assignments\nGrade Submissions
+
+Student --> P3 : Submit Assignment
+
+P3 --> FS : Store submission files
+FS --> P3 : File reference
+
+P3 --> DB : Assignment Aggregate\nAssignments, Submissions, Grades
+DB --> P3 : Assignment data
+
+P3 --> LMS : Grades & submission status
+
+' =========================
+' CHAT MANAGEMENT
+' =========================
+
+Professor --> P4 : Create/Moderate Chat Rooms
+Student --> P4 : Send Messages
+
+P4 --> DB : ChatRoom + ChatMessage metadata
+DB --> P4 : Chat history
+
+P4 --> LMS : Chat content delivery
+
+' =========================
+' FILE MANAGEMENT
+' =========================
+
+Professor --> P5 : Upload course materials
+Student --> P5 : Download materials
+
+P5 --> FS : Store course materials & submissions
+FS --> P5 : File content + metadata
+
+P5 --> DB : Resource metadata (filePath, owner, course)
+DB --> P5 : File references
+
+P5 --> LMS : File access responses
+
+@enduml
