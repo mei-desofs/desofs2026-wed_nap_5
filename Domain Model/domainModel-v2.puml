@@ -1,0 +1,128 @@
+@startuml
+
+' =========================
+' ENUMS
+' =========================
+enum UserRole {
+  ADMIN
+  PROFESSOR
+  STUDENT
+}
+
+enum ResourceType {
+  CLASS_MATERIAL
+  ASSIGNMENT_STATEMENT
+  SOLUTION
+}
+
+enum SubmissionStatus {
+  DRAFT
+  SUBMITTED
+  LATE
+  GRADED
+}
+
+' =========================
+' USER AGGREGATE
+' =========================
+class User {
+  +id: UUID
+  +name: String
+  +email: String
+  +passwordHash: String
+  +role: UserRole
+  +active: boolean
+}
+
+' =========================
+' COURSE AGGREGATE
+' =========================
+class Course {
+  +id: UUID
+  +code: String
+  +title: String
+  +description: String
+}
+
+class Enrollment {
+  +id: UUID
+  +enrolledAt: DateTime
+}
+
+class ClassSession {
+  +id: UUID
+  +title: String
+  +scheduledAt: DateTime
+  +topic: String
+}
+
+' =========================
+' RESOURCE AGGREGATE
+' =========================
+class Resource {
+  +id: UUID
+  +title: String
+  +type: ResourceType
+  +filePath: String
+  +uploadedAt: DateTime
+}
+
+' =========================
+' ASSIGNMENT / SUBMISSION
+' =========================
+class Assignment {
+  +id: UUID
+  +title: String
+  +description: String
+  +deadline: DateTime
+}
+
+class Submission {
+  +id: UUID
+  +submittedAt: DateTime
+  +status: SubmissionStatus
+  +filePath: String
+  +grade: Decimal
+  +feedback: String
+}
+
+' =========================
+' CHAT AGGREGATE
+' =========================
+class ChatRoom {
+  +id: UUID
+  +name: String
+}
+
+class ChatMessage {
+  +id: UUID
+  +content: String
+  +sentAt: DateTime
+}
+
+' =========================
+' RELATIONSHIPS
+' =========================
+
+' Enrollment
+User "1" -- "0..*" Enrollment
+Course "1" -- "0..*" Enrollment
+
+' Course structure
+Course "1" -- "0..*" ClassSession
+Course "1" -- "0..*" Resource
+Course "1" -- "0..*" Assignment
+Course "1" -- "1" ChatRoom
+
+' Resource ownership
+User "1" -- "0..*" Resource : uploads >
+
+' Assignment & Submission
+Assignment "1" -- "0..*" Submission
+User "1" -- "0..*" Submission : submits >
+
+' Chat
+ChatRoom "1" -- "0..*" ChatMessage
+User "1" -- "0..*" ChatMessage : sends >
+
+@enduml
