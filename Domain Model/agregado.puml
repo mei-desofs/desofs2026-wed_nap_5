@@ -1,0 +1,91 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+package "Aggregate: User" {
+  class User <<Aggregate Root>> {
+    +id: UUID
+    +name: String
+    +email: String
+    +passwordHash: String
+    +role: UserRole
+    +active: boolean
+  }
+}
+
+package "Aggregate: Course" {
+  class Course <<Aggregate Root>> {
+    +id: UUID
+    +code: String
+    +title: String
+    +description: String
+  }
+
+  class Enrollment {
+    +id: UUID
+    +enrolledAt: DateTime
+  }
+
+  class ClassSession {
+    +id: UUID
+    +title: String
+    +scheduledAt: DateTime
+    +topic: String
+  }
+
+  class Resource {
+    +id: UUID
+    +title: String
+    +type: ResourceType
+    +filePath: String
+    +uploadedAt: DateTime
+  }
+
+  Course *-- Enrollment
+  Course *-- ClassSession
+  Course *-- Resource
+}
+
+package "Aggregate: Assignment" {
+  class Assignment <<Aggregate Root>> {
+    +id: UUID
+    +title: String
+    +description: String
+    +deadline: DateTime
+  }
+}
+
+package "Aggregate: Submission" {
+  class Submission <<Aggregate Root>> {
+    +id: UUID
+    +submittedAt: DateTime
+    +status: SubmissionStatus
+    +filePath: String
+    +grade: Decimal
+    +feedback: String
+  }
+}
+
+package "Aggregate: Chat" {
+  class ChatRoom <<Aggregate Root>> {
+    +id: UUID
+    +name: String
+  }
+
+  class ChatMessage {
+    +id: UUID
+    +content: String
+    +sentAt: DateTime
+  }
+
+  ChatRoom *-- ChatMessage
+}
+
+Course ..> Assignment : references
+Assignment ..> Submission : receives
+User ..> Submission : submits
+User ..> Course : enrolls/accesses
+Course ..> ChatRoom : owns chat
+User ..> ChatMessage : sends
+
+@enduml
