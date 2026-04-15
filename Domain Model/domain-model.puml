@@ -2,7 +2,11 @@
 skinparam packageStyle rectangle
 skinparam shadowing false
 
+' =========================
+' USER AGGREGATE
+' =========================
 package "Aggregate: User" {
+
   class User <<Aggregate Root>> {
     +id: UUID
     +name: String
@@ -13,7 +17,11 @@ package "Aggregate: User" {
   }
 }
 
+' =========================
+' COURSE AGGREGATE
+' =========================
 package "Aggregate: Course" {
+
   class Course <<Aggregate Root>> {
     +id: UUID
     +code: String
@@ -46,17 +54,19 @@ package "Aggregate: Course" {
   Course *-- Resource
 }
 
+' =========================
+' ASSIGNMENT AGGREGATE (CORRIGIDO)
+' =========================
 package "Aggregate: Assignment" {
+
   class Assignment <<Aggregate Root>> {
     +id: UUID
     +title: String
     +description: String
     +deadline: DateTime
   }
-}
 
-package "Aggregate: Submission" {
-  class Submission <<Aggregate Root>> {
+  class Submission {
     +id: UUID
     +submittedAt: DateTime
     +status: SubmissionStatus
@@ -64,9 +74,15 @@ package "Aggregate: Submission" {
     +grade: Decimal
     +feedback: String
   }
+
+  Assignment *-- Submission
 }
 
+' =========================
+' CHAT AGGREGATE
+' =========================
 package "Aggregate: Chat" {
+
   class ChatRoom <<Aggregate Root>> {
     +id: UUID
     +name: String
@@ -81,11 +97,16 @@ package "Aggregate: Chat" {
   ChatRoom *-- ChatMessage
 }
 
-Course ..> Assignment : references
-Assignment ..> Submission : receives
-User ..> Submission : submits
-User ..> Course : enrolls/accesses
-Course ..> ChatRoom : owns chat
-User ..> ChatMessage : sends
+' =========================
+' CROSS-AGGREGATE RELATIONS
+' =========================
+
+User "1" -- "0..*" Enrollment
+User "1" -- "0..*" Submission : submits >
+
+Course "1" -- "0..*" Assignment
+Course "1" -- "0..*" ChatRoom
+
+User "1" -- "0..*" ChatMessage : sends >
 
 @enduml
