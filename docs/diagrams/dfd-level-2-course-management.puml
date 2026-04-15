@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+skinparam shadowing false
+
+actor Professor
+actor Student
+
+rectangle "2.1 Create Course" as P21
+rectangle "2.2 Manage Enrollment" as P22
+rectangle "2.3 Manage Class Sessions" as P23
+rectangle "2.4 View Courses" as P24
+
+database "Course Store" as DB
+
+Professor --> P21 : Create course
+Professor --> P23 : Create sessions
+
+Student --> P22 : Enroll in course
+Student --> P24 : View courses
+
+P21 --> DB : Store Course Aggregate
+P22 --> DB : Update Enrollment
+P23 --> DB : Store ClassSession
+DB --> P24 : Course data
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+skinparam shadowing false
+
+actor Professor
+actor Student
+
+rectangle "3.1 Create Assignment" as P31
+rectangle "3.2 Submit Assignment" as P32
+rectangle "3.3 Grade Submission" as P33
+
+database "Assignment Store" as DB
+folder "File Storage" as FS
+
+Professor --> P31 : Create assignment
+Professor --> P33 : Grade submissions
+
+Student --> P32 : Submit assignment
+
+P31 --> DB : Store Assignment Aggregate
+
+P32 --> FS : Upload submission file
+P32 --> DB : Store Submission metadata
+
+P33 --> DB : Store grade + feedback
+
+@enduml

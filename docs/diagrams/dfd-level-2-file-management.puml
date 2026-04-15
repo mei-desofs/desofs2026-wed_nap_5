@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+skinparam shadowing false
+
+actor Professor
+actor Student
+
+rectangle "5.1 Upload Course Material" as P51
+rectangle "5.2 Download Material" as P52
+rectangle "5.3 Store File Metadata" as P53
+
+folder "File Storage" as FS
+database "Domain Store" as DB
+
+Professor --> P51 : Upload material
+Student --> P52 : Download material
+
+P51 --> FS : Store file
+P51 --> DB : Store Resource metadata
+
+FS --> P52 : Deliver file
+DB --> P52 : Validate access
+
+@enduml
