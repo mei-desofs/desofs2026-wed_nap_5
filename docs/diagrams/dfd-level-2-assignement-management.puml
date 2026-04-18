@@ -5,23 +5,35 @@ skinparam shadowing false
 actor Professor
 actor Student
 
-rectangle "3.1 Create Assignment" as P31
-rectangle "3.2 Submit Assignment" as P32
-rectangle "3.3 Grade Submission" as P33
+rectangle "LearningMore Backend" {
+	rectangle "3.0 Validate Access + Enrollment" as P30
+	rectangle "3.1 Create Assignment" as P31
+	rectangle "3.2 Submit Assignment" as P32
+	rectangle "3.3 Grade Submission" as P33
 
-database "Assignment Store" as DB
-folder "File Storage" as FS
+	database "Assignment Store" as DB
+	folder "File Storage" as FS
+	database "Audit Log" as LOG
+}
 
-Professor --> P31 : Create assignment
-Professor --> P33 : Grade submissions
+Professor --> P30 : Request (JWT, course, action)
+Student --> P30 : Request (JWT, course, action)
 
-Student --> P32 : Submit assignment
+P30 --> P31 : Authorize professor create
+P30 --> P32 : Authorize student submit
+P30 --> P33 : Authorize professor grade
 
 P31 --> DB : Store Assignment Aggregate
+P31 --> LOG : Log assignment creation
 
-P32 --> FS : Upload submission file
-P32 --> DB : Store Submission metadata
+P32 --> DB : Read assignment deadline + rules
+P32 --> FS : Upload submission file (validated)
+P32 --> DB : Store submission metadata + hash
+P32 --> LOG : Log submission event
 
+P33 --> DB : Read submission metadata
+P33 --> FS : Read submission file
 P33 --> DB : Store grade + feedback
+P33 --> LOG : Log grading event
 
 @enduml

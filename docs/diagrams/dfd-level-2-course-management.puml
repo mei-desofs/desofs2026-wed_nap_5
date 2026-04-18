@@ -5,22 +5,37 @@ skinparam shadowing false
 actor Professor
 actor Student
 
+rectangle "2.0 Validate Access" as P20
 rectangle "2.1 Create Course" as P21
 rectangle "2.2 Manage Enrollment" as P22
 rectangle "2.3 Manage Class Sessions" as P23
 rectangle "2.4 View Courses" as P24
 
 database "Course Store" as DB
+database "Audit Log" as AUDIT
 
-Professor --> P21 : Create course
-Professor --> P23 : Create sessions
+rectangle "LearningMore Backend" {
+  ' Processes and stores placed inside boundary
+  ' Boundary is implicit via rectangle
+}
 
-Student --> P22 : Enroll in course
-Student --> P24 : View courses
+Professor --> P20 : JWT + Create course (HTTPS)
+Student --> P20 : JWT + Enroll/View (HTTPS)
+Professor --> P20 : JWT + Create sessions (HTTPS)
+
+P20 --> P21 : Authorized + Prof role
+P20 --> P22 : Authorized + Student role
+P20 --> P23 : Authorized + Prof role
+P20 --> P24 : Authorized + Student role
 
 P21 --> DB : Store Course Aggregate
-P22 --> DB : Update Enrollment
-P23 --> DB : Store ClassSession
-DB --> P24 : Course data
+P22 --> DB : Read course (validate) then Update Enrollment
+P23 --> DB : Read course then Store ClassSession
+DB --> P24 : Course data (read)
+
+P21 --> AUDIT : Log course creation
+P22 --> AUDIT : Log enrollment change
+P23 --> AUDIT : Log session creation
+P24 --> AUDIT : Log course view
 
 @enduml
