@@ -2,8 +2,8 @@
 
 ## Authentication
 
-SR1: Passwords must be stored using strong hashing algorithms  
-SR2: The system must enforce secure authentication mechanisms  
+SR1: Passwords must be stored using strong, salted hashing algorithms   
+SR2: The system must enforce secure authentication mechanisms using validated credentials and protected session/token mechanisms  
 SR3: The system must prevent brute force attacks
 
 ## Authorization

@@ -36,10 +36,17 @@ FR16: The system shall associate submissions with users and assignments
 
 ## Chat System
 
-FR17: The system shall allow users to send messages in course chat  
-FR18: The system shall allow users to read messages within their course
+FR17: The system shall allow creation of course chat rooms
+FR18: The system shall allow users to send messages in course chat rooms  
+FR19: The system shall allow users to read messages within their course
+FR20: The system shall restrict course chat rooms to enrolled students only
+FR21: The system shall allow moderators (professors) to delete inappropriate messages
+ 
 
 ## Logging
 
-FR19: The system shall log authentication attempts  
-FR20: The system shall log critical actions (uploads, submissions, access)
+FR22: The system shall log authentication attempts  
+FR23: The system shall log critical actions (uploads, submissions, access)
+FR24: The system shall include timestamp information for all log entries.
+FR25: The system shall include the user identifier associated with each logged action, where applicable.
+FR26: The system shall log the origin of requests, including IP address or service identifier.
