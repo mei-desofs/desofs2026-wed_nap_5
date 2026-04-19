@@ -1,0 +1,1574 @@
+{
+  "version": "2.6.0",
+  "summary": {
+    "title": "LearningMore - File Management",
+    "owner": "",
+    "description": "Threat model for the File Management component of the LearningMore platform, including upload of course materials, authorization checks, and download of protected files.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "File Management DFD Level 2",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.6.0",
+        "cells": [
+          {
+            "position": {
+              "x": 271.9999999999991,
+              "y": -74.99999999999798
+            },
+            "size": {
+              "width": 510,
+              "height": 450
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "zIndex": -1,
+            "id": "75e034a8-b107-4466-bc73-2e250dc0aefd",
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "Trust Boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [
+                "7a13867e-0561-4ab2-8ec3-53409c074707",
+                "1ce3b4e2-f593-4c5f-b6cc-abe639d43882",
+                "8f36c8fd-aa53-4b5e-b099-19951090c27a"
+              ],
+              "containedElements": [
+                "bb06ab16-b9fb-4f9b-a92b-cbed4079b0c8",
+                "eb15748d-996a-4dd1-a200-cd3753b9455e",
+                "ef3089ed-588c-4e22-943a-663880486d93",
+                "13630747-09cb-4804-acd6-2e3c924e13b7",
+                "8393dc68-0269-4385-a6a4-fcc373254d6e"
+              ]
+            },
+            "tools": {
+              "items": [
+                "boundary",
+                "button-remove"
+              ],
+              "name": null
+            }
+          },
+          {
+            "position": {
+              "x": 120,
+              "y": 115
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Professor"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 1,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "6c140c5f-83d7-4d55-91bb-2284a8af494d"
+                },
+                {
+                  "group": "right",
+                  "id": "7e50a8e1-7e25-4526-8681-d403318e0d9b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "994ef6cd-a55f-4662-bf18-e72fefeeb137"
+                },
+                {
+                  "group": "left",
+                  "id": "ccef7cbd-6139-4028-8f9e-3b03ed641406"
+                }
+              ]
+            },
+            "id": "bbe320b5-7467-448c-a827-e16e2f54ae23",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Professor\n",
+              "description": "",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 830,
+              "y": 110
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Student"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 3,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "6c140c5f-83d7-4d55-91bb-2284a8af494d"
+                },
+                {
+                  "group": "right",
+                  "id": "7e50a8e1-7e25-4526-8681-d403318e0d9b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "994ef6cd-a55f-4662-bf18-e72fefeeb137"
+                },
+                {
+                  "group": "left",
+                  "id": "ccef7cbd-6139-4028-8f9e-3b03ed641406"
+                }
+              ]
+            },
+            "id": "9d18ed24-5585-4615-a192-1673564abf70",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Student\n",
+              "description": "",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 320,
+              "y": 260
+            },
+            "size": {
+              "width": 120,
+              "height": 110
+            },
+            "attrs": {
+              "text": {
+                "text": "Upload Course\nMaterial\n"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 4,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "7e084704-6c0d-47fd-82c2-0d4cdebf9071"
+                },
+                {
+                  "group": "right",
+                  "id": "1abfb3b2-fed1-466f-a0f3-e2793f8928a4"
+                },
+                {
+                  "group": "bottom",
+                  "id": "4cdccdaf-d0e9-4ed4-a0fb-f0859e45dfc5"
+                },
+                {
+                  "group": "left",
+                  "id": "f1569815-91cd-4c2b-94b8-d1f6fb40acdd"
+                }
+              ]
+            },
+            "id": "bb06ab16-b9fb-4f9b-a92b-cbed4079b0c8",
+            "data": {
+              "type": "tm.Process",
+              "name": "Upload CourseMaterial\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "68c4cd8b-eae6-44bb-aed3-e9a9afe31786",
+                  "title": "Malicious file upload",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "User uploads malicious file disguised as valid content",
+                  "mitigation": "File type validation + antivirus scanning + size limits",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 1,
+                  "score": ""
+                },
+                {
+                  "id": "47b47359-b931-423e-8b85-498e18513398",
+                  "title": "Unauthorized upload",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "description": "Student attempts to upload materials without permission",
+                  "mitigation": "RBAC + role validation (only professors allowed)",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 3,
+                  "score": ""
+                },
+                {
+                  "id": "06ca2d2c-96c7-49c8-90ca-51aae27316e1",
+                  "title": "Large file upload attack",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Denial of service",
+                  "description": "User uploads excessively large files to exhaust storage/resources",
+                  "mitigation": "File size limits + rate limiting",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 1,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 1
+              }
+            }
+          },
+          {
+            "position": {
+              "x": 540,
+              "y": 140
+            },
+            "size": {
+              "width": 90,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "Validate File \nAccess"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 5,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "7e084704-6c0d-47fd-82c2-0d4cdebf9071"
+                },
+                {
+                  "group": "right",
+                  "id": "1abfb3b2-fed1-466f-a0f3-e2793f8928a4"
+                },
+                {
+                  "group": "bottom",
+                  "id": "4cdccdaf-d0e9-4ed4-a0fb-f0859e45dfc5"
+                },
+                {
+                  "group": "left",
+                  "id": "f1569815-91cd-4c2b-94b8-d1f6fb40acdd"
+                }
+              ]
+            },
+            "id": "eb15748d-996a-4dd1-a200-cd3753b9455e",
+            "data": {
+              "type": "tm.Process",
+              "name": "Validate File Access",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "bb4d0890-3890-4c33-a97a-3167e4c3e581",
+                  "title": "Forged authentication token",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Spoofing",
+                  "description": "Attacker uses forged JWT to bypass access control",
+                  "mitigation": "JWT validation (signature, expiry, issuer)",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 14,
+                  "score": ""
+                },
+                {
+                  "id": "f15e7586-3e12-4d3b-bd96-433fae63a410",
+                  "title": "Authorization bypass",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Elevation of privilege",
+                  "description": "User accesses files without enrollment or permission",
+                  "mitigation": "Strict server-side authorization checks",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 15,
+                  "score": ""
+                },
+                {
+                  "id": "256da254-ee8d-43b5-83cc-f967fb17f316",
+                  "title": "Unauthorized metadata access",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Attacker retrieves file metadata without permission",
+                  "mitigation": "Access control on metadata queries",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 16,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 1,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 1,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 1
+              }
+            }
+          },
+          {
+            "position": {
+              "x": 340,
+              "y": -40
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Download \nMaterial\n"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 6,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "7e084704-6c0d-47fd-82c2-0d4cdebf9071"
+                },
+                {
+                  "group": "right",
+                  "id": "1abfb3b2-fed1-466f-a0f3-e2793f8928a4"
+                },
+                {
+                  "group": "bottom",
+                  "id": "4cdccdaf-d0e9-4ed4-a0fb-f0859e45dfc5"
+                },
+                {
+                  "group": "left",
+                  "id": "f1569815-91cd-4c2b-94b8-d1f6fb40acdd"
+                }
+              ]
+            },
+            "id": "ef3089ed-588c-4e22-943a-663880486d93",
+            "data": {
+              "type": "tm.Process",
+              "name": "Download Material\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "e2373e2b-1d92-4fe6-9e64-69e4ff079402",
+                  "title": "Unauthorized file download",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Information disclosure",
+                  "description": "User downloads restricted files without authorization",
+                  "mitigation": "Access validation before file retrieval",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                },
+                {
+                  "id": "9f6f1dd9-7bca-4cca-bbb5-962ce302e99e",
+                  "title": "Download flooding",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Denial of service",
+                  "description": "Multiple download requests overload system",
+                  "mitigation": "Rate limiting + throttling",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": ""
+                },
+                {
+                  "id": "312cd995-d127-4e39-9323-311b4fe7f3ae",
+                  "title": "Metadata manipulation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Attacker alters file permissions or ownership",
+                  "mitigation": "Integrity checks + restricted DB access",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                },
+                {
+                  "id": "bfb2e9e7-28f7-4d07-a792-0d4c0e309507",
+                  "title": "Metadata leakage",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Sensitive metadata exposed (paths, permissions)",
+                  "mitigation": "Access control + data minimization",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 1,
+                "repudiation": 0,
+                "informationDisclosure": 2,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 0
+              }
+            }
+          },
+          {
+            "position": {
+              "x": 610,
+              "y": 0
+            },
+            "size": {
+              "width": 120,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "File Metadata Store"
+              },
+              "topLine": {
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 7,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "e2ed3979-9f05-4116-b5d0-3601fb64d2ea"
+                },
+                {
+                  "group": "right",
+                  "id": "295af6ae-31aa-4b72-97f2-73e924795e13"
+                },
+                {
+                  "group": "bottom",
+                  "id": "2df4c4c7-75d2-4316-a1e6-731a8ca56e0b"
+                },
+                {
+                  "group": "left",
+                  "id": "216e903a-d056-4fe4-964b-279f1518b30d"
+                }
+              ]
+            },
+            "id": "13630747-09cb-4804-acd6-2e3c924e13b7",
+            "data": {
+              "type": "tm.Store",
+              "name": "File Metadata Store\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 590,
+              "y": 260
+            },
+            "size": {
+              "width": 120,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "File Storage"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 8,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "e2ed3979-9f05-4116-b5d0-3601fb64d2ea"
+                },
+                {
+                  "group": "right",
+                  "id": "295af6ae-31aa-4b72-97f2-73e924795e13"
+                },
+                {
+                  "group": "bottom",
+                  "id": "2df4c4c7-75d2-4316-a1e6-731a8ca56e0b"
+                },
+                {
+                  "group": "left",
+                  "id": "216e903a-d056-4fe4-964b-279f1518b30d"
+                }
+              ]
+            },
+            "id": "8393dc68-0269-4385-a6a4-fcc373254d6e",
+            "data": {
+              "type": "tm.Store",
+              "name": "File Storage\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "d80a1d8a-0751-4b1f-be6c-1d660d6d31ff",
+                  "title": "File modification",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Stored files are altered or replaced",
+                  "mitigation": "Hash validation + secure storage",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 12,
+                  "score": ""
+                },
+                {
+                  "id": "a37a6328-bbd9-4c4e-8caa-b4f69f2fb3d2",
+                  "title": "Direct file access",
+                  "status": "Open",
+                  "severity": "Critical",
+                  "type": "Information disclosure",
+                  "description": "Files accessed directly bypassing application",
+                  "mitigation": "Store outside public directories + signed URLs",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 13,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "repudiation": 0,
+                "informationDisclosure": 1,
+                "denialOfService": 0
+              }
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Upload material request\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "75e034a8-b107-4466-bc73-2e250dc0aefd"
+              ]
+            },
+            "labels": [
+              "Upload material \nrequest\n"
+            ],
+            "id": "7a13867e-0561-4ab2-8ec3-53409c074707",
+            "source": {
+              "cell": "bbe320b5-7467-448c-a827-e16e2f54ae23",
+              "port": "6c140c5f-83d7-4d55-91bb-2284a8af494d"
+            },
+            "target": {
+              "cell": "ef3089ed-588c-4e22-943a-663880486d93",
+              "port": "f1569815-91cd-4c2b-94b8-d1f6fb40acdd"
+            },
+            "vertices": [
+              {
+                "x": 300,
+                "y": 60
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Store file content\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Store file content"
+            ],
+            "id": "8d103549-84a4-432f-95ed-4aca2a7cb9e1",
+            "source": {
+              "cell": "bb06ab16-b9fb-4f9b-a92b-cbed4079b0c8",
+              "port": "1abfb3b2-fed1-466f-a0f3-e2793f8928a4"
+            },
+            "target": {
+              "cell": "8393dc68-0269-4385-a6a4-fcc373254d6e",
+              "port": "216e903a-d056-4fe4-964b-279f1518b30d"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Store file metadata\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Store file metadata"
+            ],
+            "id": "70f605b4-8d31-4dd7-a670-68f92a4f8d40",
+            "source": {
+              "cell": "bb06ab16-b9fb-4f9b-a92b-cbed4079b0c8",
+              "port": "7e084704-6c0d-47fd-82c2-0d4cdebf9071"
+            },
+            "target": {
+              "cell": "13630747-09cb-4804-acd6-2e3c924e13b7",
+              "port": "216e903a-d056-4fe4-964b-279f1518b30d"
+            },
+            "vertices": [
+              {
+                "x": 380,
+                "y": 130
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Material access request\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "75e034a8-b107-4466-bc73-2e250dc0aefd"
+              ]
+            },
+            "labels": [
+              "Material access request"
+            ],
+            "id": "1ce3b4e2-f593-4c5f-b6cc-abe639d43882",
+            "source": {
+              "cell": "9d18ed24-5585-4615-a192-1673564abf70",
+              "port": "ccef7cbd-6139-4028-8f9e-3b03ed641406"
+            },
+            "target": {
+              "cell": "eb15748d-996a-4dd1-a200-cd3753b9455e",
+              "port": "1abfb3b2-fed1-466f-a0f3-e2793f8928a4"
+            },
+            "vertices": [
+              {
+                "x": 700,
+                "y": 145
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read file metadata and permissions\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Read file metadata\n and permissions\n"
+            ],
+            "id": "52f171ef-70b0-4528-8cb9-908aaf81c5e5",
+            "source": {
+              "cell": "eb15748d-996a-4dd1-a200-cd3753b9455e",
+              "port": "7e084704-6c0d-47fd-82c2-0d4cdebf9071"
+            },
+            "target": {
+              "cell": "13630747-09cb-4804-acd6-2e3c924e13b7",
+              "port": "2df4c4c7-75d2-4316-a1e6-731a8ca56e0b"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Return metadata andauthorization data",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Return metadata and\nauthorization data"
+            ],
+            "id": "6870c250-1993-4cb3-8a2b-febd64749b9f",
+            "source": {
+              "cell": "13630747-09cb-4804-acd6-2e3c924e13b7",
+              "port": "e2ed3979-9f05-4116-b5d0-3601fb64d2ea"
+            },
+            "target": {
+              "cell": "eb15748d-996a-4dd1-a200-cd3753b9455e",
+              "port": "f1569815-91cd-4c2b-94b8-d1f6fb40acdd"
+            },
+            "vertices": [
+              {
+                "x": 540,
+                "y": -20
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Authorize material download",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Authorize material \ndownload"
+            ],
+            "id": "0feb4566-c666-4570-b2a2-24419a56e57a",
+            "source": {
+              "cell": "eb15748d-996a-4dd1-a200-cd3753b9455e",
+              "port": "f1569815-91cd-4c2b-94b8-d1f6fb40acdd"
+            },
+            "target": {
+              "cell": "ef3089ed-588c-4e22-943a-663880486d93",
+              "port": "4cdccdaf-d0e9-4ed4-a0fb-f0859e45dfc5"
+            },
+            "vertices": [
+              {
+                "x": 460,
+                "y": 185
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read file content\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Read file content"
+            ],
+            "id": "e87cf540-2e05-412a-9927-7b72db4dabc7",
+            "source": {
+              "cell": "8393dc68-0269-4385-a6a4-fcc373254d6e",
+              "port": "2df4c4c7-75d2-4316-a1e6-731a8ca56e0b"
+            },
+            "target": {
+              "cell": "ef3089ed-588c-4e22-943a-663880486d93",
+              "port": "4cdccdaf-d0e9-4ed4-a0fb-f0859e45dfc5"
+            },
+            "vertices": [
+              {
+                "x": 320,
+                "y": 410
+              },
+              {
+                "x": 180,
+                "y": 340
+              },
+              {
+                "x": 240,
+                "y": 240
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Return file download\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "75e034a8-b107-4466-bc73-2e250dc0aefd"
+              ]
+            },
+            "labels": [
+              "Return file download"
+            ],
+            "id": "8f36c8fd-aa53-4b5e-b099-19951090c27a",
+            "source": {
+              "cell": "ef3089ed-588c-4e22-943a-663880486d93",
+              "port": "7e084704-6c0d-47fd-82c2-0d4cdebf9071"
+            },
+            "target": {
+              "cell": "9d18ed24-5585-4615-a192-1673564abf70",
+              "port": "6c140c5f-83d7-4d55-91bb-2284a8af494d"
+            },
+            "vertices": [
+              {
+                "x": 750,
+                "y": -40
+              }
+            ]
+          }
+        ],
+        "description": "DFD for File Management including upload, authorization validation, metadata handling, and file download."
+      }
+    ],
+    "diagramTop": 1,
+    "reviewer": "",
+    "threatTop": 16
+  }
+}
