@@ -1,0 +1,1392 @@
+{
+  "version": "2.6.0",
+  "summary": {
+    "title": "LearningMore - Chat Management",
+    "owner": "",
+    "description": "Threat model for the Chat Management component of the LearningMore platform, including chat room creation, message exchange, and history retrieval between students and professors.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "Chat Management DFD Level 2",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.6.0",
+        "cells": [
+          {
+            "position": {
+              "x": 240.00000000000068,
+              "y": 60.00000000000455
+            },
+            "size": {
+              "width": 550,
+              "height": 570
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "zIndex": -1,
+            "id": "be571ab2-949c-408d-bc85-c7228a1ce78d",
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "Trust Boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [
+                "30d04698-ebb1-4f2a-b6cd-1198118593ba",
+                "b820f303-5549-41e7-9714-8ff4110e28bb",
+                "0285748c-cdc0-47f0-b008-5cfeb57c195f",
+                "649661a6-311b-4155-a9fe-2222f5eebc7e",
+                "4a776eec-4173-4271-b7c9-67308b79d194"
+              ],
+              "containedElements": [
+                "d1021ebc-bd5d-4f59-9ccc-180dc4f9a3e0",
+                "f37b852c-a005-4497-900d-f9d29e23b822",
+                "38110677-7723-41f5-9383-0e43b56ef3e7",
+                "998e29e6-36dd-48c8-8e00-658a8c1f5084"
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 70,
+              "y": 280
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Professor"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "c14ca0e1-77be-4d05-b8f2-524a3d763041"
+                },
+                {
+                  "group": "right",
+                  "id": "4d4f9630-b7c9-413d-bd55-7cde45bd3396"
+                },
+                {
+                  "group": "bottom",
+                  "id": "6baa4cc4-cbf2-4333-8d6b-fcce556391d8"
+                },
+                {
+                  "group": "left",
+                  "id": "602d11d3-faa0-45b7-b497-6b7173cb850b"
+                }
+              ]
+            },
+            "id": "dc4d175f-ca40-4bca-94a0-8c2d4eb00679",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Professor\n",
+              "description": "Represents a professor interacting with the chat system.",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 270,
+              "y": 90
+            },
+            "size": {
+              "width": 130,
+              "height": 120
+            },
+            "attrs": {
+              "text": {
+                "text": "Create / Moderate \nChat Room"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 3,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "e78bd161-1128-4386-a11a-acfba34d4311"
+                },
+                {
+                  "group": "right",
+                  "id": "07b80101-9579-4a35-be2d-69099d108106"
+                },
+                {
+                  "group": "bottom",
+                  "id": "02552529-0630-40e2-9e96-bca3da037c00"
+                },
+                {
+                  "group": "left",
+                  "id": "03e5e6e4-d26c-44f5-aafa-1d361da91c5e"
+                }
+              ]
+            },
+            "id": "d1021ebc-bd5d-4f59-9ccc-180dc4f9a3e0",
+            "data": {
+              "type": "tm.Process",
+              "name": "Create / Moderate \nChat Room\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "512d4c1f-d5bc-4b2f-bac9-6748e874c12b",
+                  "title": "Unauthorized chat room management",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "description": "A student may attempt to create or moderate chat rooms without having the required permissions.",
+                  "mitigation": "Enforce role-based access control and verify user roles before allowing room creation or moderation.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 2,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 1
+              }
+            }
+          },
+          {
+            "position": {
+              "x": 610,
+              "y": 120
+            },
+            "size": {
+              "width": 120,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Chat Store"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 4,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "24216394-25b2-427a-823c-57fb50d6cf85"
+                },
+                {
+                  "group": "right",
+                  "id": "04bce167-aa03-4b82-8cab-c7e02c9fb6b5"
+                },
+                {
+                  "group": "bottom",
+                  "id": "8142426d-603c-4db6-8976-b589c70f3cf6"
+                },
+                {
+                  "group": "left",
+                  "id": "ebdbd64c-b4b4-4339-8e98-2c2ec1be0a7f"
+                }
+              ]
+            },
+            "id": "f37b852c-a005-4497-900d-f9d29e23b822",
+            "data": {
+              "type": "tm.Store",
+              "name": "Chat Store\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "9190a2dd-8549-472f-bd3f-945297d17fcb",
+                  "title": "Unauthorized access to chat history",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "An attacker may gain unauthorized access to stored chat messages, exposing sensitive communication between students and professors.",
+                  "mitigation": "Enforce strict access control policies, restrict database access, and ensure proper authorization checks before retrieving chat data.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": ""
+                },
+                {
+                  "id": "010e023c-0b47-4781-9e22-1b82e642efd2",
+                  "title": "Modification of stored chat messages",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "An attacker may modify stored chat messages, compromising integrity of communication data.",
+                  "mitigation": "Use database access controls, integrity checks, and audit logging to detect and prevent unauthorized modifications.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "tampering": 2,
+                "repudiation": 0,
+                "informationDisclosure": 1,
+                "denialOfService": 0
+              }
+            },
+            "children": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Professor message\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "be571ab2-949c-408d-bc85-c7228a1ce78d"
+              ]
+            },
+            "labels": [
+              "Professor message"
+            ],
+            "id": "30d04698-ebb1-4f2a-b6cd-1198118593ba",
+            "source": {
+              "cell": "dc4d175f-ca40-4bca-94a0-8c2d4eb00679",
+              "port": "6baa4cc4-cbf2-4333-8d6b-fcce556391d8"
+            },
+            "target": {
+              "cell": "998e29e6-36dd-48c8-8e00-658a8c1f5084",
+              "port": "03e5e6e4-d26c-44f5-aafa-1d361da91c5e"
+            },
+            "vertices": [
+              {
+                "x": 180,
+                "y": 420
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Create or moderate\n\nroom request\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "be571ab2-949c-408d-bc85-c7228a1ce78d"
+              ]
+            },
+            "labels": [
+              "Create or moderate\nroom request\n"
+            ],
+            "id": "b820f303-5549-41e7-9714-8ff4110e28bb",
+            "source": {
+              "cell": "dc4d175f-ca40-4bca-94a0-8c2d4eb00679",
+              "port": "c14ca0e1-77be-4d05-b8f2-524a3d763041"
+            },
+            "target": {
+              "cell": "d1021ebc-bd5d-4f59-9ccc-180dc4f9a3e0",
+              "port": "03e5e6e4-d26c-44f5-aafa-1d361da91c5e"
+            },
+            "vertices": [
+              {
+                "x": 136,
+                "y": 210
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Professor history request\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "be571ab2-949c-408d-bc85-c7228a1ce78d"
+              ]
+            },
+            "labels": [
+              "Professor history request"
+            ],
+            "id": "0285748c-cdc0-47f0-b008-5cfeb57c195f",
+            "source": {
+              "cell": "dc4d175f-ca40-4bca-94a0-8c2d4eb00679",
+              "port": "4d4f9630-b7c9-413d-bd55-7cde45bd3396"
+            },
+            "target": {
+              "cell": "38110677-7723-41f5-9383-0e43b56ef3e7",
+              "port": "6e6de6b6-e3dc-45f4-bf6d-b7ec17a6d9a2"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Store chat message\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [
+                {
+                  "id": "7ed7b0a3-31f4-4323-af03-eafcc684c953",
+                  "title": "Message alteration before storage",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "An attacker may modify chat messages before they are stored, leading to incorrect or malicious content being persisted.",
+                  "mitigation": "Validate and sanitize inputs on the server side and ensure secure communication channels.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                }
+              ],
+              "trustBoundaryIds": [],
+              "threatFrequency": {
+                "tampering": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
+            },
+            "labels": [
+              "Store chat message"
+            ],
+            "id": "2b53cbdd-c5d0-48ff-90f5-0d78fc2c8fd4",
+            "source": {
+              "cell": "998e29e6-36dd-48c8-8e00-658a8c1f5084",
+              "port": "e78bd161-1128-4386-a11a-acfba34d4311"
+            },
+            "target": {
+              "cell": "f37b852c-a005-4497-900d-f9d29e23b822",
+              "port": "8142426d-603c-4db6-8976-b589c70f3cf6"
+            },
+            "vertices": [
+              {
+                "x": 480,
+                "y": 420
+              },
+              {
+                "x": 650,
+                "y": 380
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Retrieve chat history\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [
+                {
+                  "id": "500fa82c-7fda-4933-8bfd-325facd45edc",
+                  "title": "Interception of chat history data",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "An attacker may intercept chat history data during transmission, exposing sensitive information.",
+                  "mitigation": "Use HTTPS/TLS encryption for all communications and enforce secure transport protocols.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                }
+              ],
+              "trustBoundaryIds": [],
+              "threatFrequency": {
+                "tampering": 0,
+                "informationDisclosure": 2,
+                "denialOfService": 0
+              }
+            },
+            "labels": [
+              "Retrieve chat history"
+            ],
+            "id": "b5930c57-bc31-4b76-bc4f-b4210034f7b9",
+            "source": {
+              "cell": "f37b852c-a005-4497-900d-f9d29e23b822",
+              "port": "ebdbd64c-b4b4-4339-8e98-2c2ec1be0a7f"
+            },
+            "target": {
+              "cell": "38110677-7723-41f5-9383-0e43b56ef3e7",
+              "port": "d5e085a6-08b3-4aed-b070-8abad78d2129"
+            },
+            "vertices": [
+              {
+                "x": 560,
+                "y": 200
+              },
+              {
+                "x": 500,
+                "y": 200
+              },
+              {
+                "x": 475,
+                "y": 220
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Data Flow",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Store room metadata\n"
+            ],
+            "id": "16a8bca4-370c-4a7e-96bb-8484184921a2",
+            "source": {
+              "cell": "d1021ebc-bd5d-4f59-9ccc-180dc4f9a3e0",
+              "port": "07b80101-9579-4a35-be2d-69099d108106"
+            },
+            "target": {
+              "cell": "f37b852c-a005-4497-900d-f9d29e23b822",
+              "port": "24216394-25b2-427a-823c-57fb50d6cf85"
+            },
+            "vertices": [
+              {
+                "x": 460,
+                "y": 150
+              },
+              {
+                "x": 620,
+                "y": 80
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Student message\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [
+                {
+                  "id": "9b4a139e-b70f-4d14-93b0-0da6a42d0c94",
+                  "title": "Message manipulation in transit",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "An attacker may intercept and modify chat messages while they are transmitted between the client and the server, altering message content or injecting malicious data.",
+                  "mitigation": "Use HTTPS/TLS to encrypt all communications and validate message integrity on the server side.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": ""
+                }
+              ],
+              "trustBoundaryIds": [
+                "be571ab2-949c-408d-bc85-c7228a1ce78d"
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
+            },
+            "labels": [
+              "Student message"
+            ],
+            "id": "649661a6-311b-4155-a9fe-2222f5eebc7e",
+            "source": {
+              "cell": "9f2bb1e8-91ac-4d65-813f-9b11ab56595b",
+              "port": "6baa4cc4-cbf2-4333-8d6b-fcce556391d8"
+            },
+            "target": {
+              "cell": "998e29e6-36dd-48c8-8e00-658a8c1f5084",
+              "port": "07b80101-9579-4a35-be2d-69099d108106"
+            },
+            "vertices": [
+              {
+                "x": 650,
+                "y": 450
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Student history request",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [],
+              "trustBoundaryIds": [
+                "be571ab2-949c-408d-bc85-c7228a1ce78d"
+              ]
+            },
+            "labels": [
+              "Student history request\n"
+            ],
+            "id": "4a776eec-4173-4271-b7c9-67308b79d194",
+            "source": {
+              "cell": "9f2bb1e8-91ac-4d65-813f-9b11ab56595b",
+              "port": "602d11d3-faa0-45b7-b497-6b7173cb850b"
+            },
+            "target": {
+              "cell": "38110677-7723-41f5-9383-0e43b56ef3e7",
+              "port": "129c5b01-483a-4940-9ace-cecb7a07385e"
+            },
+            "vertices": [
+              {
+                "x": 800,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "position": {
+              "x": 860,
+              "y": 300
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Student"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 11,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "c14ca0e1-77be-4d05-b8f2-524a3d763041"
+                },
+                {
+                  "group": "right",
+                  "id": "4d4f9630-b7c9-413d-bd55-7cde45bd3396"
+                },
+                {
+                  "group": "bottom",
+                  "id": "6baa4cc4-cbf2-4333-8d6b-fcce556391d8"
+                },
+                {
+                  "group": "left",
+                  "id": "602d11d3-faa0-45b7-b497-6b7173cb850b"
+                }
+              ]
+            },
+            "id": "9f2bb1e8-91ac-4d65-813f-9b11ab56595b",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Student\n",
+              "description": "Represents a student interacting with the chat system.",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 420,
+              "y": 280
+            },
+            "size": {
+              "width": 90,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "View Chat\nHistory"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 13,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "d5e085a6-08b3-4aed-b070-8abad78d2129"
+                },
+                {
+                  "group": "right",
+                  "id": "129c5b01-483a-4940-9ace-cecb7a07385e"
+                },
+                {
+                  "group": "bottom",
+                  "id": "3d5f8bf6-aa6f-4a40-9327-8f544f58512b"
+                },
+                {
+                  "group": "left",
+                  "id": "6e6de6b6-e3dc-45f4-bf6d-b7ec17a6d9a2"
+                }
+              ]
+            },
+            "id": "38110677-7723-41f5-9383-0e43b56ef3e7",
+            "data": {
+              "type": "tm.Process",
+              "name": "View Chat\nHistory\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "80fb49cd-19f9-48f8-9c37-8b25255614b6",
+                  "title": "Unauthorized access to chat history",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "An attacker may access chat history without proper authorization, exposing sensitive communication between users.",
+                  "mitigation": "Enforce strict authorization checks and validate user permissions before returning chat history.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 0,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 2,
+                "denialOfService": 0,
+                "elevationOfPrivilege": 0
+              }
+            }
+          },
+          {
+            "position": {
+              "x": 360,
+              "y": 440
+            },
+            "size": {
+              "width": 110,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Send Message"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 14,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "e78bd161-1128-4386-a11a-acfba34d4311"
+                },
+                {
+                  "group": "right",
+                  "id": "07b80101-9579-4a35-be2d-69099d108106"
+                },
+                {
+                  "group": "bottom",
+                  "id": "02552529-0630-40e2-9e96-bca3da037c00"
+                },
+                {
+                  "group": "left",
+                  "id": "03e5e6e4-d26c-44f5-aafa-1d361da91c5e"
+                }
+              ]
+            },
+            "id": "998e29e6-36dd-48c8-8e00-658a8c1f5084",
+            "data": {
+              "type": "tm.Process",
+              "name": "Send Message\n",
+              "description": "",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "3ad87f6a-27c1-4411-bffd-e0e025416500",
+                  "title": "User impersonation in chat messages",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "An attacker may impersonate another user (student or professor) by forging authentication tokens or manipulating requests, allowing them to send messages on behalf of other users in the chat system.",
+                  "mitigation": "Implement strong authentication using JWT with signature validation, enforce token expiration, and validate user identity and roles on every request at the server side.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 2,
+                  "score": ""
+                },
+                {
+                  "id": "55aa8dfc-9c88-41ed-9d19-eaef76309e59",
+                  "title": "Chat message flooding",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "An attacker may send a high volume of messages to overwhelm the chat system, affecting availability and degrading user experience.",
+                  "mitigation": "Implement rate limiting, request throttling, and message size limits to prevent abuse.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": ""
+                }
+              ],
+              "threatFrequency": {
+                "spoofing": 1,
+                "tampering": 0,
+                "repudiation": 0,
+                "informationDisclosure": 0,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 0
+              }
+            }
+          }
+        ],
+        "description": "DFD for Chat Management including chat room creation, messaging, and history retrieval."
+      }
+    ],
+    "diagramTop": 1,
+    "reviewer": "",
+    "threatTop": 11
+  }
+}
