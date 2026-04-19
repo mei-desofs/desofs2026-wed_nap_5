@@ -1,6 +1,6 @@
 # LearningMore
 
-## 📌 Overview
+## Overview
 
 **LearningMore** is a secure academic platform designed to manage courses, class sessions, educational resources, assignments, submissions, and communication between students and professors.
 
@@ -8,7 +8,7 @@ This project is developed in the context of **DESOFS (Dependable and Secure Soft
 
 ---
 
-## 🎯 Objectives
+## Objectives
 
 The main goal of LearningMore is to provide a backend system that:
 
@@ -19,7 +19,7 @@ The main goal of LearningMore is to provide a backend system that:
 
 ---
 
-## 👥 Roles
+## Roles
 
 The system supports three main roles:
 
@@ -42,7 +42,7 @@ The system supports three main roles:
 
 ---
 
-## 🧠 Domain Model (High-Level)
+## Domain Model (High-Level)
 
 Main aggregates:
 
@@ -61,7 +61,7 @@ Supporting entities:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a layered architecture:
 
@@ -75,7 +75,7 @@ config         → configuration (security, etc.)
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 * Java
 * Spring Boot
@@ -88,7 +88,7 @@ config         → configuration (security, etc.)
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -108,7 +108,7 @@ Deliverables/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Run the application
 
@@ -132,7 +132,7 @@ Response:
 
 ---
 
-## 🔐 Security Focus
+## Security Focus
 
 This project is developed with security as a primary concern.
 
@@ -147,7 +147,7 @@ Key areas:
 
 ---
 
-## 📘 Phase 1 Plan
+## Phase 1 Plan
 
 ### Goal
 
@@ -218,7 +218,7 @@ docs/
 
 ---
 
-## ⚠️ Security Requirements (High-Level)
+## Security Requirements (High-Level)
 
 * Passwords stored using secure hashing
 * Role-based access control enforced on all endpoints
@@ -233,7 +233,7 @@ docs/
 
 ---
 
-## 🔍 Abuse Cases (Examples)
+## Abuse Cases (Examples)
 
 * Unauthorized access to other students' submissions
 * Attempt to download restricted files
@@ -244,7 +244,7 @@ docs/
 
 ---
 
-## 🧪 Security Testing Plan (Preview)
+## Security Testing Plan (Preview)
 
 * Authentication testing
 * Authorization testing
@@ -255,7 +255,7 @@ docs/
 
 ---
 
-## 🔄 Development Workflow
+## Development Workflow
 
 ### Branching
 
@@ -286,7 +286,7 @@ refactor: restructure domain layer
 
 ---
 
-## 📌 Current Status
+## Current Status
 
 * Project initialized
 * Spring Boot configured
@@ -295,14 +295,14 @@ refactor: restructure domain layer
 
 ---
 
-## 📅 Timeline
+## Timeline
 
 * Phase 1: Analysis & Design
 * Phase 2: Implementation & Validation
 
 ---
 
-## 👨‍💻 Team
+## Team
 
 
 | Name                | Number        | Contact             |
@@ -314,6 +314,6 @@ refactor: restructure domain layer
 
 ---
 
-## 📄 License
+## License
 
 Academic project for DESOFS.
