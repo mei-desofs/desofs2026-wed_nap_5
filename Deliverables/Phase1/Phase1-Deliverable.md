@@ -2,43 +2,43 @@
 
 ## 1. Project Description
 
-LearningMore is a secure academic platform designed to support course management, class materials distribution, assignment submissions, and communication between students and professors.
+LearningMore is a secure academic platform designed to support course management, class materials distribution, assignment
+submissions, and communication between students and professors.
 
-The system is developed in the context of DESOFS and follows a Secure Software Development Lifecycle (SSDLC), focusing on secure design, threat modeling, and risk mitigation.
-
-Phase 1 security scope for this deliverable is restricted to:
-
-* Course Management
-* Assignment Management
+The system is developed in the context of DESOFS and follows a Secure Software Development Lifecycle (SSDLC), focusing 
+on secure design, threat modeling, and risk mitigation.
 
 ---
 
 ## 2. System Overview
 
-### Actors
+### 2.1 Actors
 
-* Admin
-* Professor
-* Student
+* **Admin:** Manages user accounts, roles, and system status.
+* **Professor:** Manages courses, uploads resources, creates assignments, and grades submissions.
+* **Student:** Enrolls in courses, accesses materials, and submits assignments.
+* **User:** General actor representing shared functionalities like Login and Chat.
 
-### Core Components
+### 2.2 Core Components
 
-* REST API
-* Database (relational)
-* File storage system
+* **Service Layer (REST API):** Modular backend handling business logic and security.
+* **Persistence Layer:** Relational database for structured data and metadata.
+* **Storage Layer:** External file storage for academic resources and student uploads.
 
-### Assets
+### 2.3 Assets
 
-* User credentials
-* Course materials
-* Assignment submissions
-* Grades and feedback
-* Chat messages
-* Logs
+* **Identity:** User credentials (hashes) and session tokens.
+* **Content:** Course materials (PDFs, videos) and descriptions.
+* **Evaluation:** Student submissions, final grades, and professor feedback.
+* **Interaction:** Real-time chat messages and logs.
+* **Audit:** Authentication events and system activity logs.
 
-### System Boundary
 
-The system includes the backend API, database, and file storage. External entities interact through HTTP requests.
+### 2.4 System Boundary
+
+The system boundary encompasses the backend API, the relational database, and the file storage system. All external 
+entities (Admin, Professor, and Student) interact with the system exclusively through secure HTTP requests (REST API), 
+which serves as the primary gateway for data exchange and functional execution.
 
 ---
 
@@ -46,16 +46,18 @@ The system includes the backend API, database, and file storage. External entiti
 
 ### User Management
 
-* FR1: Admin can create users
-* FR2: Admin can assign roles
-* FR3: Users can authenticate using email and password
+* FR1: The system shall allow an administrator to create and manage user accounts.
+* FR2: The system shall allow an administrator to assign and modify user roles (Admin, Professor, Student).
+* FR3: The system shall allow users to authenticate securely using their email and password.
+* FR3.1: The system shall provide a mechanism for users to recover or reset their passwords.
 
 ### Course Management
 
-* FR4: Professors can create courses
-* FR5: Professors can manage course information
-* FR6: Students can enroll in courses
-* FR7: Users can view enrolled courses
+* FR4: The system shall allow professors to create new courses with a unique code and title.
+* FR5: The system shall allow professors to update course descriptions and information.
+* FR6: The system shall allow students to enroll in available courses.
+* FR7: The system shall allow users to view a dashboard with their active and enrolled courses.
+* FR8: The system shall allow professors to organize and upload learning resources to their courses.
 
 ### Resource Management
 
@@ -99,7 +101,8 @@ The system includes the backend API, database, and file storage. External entiti
 
 ## 5. Security Requirements
 
-Requirements are justified by threat model results (STRIDE), OWASP ASVS good practices, and academic-record protection obligations (confidentiality, integrity, accountability).
+Requirements are justified by threat model results (STRIDE), OWASP ASVS good practices, and academic-record protection 
+obligations (confidentiality, integrity, accountability).
 
 ### 5.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)
 
@@ -190,19 +193,30 @@ The system follows a layered architecture:
 
 ## 8. Domain Model
 
-Main aggregates:
+The domain model is organized into **Aggregates** to ensure data consistency and define clear boundaries between
+different business contexts.
 
-* User
-* Course
-* Submission
-* Chat
+### Main Aggregates (Aggregate Roots):
 
-Supporting entities:
+* **User:** Manages identity, authentication, and system roles.
+* **Course:** The central hub for academic content, organizing sessions and materials.
+* **Assignment:** Manages the definition of tasks and the lifecycle of student work.
+* **Chat:** Handles the real-time communication infrastructure.
 
-* Enrollment
-* Assignment
-* Resource
-* ChatMessage
+### Supporting Entities (Internal to Aggregates):
+
+* **Within Course:**
+    * **Enrollment:** Records the link between a student and a course.
+    * **ClassSession:** Defines specific scheduled lessons or topics.
+    * **Resource:** Manages files and external links (PDFs, Videos, etc.).
+* **Within Assignment:**
+    * **Submission:** Represents the work delivered by a student, including grades and feedback.
+* **Within Chat:**
+    * **ChatMessage:** The individual messages sent within a specific ChatRoom.
+
+### Domain Model Diagram
+
+![Domain Model](analysis-and-requirements/domain-model.png)
 
 ---
 
@@ -210,19 +224,31 @@ Supporting entities:
 
 ### 9.1 DFD Level 0
 
-(To be added)
+![DFD Level 0](images/DFD%20Level%200%20-%20STRIDE%20diagram.png)
 
 ### 9.2 DFD Level 1
 
-(To be added)
+![DFD Level 1](images/Core%20DFD.png)
+
+### 9.3 DFD Level 2 - User Management
+
+![DFD Level 2 - User Management](images/DFD%20Level%202%20-%20User%20Management%20STRIDE%20diagram.png)
 
 ### 9.3 DFD Level 2 - Course
 
-![Course DFD](imgs/coursedfd.png)
+![DFD Level 2 - Course Management](images/coursedfd.png)
 
 ### 9.4 DFD Level 2 - Assignment
 
-![Assignment DFD](imgs/assignementdfd.png)
+![DFD Level 2 - Assigment Management](images/assignementdfd.png)
+
+### 9.3 DFD Level 2 - Chat
+
+![DFD Level 2 - Chat Management](images/DFD%20Level%202%20-%20Chat%20Management%20STRIDE%20diagram.png)
+
+### 9.4 DFD Level 2 - File
+
+![DFD Level 2 - File Management](images/DFD%20Level%202%20-%20File%20Management%20STRIDE%20diagram.png)
 
 ---
 
@@ -290,16 +316,16 @@ Prioritization rule:
 
 Top prioritized risks (course + assignment):
 
-| Risk ID | Threat | L | I | Score | Priority | Justification |
-|---|---|---:|---:|---:|---|---|
-| R1 | Forged JWT/token bypasses access control | 4 | 5 | 20 | Critical | Enables unauthorized access to core academic operations across modules |
-| R2 | Privilege escalation/authorization bypass (grading, enrollment) | 4 | 5 | 20 | Critical | Compromises grading and enrollment integrity directly |
-| R3 | Unauthorized read of grades/submissions/course restricted data | 4 | 5 | 20 | Critical | Direct confidentiality breach of academic records |
-| R4 | Grade/deadline/enrollment tampering | 4 | 5 | 20 | Critical | Direct integrity violation with high institutional impact |
-| R5 | Audit trail tampering or missing evidence | 3 | 5 | 15 | High | Breaks accountability and dispute resolution |
-| R6 | SQL injection in course queries | 3 | 5 | 15 | High | Potential bulk data exfiltration/tampering |
-| R7 | DoS on submission/enrollment/grading endpoints | 4 | 4 | 16 | High | Directly impacts availability during critical deadlines |
-| R8 | Repudiation of enrollment/grading actions | 3 | 3 | 9 | Medium | Lower immediate impact but affects legal/academic dispute handling |
+| Risk ID | Threat                                                          | L | I | Score | Priority | Justification                                                          |
+|---------|-----------------------------------------------------------------|--:|--:|------:|----------|------------------------------------------------------------------------|
+| R1      | Forged JWT/token bypasses access control                        | 4 | 5 |    20 | Critical | Enables unauthorized access to core academic operations across modules |
+| R2      | Privilege escalation/authorization bypass (grading, enrollment) | 4 | 5 |    20 | Critical | Compromises grading and enrollment integrity directly                  |
+| R3      | Unauthorized read of grades/submissions/course restricted data  | 4 | 5 |    20 | Critical | Direct confidentiality breach of academic records                      |
+| R4      | Grade/deadline/enrollment tampering                             | 4 | 5 |    20 | Critical | Direct integrity violation with high institutional impact              |
+| R5      | Audit trail tampering or missing evidence                       | 3 | 5 |    15 | High     | Breaks accountability and dispute resolution                           |
+| R6      | SQL injection in course queries                                 | 3 | 5 |    15 | High     | Potential bulk data exfiltration/tampering                             |
+| R7      | DoS on submission/enrollment/grading endpoints                  | 4 | 4 |    16 | High     | Directly impacts availability during critical deadlines                |
+| R8      | Repudiation of enrollment/grading actions                       | 3 | 3 |     9 | Medium   | Lower immediate impact but affects legal/academic dispute handling     |
 
 Risk acceptance criteria:
 
@@ -316,16 +342,16 @@ Mitigations are prioritized by risk score and focus first on Critical and High r
 
 Priority mitigation plan:
 
-| Risk ID | Key Mitigations | Feasibility | Priority |
-|---|---|---|---|
-| R1 | JWT signature/issuer/audience/expiry validation, short token TTL, refresh rotation, revocation list | High (framework supported) | Immediate |
-| R2 | Centralized authorization service, deny-by-default RBAC, ownership/enrollment checks per request, negative-path tests | High | Immediate |
-| R3 | Row-level authorization, response field filtering, secure object references, strict course-enrollment checks for reads | Medium-High | Immediate |
-| R4 | Server-side schema validation, immutable audit of grade/deadline/enrollment changes, optimistic locking/version checks | Medium | Immediate |
-| R5 | Append-only audit log storage, signed/hash-chained entries, separated log access roles, off-system replication | Medium | Immediate |
-| R6 | Parameterized queries only, ORM safe patterns, input allowlists, SAST rules for injection sinks | High | Immediate |
-| R7 | Endpoint rate limits, quota per actor/course, bounded worker pools, queue/backpressure, API circuit breakers | High | Immediate |
-| R8 | Actor-bound non-repudiation metadata (timestamp, IP, actor id), event correlation IDs, retention policy | High | Planned |
+| Risk ID | Key Mitigations                                                                                                        | Feasibility                | Priority  |
+|---------|------------------------------------------------------------------------------------------------------------------------|----------------------------|-----------|
+| R1      | JWT signature/issuer/audience/expiry validation, short token TTL, refresh rotation, revocation list                    | High (framework supported) | Immediate |
+| R2      | Centralized authorization service, deny-by-default RBAC, ownership/enrollment checks per request, negative-path tests  | High                       | Immediate |
+| R3      | Row-level authorization, response field filtering, secure object references, strict course-enrollment checks for reads | Medium-High                | Immediate |
+| R4      | Server-side schema validation, immutable audit of grade/deadline/enrollment changes, optimistic locking/version checks | Medium                     | Immediate |
+| R5      | Append-only audit log storage, signed/hash-chained entries, separated log access roles, off-system replication         | Medium                     | Immediate |
+| R6      | Parameterized queries only, ORM safe patterns, input allowlists, SAST rules for injection sinks                        | High                       | Immediate |
+| R7      | Endpoint rate limits, quota per actor/course, bounded worker pools, queue/backpressure, API circuit breakers           | High                       | Immediate |
+| R8      | Actor-bound non-repudiation metadata (timestamp, IP, actor id), event correlation IDs, retention policy                | High                       | Planned   |
 
 Implementation order:
 
@@ -414,22 +440,22 @@ Traceability standard:
 
 Course + Assignment scoped traceability (extract):
 
-| Requirement | Threat(s) | Mitigation(s) | Security Test(s) |
-|---|---|---|---|
-| SR2 Secure authentication | A1, C1, C2, A12 | JWT hardening, lockout, MFA for privileged roles | ST-01 invalid/forged token rejection; ST-02 credential stuffing lockout |
-| SR4 RBAC enforcement | A2, A13, C10, C11 | Centralized authorization with deny-by-default | ST-03 student cannot execute professor-only actions |
-| SR5 Permission-bound access | A4, A9, A14, C8 | Row-level checks, object ownership validation | ST-04 unauthorized user cannot read grades/submissions/course private data |
-| SR6 Enrollment validation for course data | C8, C9, C10 | Enrollment precondition checks for reads and writes | ST-05 non-enrolled student denied restricted course operations |
-| SR7 No sensitive data in logs | A4, C15 | Log redaction and structured logging policies | ST-06 verify logs contain no sensitive payload fields |
-| SR9 File/data access authorization | A9, A10, A15 | Authorized access policy plus integrity controls | ST-07 unauthorized file read/write blocked |
-| SR10 Server-side input validation | A7, C3, C4, C5, C18 | Strict validation schemas and business-rule validation | ST-08 invalid payloads rejected with safe errors |
-| SR11 Upload validation | A3, A5, A10 | File type/size checks, malware scanning, integrity checks | ST-09 malicious or oversized upload rejected |
-| SR12 Path traversal prevention | A9 | Canonical path controls, storage isolation | ST-10 traversal payloads cannot escape storage root |
-| SR13 HTTPS communication | A1, C1 | TLS-only transport and strict redirect policies | ST-11 plaintext HTTP denied in production profile |
-| SR14 Secure headers | C8, A14 | Security headers and cache-control hardening | ST-12 headers validated in all auth/data endpoints |
-| SR15 Third-party dependency security | C16 | Dependency scanning and patch policy | ST-13 CI dependency vulnerability gate |
-| SR16 Security event logging | A6, A11, A16, C12, C13, C17 | Append-only audit logging and correlation IDs | ST-14 all sensitive actions generate auditable events |
-| SR17 No sensitive information in monitoring outputs | A4, C15 | Redaction in logs/traces/alerts | ST-15 observability data reviewed for leakage |
+| Requirement                                         | Threat(s)                   | Mitigation(s)                                             | Security Test(s)                                                           |
+|-----------------------------------------------------|-----------------------------|-----------------------------------------------------------|----------------------------------------------------------------------------|
+| SR2 Secure authentication                           | A1, C1, C2, A12             | JWT hardening, lockout, MFA for privileged roles          | ST-01 invalid/forged token rejection; ST-02 credential stuffing lockout    |
+| SR4 RBAC enforcement                                | A2, A13, C10, C11           | Centralized authorization with deny-by-default            | ST-03 student cannot execute professor-only actions                        |
+| SR5 Permission-bound access                         | A4, A9, A14, C8             | Row-level checks, object ownership validation             | ST-04 unauthorized user cannot read grades/submissions/course private data |
+| SR6 Enrollment validation for course data           | C8, C9, C10                 | Enrollment precondition checks for reads and writes       | ST-05 non-enrolled student denied restricted course operations             |
+| SR7 No sensitive data in logs                       | A4, C15                     | Log redaction and structured logging policies             | ST-06 verify logs contain no sensitive payload fields                      |
+| SR9 File/data access authorization                  | A9, A10, A15                | Authorized access policy plus integrity controls          | ST-07 unauthorized file read/write blocked                                 |
+| SR10 Server-side input validation                   | A7, C3, C4, C5, C18         | Strict validation schemas and business-rule validation    | ST-08 invalid payloads rejected with safe errors                           |
+| SR11 Upload validation                              | A3, A5, A10                 | File type/size checks, malware scanning, integrity checks | ST-09 malicious or oversized upload rejected                               |
+| SR12 Path traversal prevention                      | A9                          | Canonical path controls, storage isolation                | ST-10 traversal payloads cannot escape storage root                        |
+| SR13 HTTPS communication                            | A1, C1                      | TLS-only transport and strict redirect policies           | ST-11 plaintext HTTP denied in production profile                          |
+| SR14 Secure headers                                 | C8, A14                     | Security headers and cache-control hardening              | ST-12 headers validated in all auth/data endpoints                         |
+| SR15 Third-party dependency security                | C16                         | Dependency scanning and patch policy                      | ST-13 CI dependency vulnerability gate                                     |
+| SR16 Security event logging                         | A6, A11, A16, C12, C13, C17 | Append-only audit logging and correlation IDs             | ST-14 all sensitive actions generate auditable events                      |
+| SR17 No sensitive information in monitoring outputs | A4, C15                     | Redaction in logs/traces/alerts                           | ST-15 observability data reviewed for leakage                              |
 
 Threat key:
 
@@ -437,10 +463,3 @@ Threat key:
 * C# = Course threat number from docs/diagrams/dfd-level-2-course-management-threat-dragon.json
 
 ---
-
-## 17. References
-
-* Domain Model (PlantUML)
-* Abuse Cases document
-* Requirements documents
-* Repository structure
