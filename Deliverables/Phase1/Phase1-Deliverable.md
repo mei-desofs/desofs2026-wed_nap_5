@@ -1,4 +1,4 @@
-# Phase 1 – Analysis / Requirements & Design
+``# Phase 1 – Analysis / Requirements & Design
 
 <!-- TOC -->
 * [Phase 1 – Analysis / Requirements & Design](#phase-1--analysis--requirements--design)
@@ -871,6 +871,37 @@ Traceability standard:
 
 * Every High/Critical threat must map to at least one security requirement and one executable security test case.
 
+### Chat and File Management Security Test Planning
+
+Security testing focuses on validating communication integrity, file handling security, and access control.
+
+Test types:
+
+- Authentication tests (token validation in chat/file endpoints)
+- Authorization tests (chat membership, file ownership, course enrollment)
+- Input validation tests (chat messages, file uploads)
+- Data protection tests (unauthorized access to chat history and files)
+- Availability tests (chat flooding, file upload/download abuse)
+
+---
+
+## Chat Security Test Cases
+
+- **ST-C1:** Unauthorized user cannot access chat history
+- **ST-C2:** Message impersonation attempt is rejected
+- **ST-C3:** Chat message containing script injection is sanitized
+- **ST-C4:** Chat flooding is rate-limited and blocked
+
+---
+
+## File Security Test Cases
+
+- **ST-F1:** Unauthorized file download is blocked
+- **ST-F2:** Malicious file upload is rejected
+- **ST-F3:** Direct access to storage endpoint is denied
+- **ST-F4:** File size limits prevent resource exhaustion
+- **ST-F5:** Path traversal attempts are blocked
+
 ---
 
 ## 17. Traceability Matrix
@@ -929,3 +960,4 @@ Threat key:
 * C# = Course threat number from docs/diagrams/dfd-level-2-course-management-threat-dragon.json
 
 ---
+``
