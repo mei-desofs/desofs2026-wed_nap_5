@@ -186,7 +186,7 @@
                   "description": "Attacker floods the course creation process with rapid requests causing service degradation.",
                   "mitigation": "Implement rate limiting: 10 courses per professor per hour. Use request throttling by JWT. Monitor endpoint response times. Implement circuit breaker pattern.",
                   "modelType": "STRIDE",
-                  "type": "Denial of Service",
+                  "type": "Denial of service",
                   "severity": "High",
                   "status": "Open"
                 }
@@ -225,7 +225,7 @@
                   "description": "Attacker floods course enrollment process with bulk enrollment requests exhausting system resources.",
                   "mitigation": "Implement rate limiting per student: 5 enrollments per minute. Implement course capacity limits. Use queue-based enrollment for high-load courses. Monitor enrollment spike patterns.",
                   "modelType": "STRIDE",
-                  "type": "Denial of Service",
+                  "type": "Denial of service",
                   "severity": "High",
                   "status": "Open"
                 },
@@ -236,7 +236,7 @@
                   "description": "Attacker bypasses enrollment prerequisites or capacity validation to enroll in restricted courses.",
                   "mitigation": "Validate prerequisites server-side before enrollment. Check course capacity dynamically. Verify enrollment rules match course definition. Implement two-phase commit for enrollment.",
                   "modelType": "STRIDE",
-                  "type": "Elevation of Privilege",
+                  "type": "Elevation of privilege",
                   "severity": "High",
                   "status": "Open"
                 }
@@ -314,7 +314,7 @@
                   "description": "Attacker queries course view endpoint to retrieve restricted course information (roster, contact info, internal notes).",
                   "mitigation": "Implement field-level security: only show enrolled students their courses and basic info. Mask sensitive fields (internal notes). Validate student enrollment before returning course details.",
                   "modelType": "STRIDE",
-                  "type": "Information Disclosure",
+                  "type": "Information disclosure",
                   "severity": "High",
                   "status": "Open"
                 },
@@ -325,7 +325,7 @@
                   "description": "Attacker infers enrollment status or student count through response time analysis or error message differences.",
                   "mitigation": "Normalize response times for authorization failures. Use consistent error messages. Implement request obfuscation. Log authorization failures for anomaly detection.",
                   "modelType": "STRIDE",
-                  "type": "Information Disclosure",
+                  "type": "Information disclosure",
                   "severity": "Medium",
                   "status": "Open"
                 }
@@ -387,7 +387,7 @@
                   "description": "Database breach exposes course metadata, enrollment records, professor contact information stored in Course Store.",
                   "mitigation": "Encrypt course data at rest using AES-256. Restrict database access with network segmentation. Implement database activity monitoring (DAM). Use role-based database access controls.",
                   "modelType": "STRIDE",
-                  "type": "Information Disclosure",
+                  "type": "Information disclosure",
                   "severity": "High",
                   "status": "Open"
                 },
@@ -469,17 +469,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "JWT + Create course (HTTPS)",
               "description": "Professor sends authenticated request to create course.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "HTTPS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "JWT + Create course (HTTPS)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000001"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
             }
           },
           {
@@ -495,17 +514,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "JWT + Create sessions (HTTPS)",
               "description": "Professor sends authenticated request to create class sessions.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "HTTPS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "JWT + Create sessions (HTTPS)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000001"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
             }
           },
           {
@@ -521,17 +559,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "JWT + Enroll (HTTPS)",
               "description": "Student sends authenticated request to enroll in course.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "HTTPS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "JWT + Enroll (HTTPS)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000002"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
             }
           },
           {
@@ -547,17 +604,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "JWT + View courses (HTTPS)",
               "description": "Student sends authenticated request to view courses.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "HTTPS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "JWT + View courses (HTTPS)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000002"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
             }
           },
           {
@@ -573,17 +649,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Authorized (RBAC)",
               "description": "Validated professor role authorized for course creation.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Authorized (RBAC)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000005"
             }
           },
           {
@@ -599,17 +694,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Authorized (RBAC)",
               "description": "Validated student role authorized for enrollment.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Authorized (RBAC)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000006"
             }
           },
           {
@@ -625,17 +739,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Authorized (RBAC)",
               "description": "Validated professor role authorized for session management.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Authorized (RBAC)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000007"
             }
           },
           {
@@ -651,17 +784,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Authorized (RBAC)",
               "description": "Validated student role authorized for course viewing.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Authorized (RBAC)"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000008"
             }
           },
           {
@@ -677,17 +829,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Store Course",
               "description": "Write course metadata and rules to Course Store.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "JDBC/TLS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Store Course"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000005"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000009"
             }
           },
           {
@@ -703,14 +874,13 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Read course + Update",
               "description": "Read course data for validation, then write enrollment record.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": true,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
               "threats": [
@@ -721,11 +891,31 @@
                   "description": "Attacker escalates from student role to professor role to create unauthorized courses.",
                   "mitigation": "Validate role in JWT against course creation permission. Implement explicit role hierarchy checks. Log role usage mismatches. Monitor for unauthorized role transitions.",
                   "modelType": "STRIDE",
-                  "type": "Elevation of Privilege",
+                  "type": "Elevation of privilege",
                   "severity": "High",
                   "status": "Open"
                 }
-              ]
+              ],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "JDBC/TLS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Read course + Update"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000006"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000009"
             }
           },
           {
@@ -741,17 +931,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Read course + Store",
               "description": "Read course data for validation, then write session record.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "JDBC/TLS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Read course + Store"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000007"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000009"
             }
           },
           {
@@ -767,17 +976,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Read courses",
               "description": "Retrieve enrolled courses for student view.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "JDBC/TLS"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Read courses"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000009"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000008"
             }
           },
           {
@@ -793,17 +1021,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Log creation",
               "description": "Write course creation event to Audit Log.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal logging API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Log creation"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000005"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000010"
             }
           },
           {
@@ -819,17 +1066,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Log enrollment",
               "description": "Write enrollment event to Audit Log.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal logging API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Log enrollment"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000006"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000010"
             }
           },
           {
@@ -845,17 +1111,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Log session",
               "description": "Write session creation event to Audit Log.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal logging API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Log session"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000007"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000010"
             }
           },
           {
@@ -871,17 +1156,36 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Log view",
               "description": "Write course view event to Audit Log.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "threats": []
+              "threats": [],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal logging API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Log view"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000008"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000010"
             }
           },
           {
@@ -897,14 +1201,13 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Cache poisoning",
               "description": "Course data retrieval and caching.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": true,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
               "threats": [
@@ -919,7 +1222,27 @@
                   "severity": "Medium",
                   "status": "Open"
                 }
-              ]
+              ],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Cache poisoning"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000009"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000008"
             }
           },
           {
@@ -935,14 +1258,13 @@
               "height": 40
             },
             "data": {
-              "type": "tm.DataFlow",
+              "type": "tm.Flow",
               "name": "Absence of repudiation",
               "description": "Course action repudiation risk.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": true,
-              "isResponse": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
               "threats": [
@@ -957,11 +1279,34 @@
                   "severity": "Medium",
                   "status": "Open"
                 }
-              ]
+              ],
+              "isBidirectional": false,
+              "trustBoundaryIds": [],
+              "protocol": "Internal API"
+            },
+            "connector": "smooth",
+            "vertices": [],
+            "labels": [
+              {
+                "attrs": {
+                  "labelText": {
+                    "text": "Absence of repudiation"
+                  }
+                }
+              }
+            ],
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-520000000006"
             }
           }
         ]
       }
-    ]
+    ],
+    "diagramTop": 1,
+    "reviewer": "",
+    "threatTop": 18
   }
 }

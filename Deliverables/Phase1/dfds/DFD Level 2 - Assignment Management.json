@@ -1,0 +1,2086 @@
+{
+  "version": "2.6.0",
+  "summary": {
+    "title": "DFD Level 2 - Assignment Management",
+    "owner": "DESOFS Team",
+    "description": "Tightened Threat Dragon model for assignment management with explicit authorization, validation, and audit logging flows.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [
+      {
+        "name": ""
+      }
+    ],
+    "diagrams": [
+      {
+        "version": "2.6.0",
+        "id": 0,
+        "title": "Assignment Management",
+        "description": "Professor creates assignments, students submit work, and professors grade submissions with authorization, validation, and logging.",
+        "diagramType": "STRIDE",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "cells": [
+          {
+            "position": {
+              "x": 220,
+              "y": 35
+            },
+            "size": {
+              "width": 1030,
+              "height": 500
+            },
+            "attrs": {
+              "label": {
+                "text": "LearningMore Backend Trust Boundary"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "zIndex": 0,
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000003",
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "LearningMore Backend Trust Boundary\n",
+              "description": "Backend APIs, business logic, and controlled data stores.",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [
+                "8a31db7d-b7a4-47db-bf9b-510000000101",
+                "8a31db7d-b7a4-47db-bf9b-510000000102"
+              ],
+              "containedElements": [
+                "8a31db7d-b7a4-47db-bf9b-510000000004",
+                "8a31db7d-b7a4-47db-bf9b-510000000005",
+                "8a31db7d-b7a4-47db-bf9b-510000000006",
+                "8a31db7d-b7a4-47db-bf9b-510000000007",
+                "8a31db7d-b7a4-47db-bf9b-510000000008",
+                "8a31db7d-b7a4-47db-bf9b-510000000009",
+                "8a31db7d-b7a4-47db-bf9b-510000000010"
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 30,
+              "y": 100
+            },
+            "size": {
+              "width": 150,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "\nProfessor"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 1,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "b2b00ea4-a9f7-4529-a237-4f67027b6072"
+                },
+                {
+                  "group": "right",
+                  "id": "d4765e4e-c3a6-4aba-b824-e2cf76448cf6"
+                },
+                {
+                  "group": "bottom",
+                  "id": "68b6f381-140a-4773-9781-c6287720d6c1"
+                },
+                {
+                  "group": "left",
+                  "id": "20d1e3f6-455c-450a-896b-6183acb2ba2e"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000001",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Professor",
+              "description": "Authenticated professor user.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 30,
+              "y": 330
+            },
+            "size": {
+              "width": 150,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Student"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 1,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "ec8c51ff-4966-413f-9dcb-d4537456b74f"
+                },
+                {
+                  "group": "right",
+                  "id": "f78d277d-41f7-4e6e-abda-2144c4fe49f4"
+                },
+                {
+                  "group": "bottom",
+                  "id": "0f78fdd0-fde5-4a7a-8b4e-78dd23928be2"
+                },
+                {
+                  "group": "left",
+                  "id": "10547561-4f24-4482-a6b8-3af94fa18ca8"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000002",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Student\n",
+              "description": "Authenticated student user.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 300,
+              "y": 200
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Validate Access + Enrollment"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "848e14e8-339c-4fc2-bbd3-062ac37bde7e"
+                },
+                {
+                  "group": "right",
+                  "id": "e0c6a9c0-e1cd-4b6c-a581-48a982178d9b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "6cba1127-f539-4937-bab5-63d647854f50"
+                },
+                {
+                  "group": "left",
+                  "id": "106f965b-12fd-4081-b23e-e97814bf588c"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000004",
+            "data": {
+              "type": "tm.Process",
+              "name": "Validate Access + Enrollment\n",
+              "description": "Validates JWT, role permissions, and course enrollment before allowing assignment actions.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": true,
+              "privilegeLevel": "System",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000001",
+                  "number": 1,
+                  "title": "Forged token bypasses access control",
+                  "description": "An attacker presents a forged or stolen JWT and bypasses role and enrollment validation.",
+                  "mitigation": "Validate token signature, issuer, audience and expiry; require short-lived tokens and revoke compromised sessions.",
+                  "modelType": "STRIDE",
+                  "type": "Spoofing",
+                  "severity": "High",
+                  "status": "Open"
+                },
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000002",
+                  "number": 2,
+                  "title": "Privilege escalation in authorization logic",
+                  "description": "A logic flaw in RBAC/enrollment checks allows a student to execute professor-only actions.",
+                  "mitigation": "Enforce deny-by-default authorization policy and centralize policy checks with test coverage for role boundaries.",
+                  "modelType": "STRIDE",
+                  "type": "Elevation of privilege",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 520,
+              "y": 90
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Create Assignment"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "be38e394-b510-4035-bc44-5f92f8cb3210"
+                },
+                {
+                  "group": "right",
+                  "id": "0c37113b-841a-43fa-af3b-5e0589462bc6"
+                },
+                {
+                  "group": "bottom",
+                  "id": "5237d45b-1683-4473-9479-b7b7f3ad6f7c"
+                },
+                {
+                  "group": "left",
+                  "id": "6915a5ca-08b2-4c25-a295-91f50339a463"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000005",
+            "data": {
+              "type": "tm.Process",
+              "name": "\nCreate Assignment",
+              "description": "Creates assignment with title, description, and deadline.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": true,
+              "privilegeLevel": "Professor",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000007",
+                  "number": 7,
+                  "title": "Assignment deadline tampering",
+                  "description": "A malicious request manipulates assignment deadline or grading configuration parameters.",
+                  "mitigation": "Apply strict server-side schema validation, immutable audit of deadline changes, and role-scoped update rules.",
+                  "modelType": "STRIDE",
+                  "type": "Tampering",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 520,
+              "y": 310
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Submit Assignment"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "46abcd95-8a86-434a-b5bf-2336bd7c7522"
+                },
+                {
+                  "group": "right",
+                  "id": "82d01b39-956d-4d32-a20e-00b498d4caf4"
+                },
+                {
+                  "group": "bottom",
+                  "id": "c8c0708e-8b8d-4a46-90db-96dc7b94d1c5"
+                },
+                {
+                  "group": "left",
+                  "id": "992501eb-ab68-46fc-b2fa-0190a1cd27a6"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000006",
+            "data": {
+              "type": "tm.Process",
+              "name": "\nSubmit Assignment",
+              "description": "Validates deadline and upload constraints, then persists submission file and metadata.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": true,
+              "privilegeLevel": "Student",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000003",
+                  "number": 3,
+                  "title": "Submission flood causes service degradation",
+                  "description": "Automated repeated submissions exhaust upload workers and database connections.",
+                  "mitigation": "Apply per-user/course rate limits, queue uploads, and enforce request throttling with backpressure.",
+                  "modelType": "STRIDE",
+                  "type": "Denial of service",
+                  "severity": "Medium",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 760,
+              "y": 200
+            },
+            "size": {
+              "width": 100,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Grade Submission"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "1df51b24-b386-4ebe-bd4c-c1108be7681e"
+                },
+                {
+                  "group": "right",
+                  "id": "2b9846da-8764-4956-8abe-d7d107d3dfd3"
+                },
+                {
+                  "group": "bottom",
+                  "id": "1c6925d8-89b4-4d9a-b2c6-7957b5a6bb5d"
+                },
+                {
+                  "group": "left",
+                  "id": "fb7f1c27-0fa8-427d-b320-903b9ca4ab64"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000007",
+            "data": {
+              "type": "tm.Process",
+              "name": "\nGrade Submission",
+              "description": "Reads submission data and stores grade plus feedback.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": true,
+              "privilegeLevel": "Professor",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000008",
+                  "number": 8,
+                  "title": "Grading endpoint overwhelmed",
+                  "description": "Repeated grading requests degrade response time and block legitimate grading actions.",
+                  "mitigation": "Use rate limits, bounded worker pools, and circuit breakers on grading APIs.",
+                  "modelType": "STRIDE",
+                  "type": "Denial of service",
+                  "severity": "Medium",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 1010,
+              "y": 90
+            },
+            "size": {
+              "width": 170,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Assignment Store"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "2032ee5b-6f50-4e0e-b794-8e7ae2f0338e"
+                },
+                {
+                  "group": "right",
+                  "id": "a2e9be52-d3fb-4bd3-8005-9e534429b88b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "5b8a7f62-677d-4019-a298-b8e57a7527f5"
+                },
+                {
+                  "group": "left",
+                  "id": "43b33c22-a533-47a3-8566-ac43127f54bf"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000008",
+            "data": {
+              "type": "tm.Store",
+              "name": "Assignment Store\n",
+              "description": "Assignments, deadlines, submission metadata, grades, and feedback.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": true,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000004",
+                  "number": 4,
+                  "title": "Unauthorized read of grades and feedback",
+                  "description": "An unauthorized principal reads assignment records and grading data.",
+                  "mitigation": "Enforce row-level authorization checks, least-privilege DB roles, and audit all read access paths.",
+                  "modelType": "STRIDE",
+                  "type": "Information disclosure",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 1010,
+              "y": 250
+            },
+            "size": {
+              "width": 170,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "File Storage"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "7c5f7782-b652-42be-b76a-b63111aa002e"
+                },
+                {
+                  "group": "right",
+                  "id": "07c1613d-3a40-4b4c-8694-55d08af69842"
+                },
+                {
+                  "group": "bottom",
+                  "id": "3dd94892-6e5d-4d58-9701-7a66448f1e44"
+                },
+                {
+                  "group": "left",
+                  "id": "62ad4a64-cbbf-453c-940e-5b2b0c93ff9a"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000009",
+            "data": {
+              "type": "tm.Store",
+              "name": "File Storage\n",
+              "description": "Uploaded assignment files.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": true,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000009",
+                  "number": 9,
+                  "title": "Unauthorized download of submissions",
+                  "description": "An unauthorized principal reads private submission files from object storage.",
+                  "mitigation": "Use signed short-lived URLs, object ACL hardening, and per-request authorization checks.",
+                  "modelType": "STRIDE",
+                  "type": "Information disclosure",
+                  "severity": "High",
+                  "status": "Open"
+                },
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000010",
+                  "number": 10,
+                  "title": "Stored submission replaced",
+                  "description": "A stored file is replaced after upload, resulting in grading of a forged artifact.",
+                  "mitigation": "Store immutable object versions and verify cryptographic hash before grading.",
+                  "modelType": "STRIDE",
+                  "type": "Tampering",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 1010,
+              "y": 410
+            },
+            "size": {
+              "width": 170,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Audit Log"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "28e7b67a-72c7-4029-8bf5-99cf0ff724be"
+                },
+                {
+                  "group": "right",
+                  "id": "f67fe528-7c23-473b-896d-a49de393f891"
+                },
+                {
+                  "group": "bottom",
+                  "id": "f49aa053-0b23-43e1-882d-1eaa9d7bb542"
+                },
+                {
+                  "group": "left",
+                  "id": "e153896b-d9ac-4420-845c-af13cf6ecaa5"
+                }
+              ]
+            },
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000010",
+            "data": {
+              "type": "tm.Store",
+              "name": "Audit Log\n",
+              "description": "Security-relevant audit events for assignment operations.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": true,
+              "isEncrypted": true,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000011",
+                  "number": 11,
+                  "title": "Audit trail tampering",
+                  "description": "An attacker modifies or deletes audit records to hide malicious actions.",
+                  "mitigation": "Use append-only storage, integrity checks/signing, and restricted write privileges.",
+                  "modelType": "STRIDE",
+                  "type": "Tampering",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ]
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "\nProfessor access request",
+              "description": "Professor requests authorized assignment operations.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000012",
+                  "number": 12,
+                  "title": "Credential stuffing on professor requests",
+                  "description": "Attackers automate login/session abuse to impersonate professors.",
+                  "mitigation": "Apply MFA for privileged users, brute-force protection, and anomaly detection on access patterns.",
+                  "modelType": "STRIDE",
+                  "type": "Spoofing",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": [
+                "8a31db7d-b7a4-47db-bf9b-510000000003"
+              ]
+            },
+            "labels": [
+              "Professor access request"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000101",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000001"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000004"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Student access request\n",
+              "description": "Student requests authorized submission operation.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "HTTPS",
+              "threats": [],
+              "trustBoundaryIds": [
+                "8a31db7d-b7a4-47db-bf9b-510000000003"
+              ]
+            },
+            "labels": [
+              "Student access request"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000102",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000002"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000004"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Authorize create\n",
+              "description": "RBAC and enrollment checks passed for assignment creation.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Internal API",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Authorize create"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000103",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000005"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Authorize submit\n",
+              "description": "RBAC and enrollment checks passed for submission.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Internal API",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Authorize submit"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000104",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000006"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Authorize grade\n",
+              "description": "RBAC and enrollment checks passed for grading.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Internal API",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000013",
+                  "number": 13,
+                  "title": "Unauthorized grade authorization path",
+                  "description": "A bypass in the internal authorization path allows non-professor grading access.",
+                  "mitigation": "Enforce policy checks at both gateway and service layers with signed service-to-service identity.",
+                  "modelType": "STRIDE",
+                  "type": "Elevation of privilege",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Authorize grade"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000105",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000004"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000007"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Store assignment aggregate\n",
+              "description": "Persist assignment and deadline fields.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "JDBC/TLS",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Store assignment aggregate"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000106",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000005"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000008"
+            },
+            "vertices": []
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Audit assignment creation\n",
+              "description": "Security-relevant log entry for assignment creation.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Internal logging API",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Audit assignment creation"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000107",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000005"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000010"
+            },
+            "vertices": [
+              {
+                "x": 690,
+                "y": 300
+              },
+              {
+                "x": 740,
+                "y": 370
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read assignment deadline\n",
+              "description": "Used to enforce late submission checks.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "JDBC/TLS",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Read assignment deadline"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000108",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000006"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000008"
+            },
+            "vertices": [
+              {
+                "x": 900,
+                "y": 290
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "\nUpload submission file",
+              "description": "File upload after server-side type/size/path validation.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "ObjectStorage API/TLS",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000005",
+                  "number": 5,
+                  "title": "Submission file tampering in transit",
+                  "description": "A manipulated upload payload alters submitted content or metadata before persistence.",
+                  "mitigation": "Use end-to-end TLS, verify content hash on server, and reject mismatched metadata/signatures.",
+                  "modelType": "STRIDE",
+                  "type": "Tampering",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Upload submission file"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000109",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000006"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000009"
+            },
+            "vertices": [
+              {
+                "x": 740,
+                "y": 410
+              },
+              {
+                "x": 840,
+                "y": 410
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Store submission metadata\n",
+              "description": "Persist metadata, ownership, and file integrity hash.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "JDBC/TLS",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Store submission metadata"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000110",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000006"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000008"
+            },
+            "vertices": [
+              {
+                "x": 680,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Audit submission\n",
+              "description": "Security-relevant log entry for submission attempt.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Internal logging API",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000006",
+                  "number": 6,
+                  "title": "Insufficient evidence for dispute resolution",
+                  "description": "A user disputes a submission action and logs cannot prove who did what and when.",
+                  "mitigation": "Record immutable audit fields (user id, request id, timestamp, source IP) and protect log integrity.",
+                  "modelType": "STRIDE",
+                  "type": "Repudiation",
+                  "severity": "Medium",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Audit submission"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000111",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000006"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000010"
+            },
+            "vertices": [
+              {
+                "x": 730,
+                "y": 450
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read submission metadata\n",
+              "description": "Read metadata required for grading.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "JDBC/TLS",
+              "threats": [],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Read submission metadata"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000112",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000008"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000007"
+            },
+            "vertices": [
+              {
+                "x": 900,
+                "y": 170
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read submission file\n",
+              "description": "Read submitted file for evaluation.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "ObjectStorage API/TLS",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000014",
+                  "number": 14,
+                  "title": "Sensitive submission leakage during retrieval",
+                  "description": "Submission content is exposed to unauthorized services or users during retrieval.",
+                  "mitigation": "Use scoped access tokens, strict service ACLs, and end-to-end encryption enforcement.",
+                  "modelType": "STRIDE",
+                  "type": "Information disclosure",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Read submission file"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000113",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000009"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000007"
+            },
+            "vertices": [
+              {
+                "x": 900,
+                "y": 280
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Store grade and feedback\n\n",
+              "description": "Persist grading result.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "JDBC/TLS",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000015",
+                  "number": 15,
+                  "title": "Grade value tampering before persistence",
+                  "description": "A compromised path modifies grade or feedback payload before DB write.",
+                  "mitigation": "Use validated server-side domain rules, parameterized writes, and integrity verification of grading commands.",
+                  "modelType": "STRIDE",
+                  "type": "Tampering",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Store grade and feedback\n"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000114",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000007"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000008"
+            },
+            "vertices": [
+              {
+                "x": 900,
+                "y": 220
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 3,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Audit grading\n",
+              "description": "Security-relevant log entry for grading action.",
+              "outOfScope": false,
+              "isTrustBoundary": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Internal logging API",
+              "threats": [
+                {
+                  "threatId": "f70f9114-e8db-45f8-b4fb-100000000016",
+                  "number": 16,
+                  "title": "Grade action repudiation",
+                  "description": "A professor disputes having issued a grade due to weak grading audit metadata.",
+                  "mitigation": "Include actor id, request id, assignment id, and timestamp in immutable audit records.",
+                  "modelType": "STRIDE",
+                  "type": "Repudiation",
+                  "severity": "Medium",
+                  "status": "Open"
+                }
+              ],
+              "trustBoundaryIds": []
+            },
+            "labels": [
+              "Audit grading"
+            ],
+            "id": "8a31db7d-b7a4-47db-bf9b-510000000115",
+            "source": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000007"
+            },
+            "target": {
+              "cell": "8a31db7d-b7a4-47db-bf9b-510000000010"
+            },
+            "vertices": []
+          }
+        ]
+      }
+    ],
+    "diagramTop": 1,
+    "reviewer": "",
+    "threatTop": 16
+  }
+}
