@@ -19,7 +19,7 @@
         "cells": [
           {
             "position": {
-              "x": 630,
+              "x": 620,
               "y": 170
             },
             "size": {
@@ -174,11 +174,11 @@
           },
           {
             "position": {
-              "x": 190,
-              "y": 40
+              "x": 130,
+              "y": 70
             },
             "size": {
-              "width": 112.5,
+              "width": 90,
               "height": 60
             },
             "attrs": {
@@ -287,11 +287,14 @@
               "hasOpenThreats": false,
               "providesAuthentication": false,
               "threats": []
-            }
+            },
+            "children": [
+              "e772a674-2300-4986-8c49-a9907c0d22d0"
+            ]
           },
           {
             "position": {
-              "x": 240,
+              "x": 140,
               "y": 290
             },
             "size": {
@@ -408,8 +411,8 @@
           },
           {
             "position": {
-              "x": 1040,
-              "y": 200
+              "x": 1100,
+              "y": 190
             },
             "size": {
               "width": 112.5,
@@ -570,7 +573,7 @@
             },
             "vertices": [
               {
-                "x": 470,
+                "x": 450,
                 "y": 110
               }
             ]
@@ -622,7 +625,7 @@
             },
             "vertices": [
               {
-                "x": 300,
+                "x": 280,
                 "y": 170
               }
             ]
@@ -674,8 +677,8 @@
             },
             "vertices": [
               {
-                "x": 590,
-                "y": 260
+                "x": 480,
+                "y": 270
               }
             ]
           },
@@ -727,7 +730,7 @@
             "vertices": [
               {
                 "x": 470,
-                "y": 310
+                "y": 320
               }
             ]
           },
@@ -850,42 +853,8 @@
             },
             "vertices": [
               {
-                "x": 420,
+                "x": 400,
                 "y": 150
-              }
-            ]
-          },
-          {
-            "shape": "trust-boundary-curve",
-            "width": 200,
-            "height": 100,
-            "zIndex": 10,
-            "connector": "smooth",
-            "data": {
-              "type": "tm.Boundary",
-              "name": "Public Network\nBoundary",
-              "description": "",
-              "isTrustBoundary": true,
-              "hasOpenThreats": false,
-              "crossingFlows": [],
-              "containedElements": []
-            },
-            "labels": [
-              "Public Network\n Boundary"
-            ],
-            "id": "0045af74-8a75-4ec2-9570-12602c165ee3",
-            "source": {
-              "x": 730,
-              "y": 90
-            },
-            "target": {
-              "x": 750,
-              "y": 360
-            },
-            "vertices": [
-              {
-                "x": 780,
-                "y": 220
               }
             ]
           },
@@ -956,8 +925,8 @@
             },
             "vertices": [
               {
-                "x": 450,
-                "y": 250
+                "x": 440,
+                "y": 240
               }
             ]
           },
@@ -1101,7 +1070,7 @@
             "vertices": [
               {
                 "x": 510,
-                "y": 380
+                "y": 370
               }
             ]
           },
@@ -1153,7 +1122,7 @@
             "vertices": [
               {
                 "x": 920,
-                "y": 200
+                "y": 190
               }
             ]
           },
@@ -1161,7 +1130,7 @@
             "shape": "trust-boundary-curve",
             "width": 200,
             "height": 100,
-            "zIndex": 11,
+            "zIndex": 10,
             "connector": "smooth",
             "data": {
               "type": "tm.Boundary",
@@ -1175,23 +1144,19 @@
             "labels": [
               "Public Network\n Boundary"
             ],
-            "id": "362f3097-1b40-4df2-bbaf-f5da8f40a6a3",
+            "id": "0045af74-8a75-4ec2-9570-12602c165ee3",
             "source": {
-              "x": 590,
-              "y": 70
+              "x": 710,
+              "y": 130
             },
             "target": {
-              "x": 650,
-              "y": 380
+              "x": 720,
+              "y": 330
             },
             "vertices": [
               {
-                "x": 590,
-                "y": 210
-              },
-              {
-                "x": 630,
-                "y": 340
+                "x": 780,
+                "y": 220
               }
             ]
           },
@@ -1262,8 +1227,42 @@
             },
             "vertices": [
               {
-                "x": 860,
+                "x": 930,
                 "y": 270
+              }
+            ]
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 13,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Public Network\nBoundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [],
+              "containedElements": []
+            },
+            "labels": [
+              "Public Network\n Boundary"
+            ],
+            "id": "362f3097-1b40-4df2-bbaf-f5da8f40a6a3",
+            "source": {
+              "x": 650,
+              "y": 120
+            },
+            "target": {
+              "x": 650,
+              "y": 380
+            },
+            "vertices": [
+              {
+                "x": 600,
+                "y": 210
               }
             ]
           }
