@@ -37,13 +37,14 @@
     * [Supporting Entities (Internal to Aggregates):](#supporting-entities-internal-to-aggregates)
     * [Domain Model Diagram](#domain-model-diagram)
   * [10. Data Flow Diagrams](#10-data-flow-diagrams)
-    * [10.1 DFD Level 0](#101-dfd-level-0)
-    * [10.2 DFD Level 1](#102-dfd-level-1)
-    * [10.3 DFD Level 2 - User Management](#103-dfd-level-2---user-management)
-    * [10.3 DFD Level 2 - Course](#103-dfd-level-2---course)
-    * [10.4 DFD Level 2 - Assignment](#104-dfd-level-2---assignment)
-    * [10.3 DFD Level 2 - Chat](#103-dfd-level-2---chat)
-    * [10.4 DFD Level 2 - File](#104-dfd-level-2---file)
+    * [DFD Level 0](#dfd-level-0)
+    * [DFD Level 1](#dfd-level-1)
+    * [DFD Level 1 - Chat & File](#dfd-level-1---chat--file)
+    * [DFD Level 2 - User Management](#dfd-level-2---user-management)
+    * [DFD Level 2 - Course Management](#dfd-level-2---course-management)
+    * [DFD Level 2 - Assignment Management](#dfd-level-2---assignment-management)
+    * [DFD Level 2 - Chat Management](#dfd-level-2---chat-management)
+    * [DFD Level 2 - File Management](#dfd-level-2---file-management)
   * [11. Threat Modeling](#11-threat-modeling)
     * [System-Wide Threat Modeling (Level 0)](#system-wide-threat-modeling-level-0)
     * [User Management Threat Modeling (Level 2)](#user-management-threat-modeling-level-2)
@@ -366,31 +367,35 @@ different business contexts.
 
 ## 10. Data Flow Diagrams
 
-### 10.1 DFD Level 0
+### DFD Level 0
 
 ![DFD Level 0](images/DFD%20Level%200%20-%20STRIDE%20diagram.png)
 
-### 10.2 DFD Level 1
+### DFD Level 1
 
-![DFD Level 1](images/Core%20DFD.png)
+![DFD Level 1](images/DFD%20LEVEL%201%20%20CORE.png)
 
-### 10.3 DFD Level 2 - User Management
+### DFD Level 1 - Chat & File
+
+![DFD Level 1](images/DFD%20LEVEL%201_LearningMore%20Chat%20&%20File%20Management.png)
+
+### DFD Level 2 - User Management
 
 ![DFD Level 2 - User Management](images/DFD%20Level%202%20-%20User%20Management%20STRIDE%20diagram.png)
 
-### 10.3 DFD Level 2 - Course
+### DFD Level 2 - Course Management
 
 ![DFD Level 2 - Course Management](images/dfd%20level%202%20course%20management.png)
 
-### 10.4 DFD Level 2 - Assignment
+### DFD Level 2 - Assignment Management
 
 ![DFD Level 2 - Assigment Management](images/dfd%20level%202%20Assignment%20Management.png)
 
-### 10.3 DFD Level 2 - Chat
+### DFD Level 2 - Chat Management
 
 ![DFD Level 2 - Chat Management](images/DFD%20Level%202%20-%20Chat%20Management%20STRIDE%20diagram.png)
 
-### 10.4 DFD Level 2 - File
+### DFD Level 2 - File Management
 
 ![DFD Level 2 - File Management](images/DFD%20Level%202%20-%20File%20Management%20STRIDE%20diagram.png)
 
