@@ -254,12 +254,45 @@ different business contexts.
 
 ## 10. Threat Modeling
 
-### Course and Assignment Management Threat Modeling
+Threat modeling was performed using STRIDE for the Level 0, 1 and 2. In Phase 1, for the Level 2 DFDs, it was done for
+the following modules:
 
-Threat modeling was performed using STRIDE over Level 2 DFDs for the two in-scope modules in Phase 1:
-
+* User Management
 * Course Management
 * Assignment Management
+* Chat Management
+* File Management
+
+### User Management Threat Modeling (Level 2)
+
+Model artifacts:
+
+* docs/diagrams/dfd-level-2-user-management-threat-dragon.json
+
+Threat model scope decisions:
+
+* Included: Identity lifecycle processes (registration, login, password recovery), session management, and
+  administrative role assignment logic.
+* Excluded from this phase: Chat message encryption and course-specific enrollment validation (covered in Course
+  Management).
+
+Threat inventory summary:
+
+* **Total threats identified:** 11 threats.
+* **Status:** 11 Open (Critical: 5, High: 3, Medium: 3).
+* **Coverage:** Spoofing, Tampering, Information Disclosure, Elevation of Privilege, Repudiation.
+
+Representative high-risk threats identified:
+
+* **Spoofing:** Credential stuffing and automated brute force attacks targeting the central Login endpoint.
+* **Elevation of Privilege:** Exploiting flaws in the role-assignment logic to escalate a Student account to
+  Admin/Professor.
+* **Tampering:** Unauthorized modification of sensitive user metadata or `UserRole` attributes in the database.
+* **Information Disclosure:** User enumeration through predictable feedback in password reset or account creation flows.
+* **Repudiation:** Administrative actions, such as user deletion or role changes, performed without secure and immutable
+  audit logging.
+
+### Course and Assignment Management Threat Modeling (Level 2)
 
 Model artifacts:
 
@@ -292,8 +325,6 @@ Representative high-risk threats identified:
 
 ## 11. Risk Assessment
 
-### Course and Assignment Management Risk Assessment
-
 Methodology used: Quantitative likelihood-impact scoring with explicit prioritization.
 
 Scoring model:
@@ -311,8 +342,47 @@ Priority thresholds:
 
 Prioritization rule:
 
-* First by risk score band, then by business impact on integrity/confidentiality of grades, submissions, and enrollment decisions.
+* First by risk score band, then by business impact on integrity/confidentiality of grades, submissions, and enrollment
+  decisions.
 * High and Critical risks are mandatory mitigation targets for this phase.
+
+### 11.2 System-Wide Risk Assessment (Level 0)
+
+Methodology used: Quantitative likelihood-impact scoring focusing on global trust boundaries and data flows.
+Likelihood (L) is derived from Threat Dragon scores, while Impact (I) is based on the technical severity of the threat.
+
+| Risk ID | Threat                                            | L | I | Score | Priority | Justification                                                                                                |
+|---------|---------------------------------------------------|--:|--:|------:|----------|--------------------------------------------------------------------------------------------------------------|
+| R1      | Unauthorized Access via Broken Authentication     | 3 | 5 |    15 | High     | Critical flaw in central logic that allows session hijacking or login bypass to access private data.         |
+| R2      | Administrative Credential Sniffing                | 3 | 5 |    15 | High     | Interception of admin credentials in transit, potentially granting full control over platform configuration. |
+| R3      | System-Wide Denial of Service (DoS)               | 3 | 4 |    12 | High     | Traffic flooding that renders the service unavailable for all actors (Students, Professors, and Admins).     |
+| R4      | Malicious File Injection / Upload and Execution   | 2 | 4 |     8 | Medium   | Risk of server infection or client-side malware distribution via corrupted course materials or assignments.  |
+| R5      | Cross-Site Scripting (XSS) via Chat               | 2 | 3 |     6 | Medium   | Malicious scripts sent via chat that can steal session cookies and compromise user accounts in the browser.  |
+| R6      | Unauthorized Access to Student Assignments (BOLA) | 2 | 3 |     6 | Medium   | Lack of explicit validation between Professor ID and Course ID, leading to student privacy breaches.         |
+
+### 11.3 User Management Risk Assessment (Level 2)
+
+Methodology used: Quantitative likelihood-impact scoring focusing on the identity lifecycle and database integrity.
+Likelihood (L) is derived from Threat Dragon scores, while Impact (I) is based on technical severity.
+
+| Risk ID | Threat                                         | L | I | Score | Priority | Justification                                                                                              |
+|---------|------------------------------------------------|--:|--:|------:|----------|------------------------------------------------------------------------------------------------------------|
+| R1      | SQL Injection via User Management Inputs       | 3 | 5 |    15 | High     | Attackers can bypass security by injecting commands through Name/Email fields to modify database records.  |
+| R2      | Unauthorized Access to Stored Credentials      | 3 | 5 |    15 | High     | Direct compromise of the User Database, exposing profile data and sensitive hashed passwords.              |
+| R3      | Manipulation of Privilege Commands             | 3 | 5 |    15 | High     | Interception of role assignment requests to modify Privilege IDs and grant unauthorized high-level access. |
+| R4      | Exposure of Password Hashes                    | 3 | 5 |    15 | High     | Internal interception of hashes during the flow between the database and the authentication process.       |
+| R5      | Administrative Privilege Escalation            | 3 | 4 |    12 | High     | Exploitation of logic flaws in the Role Manager to grant "Super Admin" permissions to restricted users.    |
+| R6      | Interception of Admin Credentials (Login flow) | 3 | 4 |    12 | High     | Capture of username/password packets in transit from the browser to the authentication service.            |
+| R7      | Injection of Rogue Accounts                    | 2 | 4 |     8 | Medium   | Modification of "New User" data packets in transit to create accounts controlled by the attacker.          |
+| R8      | Brute Force and Denial of Service              | 2 | 3 |     6 | Medium   | Automated login attempts causing resource exhaustion or locking out legitimate administrators.             |
+| R9      | Lack of Modification Integrity (Repudiation)   | 2 | 3 |     6 | Medium   | Database changes made without auditing logs, preventing accountability for administrative actions.         |
+| R10     | Unauthorized Profile Data Manipulation         | 2 | 3 |     6 | Medium   | Interception of update requests to modify sensitive profile fields like recovery emails or phone numbers.  |
+
+
+### Course and Assignment Management Risk Assessment
+
+Methodology used: Quantitative likelihood-impact scoring focusing on global trust boundaries and data flows.
+Likelihood (L) is derived from Threat Dragon scores, while Impact (I) is based on the technical severity of the threat.
 
 Top prioritized risks (course + assignment):
 
@@ -335,6 +405,70 @@ Risk acceptance criteria:
 ---
 
 ## 12. Mitigations
+
+### System-Wide (Level 0) Mitigations
+
+Mitigations for Level 0 focus on securing the external trust boundaries and ensuring the integrity of global data flows
+between actors and the platform.
+
+Priority mitigation plan:
+
+| Risk ID | Key Mitigations                                                                                                                                       | Feasibility | Priority  |
+|:--------|:------------------------------------------------------------------------------------------------------------------------------------------------------|:------------|:----------|
+| R1      | Implementation of standard protocols (OAuth2/OpenID Connect), secure session management (high-entropy tokens), and MFA for critical accounts.         | High        | Immediate |
+| R2      | Enforce mandatory TLS 1.3 for all endpoints, implement HSTS (HTTP Strict Transport Security), and use secure, HTTP-only cookies.                      | High        | Immediate |
+| R3      | Deployment of DDoS protection (e.g., Cloudflare/AWS Shield), rate limiting per IP/User, and load balancing to ensure availability.                    | High        | Immediate |
+| R4      | Integrated malware scanning for all uploads, strict file extension whitelisting, and isolated storage (e.g., S3 buckets with restricted permissions). | Medium      | Immediate |
+| R5      | Rigorous input sanitization for chat messages, strong Content Security Policy (CSP), and output encoding to prevent script execution.                 | Medium-High | Immediate |
+| R6      | Enforcement of Broken Object Level Authorization (BOLA) checks to validate the link between Professor ID, Course ID, and the requested Resource.      | Medium      | Immediate |
+
+The implementation of global mitigations follows a "perimeter-first" approach to ensure the system's external boundaries
+are secured before internal flows are refined:
+
+1. **Network and Availability Hardening:** Deployment of DDoS protection (Cloudflare) and Rate Limiting (R3) to ensure
+   the platform remains reachable.
+2. **External Communication Security:** Enforcement of TLS 1.3 and HSTS (R2) to prevent credential sniffing at the
+   gateway level.
+3. **Core Authentication Gateway:** Integration of OAuth2/OpenID Connect (R1) as the primary entry point for all actors.
+4. **Cross-Boundary Data Integrity:** Implementation of malware scanning for file uploads (R4) and sanitization for
+   global chat flows (R5).
+5. **Access Logic Refinement:** Deployment of BOLA checks (R6) to ensure cross-module data requests are authorized by
+   context.
+
+
+### User Management (Level 2) Mitigations
+
+Focused on the identity lifecycle, protecting the user database, and ensuring the integrity of administrative privilege
+commands.
+
+Priority mitigation plan:
+
+| Risk ID | Key Mitigations                                                                                                                           | Feasibility | Priority  |
+|:--------|:------------------------------------------------------------------------------------------------------------------------------------------|:------------|:----------|
+| R1      | Use of Parameterized Queries (Prepared Statements) for all database interactions and strict server-side validation for Name/Email fields. | High        | Immediate |
+| R2      | Encryption of data at rest (AES-256) and password hashing using GPU-resistant algorithms such as Argon2 or BCrypt.                        | High        | Immediate |
+| R3      | Request signing for administrative actions and use of secure tunnels (VPN/mTLS) for sensitive role-assignment commands.                   | Medium      | Immediate |
+| R4      | Implementation of internal TLS/SSL encryption for the communication channel between the Application Server and the Database.              | Medium-High | Immediate |
+| R5      | Strict implementation of Role-Based Access Control (RBAC) with "Least Privilege" validation for every profile management transaction.     | High        | Immediate |
+| R6      | Enforcement of Secure and HTTP-Only flags on session cookies to prevent credential theft via sniffing or client-side scripts.             | High        | Immediate |
+| R7      | Server-side integrity checks for "New User" packets and origin verification before processing account creation requests.                  | Medium      | Planned   |
+| R8      | Progressive account lockout policies, CAPTCHA integration after successive failures, and real-time monitoring of brute-force patterns.    | High        | Immediate |
+| R9      | Immutable database-level auditing and centralized application logs for all Create, Update, and Delete (CUD) operations.                   | Medium      | Planned   |
+| R10     | HMAC-based integrity checks for profile update requests and ownership validation for sensitive recovery fields (email/phone).             | Medium      | Immediate |
+
+The implementation for the User Management module is prioritized based on the protection of the identity store and the
+integrity of administrative actions:
+
+1. **Database and Persistence Security:** Implementation of Parameterized Queries (R1), data-at-rest encryption, and
+   Argon2/BCrypt hashing (R2).
+2. **Internal Flow Protection:** Encryption of the application-to-database channel (R4) and securing session cookies
+   with HTTP-Only/Secure flags (R6).
+3. **Identity Lifecycle Hardening:** Integration of lockout policies and CAPTCHA (R8) to protect the login process from
+   brute-force attacks.
+4. **Administrative Command Integrity:** Deployment of RBAC logic (R5) and HMAC/Signing for role-assignment and
+   profile-update requests (R3, R10).
+5. **Accountability and Auditability:** Activation of server-side integrity checks for new accounts (R7) and immutable
+   audit logging for all administrative CUD operations (R9).
 
 ### Course and Assignment Management Mitigations
 
@@ -438,7 +572,34 @@ Traceability standard:
 
 ## 16. Traceability Matrix
 
-Course + Assignment scoped traceability (extract):
+### System-Wide Traceability Matrix (Level 0)
+
+| Requirement                     | Threat(s) | Mitigation(s)                             | Security Test(s)                                   |
+|:--------------------------------|:----------|:------------------------------------------|:---------------------------------------------------|
+| SR18 Centralized Authentication | L0-R1     | OAuth2/OpenID Connect implementation      | ST-16 Bypass login screen attempt rejection        |
+| SR19 Transport Layer Security   | L0-R2     | Mandatory TLS 1.3 and HSTS                | ST-17 Interception attempt on non-HTTPS traffic    |
+| SR20 Global Rate Limiting       | L0-R3     | DDoS protection and IP-based throttling   | ST-18 Service availability under simulated flood   |
+| SR21 Global File Integrity      | L0-R4     | Virus scanning and extension whitelisting | ST-19 Rejection of executable scripts in uploads   |
+| SR22 Content Security Policy    | L0-R5     | Strong CSP and output encoding            | ST-20 Script injection in chat block validation    |
+| SR23 BOLA Validation (Global)   | L0-R6     | Actor-to-resource ownership checks        | ST-21 Professor accessing non-assigned course data |
+
+### User Management Traceability Matrix (Level 2)
+
+| Requirement                    | Threat(s)  | Mitigation(s)                               | Security Test(s)                                        |
+|:-------------------------------|:-----------|:--------------------------------------------|:--------------------------------------------------------|
+| SR24 SQL Injection Protection  | U-R1       | Parameterized queries (Prepared Statements) | ST-22 SQL payload injection in Name/Email fields        |
+| SR25 Data-at-Rest Protection   | U-R2       | AES-256 encryption for user database        | ST-23 Validation of encrypted state in DB storage       |
+| SR26 Secure Password Storage   | U-R2, U-R4 | Argon2 or BCrypt hashing                    | ST-24 Verification of high-entropy hash format          |
+| SR27 Secure Admin Channel      | U-R3, U-R6 | mTLS or Signed requests for admin actions   | ST-25 Rejection of unsigned role-change commands        |
+| SR28 Least Privilege RBAC      | U-R5       | Strict role-based access validation         | ST-26 Student account role-escalation attempt           |
+| SR29 Internal Traffic Security | U-R4       | Internal TLS between App and DB             | ST-27 Sniffing internal DB traffic for cleartext hashes |
+| SR30 Account Creation Guard    | U-R7       | Server-side validation of new user packets  | ST-28 Modification of 'UserRole' in registration packet |
+| SR31 Brute Force Protection    | U-R8       | Progressive lockout and CAPTCHA             | ST-29 Automatic IP lockout after X failed logins        |
+| SR32 Administrative Auditing   | U-R9       | Immutable logging for all CUD operations    | ST-30 Verification of audit trail for user deletion     |
+| SR33 Profile Integrity         | U-R10      | HMAC/Integrity checks for profile updates   | ST-31 Tampering with recovery email in transit          |
+
+
+### Course and Assignment Management Traceability Matrix (Level 2)
 
 | Requirement                                         | Threat(s)                   | Mitigation(s)                                             | Security Test(s)                                                           |
 |-----------------------------------------------------|-----------------------------|-----------------------------------------------------------|----------------------------------------------------------------------------|
@@ -459,6 +620,8 @@ Course + Assignment scoped traceability (extract):
 
 Threat key:
 
+* L0-R# = Level 0 Threat ID from the System-Wide Risk Assessment table.
+* U-R# = User Management (Level 2) Threat ID from the User Risk Assessment table.
 * A# = Assignment threat number from docs/diagrams/dfd-level-2-assignement-management-threat-dragon.json
 * C# = Course threat number from docs/diagrams/dfd-level-2-course-management-threat-dragon.json
 
