@@ -184,6 +184,9 @@ obligations (confidentiality, integrity, accountability).
 * SR4: The system must enforce role-based access control (RBAC).
 * SR5: Users must only access resources within their permissions.
 * SR6: Access to course data must require enrollment validation.
+* SR18: The system shall enforce an inactivity session timeout to automatically terminate sessions after a defined period of user inactivity
+* SR19: The system shall enforce an absolute maximum session lifetime, after which users must re-authenticate regardless of activity.
+* SR20: The system shall define a maximum number of concurrent active sessions per user account.  
 
 Justification:
 
