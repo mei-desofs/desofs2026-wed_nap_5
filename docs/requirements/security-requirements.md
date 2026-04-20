@@ -5,6 +5,9 @@
 SR1: Passwords must be stored using strong, salted hashing algorithms   
 SR2: The system must enforce secure authentication mechanisms using validated credentials and protected session/token mechanisms  
 SR3: The system must prevent brute force attacks
+SR18: The system shall enforce an inactivity session timeout to automatically terminate sessions after a defined period of user inactivity
+SR19: The system shall enforce an absolute maximum session lifetime, after which users must re-authenticate regardless of activity.
+SR20: The system shall define a maximum number of concurrent active sessions per user account.
 
 ## Authorization
 
