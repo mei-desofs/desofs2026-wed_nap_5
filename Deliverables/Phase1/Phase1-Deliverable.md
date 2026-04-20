@@ -333,11 +333,11 @@ different business contexts.
 
 ### 10.3 DFD Level 2 - Course
 
-![DFD Level 2 - Course Management](images/coursedfd.png)
+![DFD Level 2 - Course Management](images/dfd%20level%202%20course%20management.png)
 
 ### 10.4 DFD Level 2 - Assignment
 
-![DFD Level 2 - Assigment Management](images/assignementdfd.png)
+![DFD Level 2 - Assigment Management](images/dfd%20level%202%20Assignment%20Management.png)
 
 ### 10.3 DFD Level 2 - Chat
 
