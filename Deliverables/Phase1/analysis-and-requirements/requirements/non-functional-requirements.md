@@ -35,4 +35,6 @@
 * NFR11: The system must be environment-agnostic, supporting deployment across different infrastructures (
   e.g., Dockerized environments, Cloud, or On-premise).
 * NFR12: The system must be implemented strictly as a RESTful API, adhering to standard HTTP methods
-  and status codes.
+  and status codes. 
+* NFR13: The system shall enforce rate limiting and request throttling to prevent abuse and denial of service attacks.
+* NFR14: The system shall enforce limits on file upload size and frequency to prevent resource exhaustion.
