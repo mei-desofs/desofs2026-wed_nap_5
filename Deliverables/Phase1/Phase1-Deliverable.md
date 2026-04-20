@@ -431,6 +431,54 @@ Representative high-risk threats identified:
 * SQL injection against course query paths.
 * DoS on enrollment, submission, and grading endpoints.
 
+### Chat Management Threat Modeling (Level 2)
+
+Model artifacts:
+* docs/diagrams/dfd-level-2-chat-management-threat-dragon.json
+
+Threat model scope decisions:
+
+* Included: message creation, storage, retrieval, and user interaction flows within chat rooms.
+* Included: authentication and authorization checks for chat access and message ownership.
+* Excluded: end-to-end encryption (planned for future phases).
+
+Threat inventory summary:
+
+* Total threats identified: 9 threats.
+* Coverage: Spoofing, Tampering, Information Disclosure, Denial of Service, Elevation of Privilege.
+
+Representative high-risk threats identified:
+
+* User impersonation in chat messages (spoofing identity).
+* Unauthorized access to chat history (broken access control).
+* Modification of stored messages affecting integrity.
+* Message manipulation in transit between client and server.
+* Chat flooding leading to denial of service.
+
+### File Management Threat Modeling (Level 2)
+
+Model artifacts:
+* docs/diagrams/dfd-level-2-file-management-threat-dragon.json
+
+Threat model scope decisions:
+
+* Included: file upload, storage, retrieval, and metadata handling.
+* Included: authorization checks for file ownership and course enrollment.
+* Excluded: external CDN optimizations and caching layers.
+
+Threat inventory summary:
+
+* Total threats identified: 12 threats.
+* Coverage: Spoofing, Tampering, Information Disclosure, Denial of Service, Elevation of Privilege.
+
+Representative high-risk threats identified:
+
+* Unauthorized file download via direct object reference.
+* Malicious file upload (malware or executable payloads).
+* Metadata manipulation affecting file ownership and permissions.
+* Direct access to storage bypassing application logic.
+* Large file uploads causing resource exhaustion.
+
 ---
 
 ## 12. Risk Assessment
@@ -511,6 +559,59 @@ Risk acceptance criteria:
 
 * No Critical risk can be accepted without compensating controls and documented owner sign-off.
 * Medium risks may be accepted temporarily only with monitoring and planned mitigation milestone.
+
+
+### Chat Management Risk Assessment (Level 2)
+
+Methodology used: Quantitative likelihood-impact scoring focusing on communication security, message integrity, and access control in real-time chat interactions.
+
+Top prioritized risks (chat module):
+
+| Risk ID | Threat                                  | L | I | Score | Priority | Justification                                                                 |
+|---------|------------------------------------------|--:|--:|------:|----------|------------------------------------------------------------------------------|
+| R1      | Unauthorized chat room management        | 3 | 5 |    15 | High     | Students may gain control over chat rooms without proper permissions         |
+| R2      | Unauthorized access to chat history      | 3 | 5 |    15 | High     | Exposure of sensitive communication between students and professors          |
+| R3      | Modification of stored chat messages     | 3 | 5 |    15 | High     | Compromises integrity and trust of communication                             |
+| R4      | Message alteration before storage        | 3 | 5 |    15 | High     | Malicious content injected before persistence                                |
+| R5      | Interception of chat history data        | 3 | 5 |    15 | High     | Sensitive data exposure during transmission                                  |
+| R6      | Message manipulation in transit          | 3 | 5 |    15 | High     | Attackers alter messages between client and server                           |
+| R7      | Unauthorized access to chat history      | 3 | 5 |    15 | High     | Unauthorized users retrieving chat data                                      |
+| R8      | User impersonation in chat messages      | 3 | 5 |    15 | High     | Attackers send messages as other users (spoofing)                            |
+| R9      | Chat message flooding                   | 3 | 5 |    15 | High     | System overload and degradation of service availability                      |
+
+Risk acceptance criteria:
+
+* High risks require immediate mitigation.
+* No risk in this module can be left without proper access control and validation mechanisms.
+
+
+### File Management Risk Assessment (Level 2)
+
+Methodology used: Quantitative likelihood-impact scoring focusing on file upload, storage, and secure access control.
+
+Top prioritized risks (file module):
+
+| Risk ID | Threat                              | L | I | Score | Priority | Justification                                                                 |
+|---------|-------------------------------------|--:|--:|------:|----------|------------------------------------------------------------------------------|
+| R1      | Forged authentication token         | 4 | 5 |    20 | Critical | Allows bypass of access control to protected files                           |
+| R2      | Authorization bypass                | 4 | 5 |    20 | Critical | Users access files without proper enrollment or permissions                  |
+| R3      | Unauthorized file download          | 4 | 5 |    20 | Critical | Exposure of restricted academic materials                                    |
+| R4      | Direct file access                  | 4 | 5 |    20 | Critical | Bypass of application logic to access stored files                           |
+| R5      | Malicious file upload               | 3 | 5 |    15 | High     | Upload of malware or harmful files affecting system/users                    |
+| R6      | Unauthorized upload                 | 3 | 5 |    15 | High     | Students uploading content without permissions                               |
+| R7      | Unauthorized metadata access        | 3 | 5 |    15 | High     | Exposure of sensitive file-related information                               |
+| R8      | Metadata manipulation               | 3 | 5 |    15 | High     | Tampering with file ownership or permissions                                 |
+| R9      | Metadata leakage                    | 3 | 5 |    15 | High     | Disclosure of internal paths or sensitive attributes                         |
+| R10     | File modification                   | 3 | 5 |    15 | High     | Integrity compromise of stored files                                         |
+| R11     | Large file upload attack            | 3 | 3 |     9 | Medium   | Resource exhaustion through large uploads                                    |
+| R12     | Download flooding                   | 3 | 3 |     9 | Medium   | System overload via repeated download requests                               |
+
+Risk acceptance criteria:
+
+* Critical risks must be mitigated before deployment.
+* High risks require immediate mitigation.
+* Medium risks can be monitored with planned controls.
+
 
 ---
 
@@ -603,6 +704,37 @@ Implementation order:
 2. Confidentiality and integrity protections (R3, R4, R6)
 3. Observability and accountability controls (R5, R8)
 4. Availability controls and resilience (R7)
+
+### Chat Management Mitigations (Level 2)
+
+Priority mitigation plan:
+
+| Risk ID | Key Mitigations                                                                 | Feasibility | Priority  |
+|---------|----------------------------------------------------------------------------------|-------------|-----------|
+| R1      | RBAC enforcement on chat room actions, role validation per request              | High        | Immediate |
+| R2      | Access control checks on message retrieval (enrollment + membership validation) | High        | Immediate |
+| R3      | Immutable message storage or audit logging for message edits                    | Medium      | Immediate |
+| R4      | TLS enforcement and message integrity validation                                | High        | Immediate |
+| R5      | Input sanitization and output encoding (XSS prevention)                          | High        | Immediate |
+| R6      | Rate limiting per user/chat room                                                | High        | Immediate |
+| R7      | Anti-spam controls and message throttling                                       | Medium      | Planned   |
+
+### File Management Mitigations (Level 2)
+
+Priority mitigation plan:
+
+| Risk ID | Key Mitigations                                                                                  | Feasibility | Priority  |
+|---------|---------------------------------------------------------------------------------------------------|-------------|-----------|
+| R1      | Strong JWT validation (issuer, audience, expiration)                                             | High        | Immediate |
+| R2      | Strict authorization checks for file access (ownership + enrollment validation)                  | High        | Immediate |
+| R3      | Indirect file access via API (no direct storage exposure)                                         | High        | Immediate |
+| R4      | Signed URLs with expiration for secure file downloads                                             | Medium      | Immediate |
+| R5      | File upload validation (type, size, MIME)                                                         | High        | Immediate |
+| R6      | Malware scanning on upload                                                                       | Medium      | Immediate |
+| R7      | Metadata integrity validation and access control                                                  | Medium      | Immediate |
+| R8      | Rate limiting and quota on uploads/downloads                                                      | High        | Immediate |
+
+---
 
 ## 14. Secure Design Principles
 
