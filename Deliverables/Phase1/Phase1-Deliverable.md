@@ -226,15 +226,12 @@ obligations (confidentiality, integrity, accountability).
 
 ### 6.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)
 
-* SR1: Passwords must be stored using strong hashing algorithms.
-* SR2: The system must enforce secure authentication mechanisms.
+* SR1: Passwords must be stored using strong, salted hashing algorithms.
+* SR2: The system must enforce secure authentication mechanisms using validated credentials and protected session/token mechanisms.
 * SR3: The system must prevent brute force attacks.
 * SR4: The system must enforce role-based access control (RBAC).
 * SR5: Users must only access resources within their permissions.
 * SR6: Access to course data must require enrollment validation.
-* SR18: The system shall enforce an inactivity session timeout to automatically terminate sessions after a defined period of user inactivity
-* SR19: The system shall enforce an absolute maximum session lifetime, after which users must re-authenticate regardless of activity.
-* SR20: The system shall define a maximum number of concurrent active sessions per user account.  
 
 Justification:
 
@@ -285,6 +282,16 @@ Justification:
 Justification:
 
 * Provides non-repudiation and incident investigation capability while preserving confidentiality.
+
+### 6.7 Session Management (ASVS V3)
+
+* SR18: The system shall enforce an inactivity session timeout to automatically terminate sessions after a defined period of user inactivity.
+* SR19: The system shall enforce an absolute maximum session lifetime, after which users must re-authenticate regardless of activity.
+* SR20: The system shall define a maximum number of concurrent active sessions per user account.
+
+Justification:
+
+* Reduces session hijacking risk and limits exposure from stale or excessive concurrent sessions.
 
 ---
 
