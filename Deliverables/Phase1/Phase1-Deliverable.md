@@ -17,46 +17,47 @@
     * [Communication](#communication)
     * [Logging](#logging)
   * [4. Non-Functional Requirements](#4-non-functional-requirements)
-  * [5. Security Requirements](#5-security-requirements)
-    * [5.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)](#51-authentication-and-access-control-threat-driven--asvs-v2v4)
-    * [5.2 Data Security and Data Handling (Threat-driven + ASVS V8)](#52-data-security-and-data-handling-threat-driven--asvs-v8)
-    * [5.3 Communication Security (ASVS V9)](#53-communication-security-asvs-v9)
-    * [5.4 Input Validation and Request Integrity (ASVS V5)](#54-input-validation-and-request-integrity-asvs-v5)
-    * [5.5 Third-Party Components (ASVS V14 + supply-chain best practice)](#55-third-party-components-asvs-v14--supply-chain-best-practice)
-    * [5.6 Logging and Monitoring (ASVS V7)](#56-logging-and-monitoring-asvs-v7)
-  * [6. Abuse Cases](#6-abuse-cases)
-  * [7. General Design](#7-general-design)
-  * [8. Domain Model](#8-domain-model)
+  * [5. Use Case Diagram](#5-use-case-diagram)
+  * [6. Security Requirements](#6-security-requirements)
+    * [6.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)](#61-authentication-and-access-control-threat-driven--asvs-v2v4)
+    * [6.2 Data Security and Data Handling (Threat-driven + ASVS V8)](#62-data-security-and-data-handling-threat-driven--asvs-v8)
+    * [6.3 Communication Security (ASVS V9)](#63-communication-security-asvs-v9)
+    * [6.4 Input Validation and Request Integrity (ASVS V5)](#64-input-validation-and-request-integrity-asvs-v5)
+    * [6.5 Third-Party Components (ASVS V14 + supply-chain best practice)](#65-third-party-components-asvs-v14--supply-chain-best-practice)
+    * [6.6 Logging and Monitoring (ASVS V7)](#66-logging-and-monitoring-asvs-v7)
+  * [7. Abuse Cases](#7-abuse-cases)
+  * [8. General Design](#8-general-design)
+  * [9. Domain Model](#9-domain-model)
     * [Main Aggregates (Aggregate Roots):](#main-aggregates-aggregate-roots)
     * [Supporting Entities (Internal to Aggregates):](#supporting-entities-internal-to-aggregates)
     * [Domain Model Diagram](#domain-model-diagram)
-  * [9. Data Flow Diagrams](#9-data-flow-diagrams)
-    * [9.1 DFD Level 0](#91-dfd-level-0)
-    * [9.2 DFD Level 1](#92-dfd-level-1)
-    * [9.3 DFD Level 2 - User Management](#93-dfd-level-2---user-management)
-    * [9.3 DFD Level 2 - Course](#93-dfd-level-2---course)
-    * [9.4 DFD Level 2 - Assignment](#94-dfd-level-2---assignment)
-    * [9.3 DFD Level 2 - Chat](#93-dfd-level-2---chat)
-    * [9.4 DFD Level 2 - File](#94-dfd-level-2---file)
-  * [10. Threat Modeling](#10-threat-modeling)
+  * [10. Data Flow Diagrams](#10-data-flow-diagrams)
+    * [10.1 DFD Level 0](#101-dfd-level-0)
+    * [10.2 DFD Level 1](#102-dfd-level-1)
+    * [10.3 DFD Level 2 - User Management](#103-dfd-level-2---user-management)
+    * [10.3 DFD Level 2 - Course](#103-dfd-level-2---course)
+    * [10.4 DFD Level 2 - Assignment](#104-dfd-level-2---assignment)
+    * [10.3 DFD Level 2 - Chat](#103-dfd-level-2---chat)
+    * [10.4 DFD Level 2 - File](#104-dfd-level-2---file)
+  * [11. Threat Modeling](#11-threat-modeling)
     * [System-Wide Threat Modeling (Level 0)](#system-wide-threat-modeling-level-0)
     * [User Management Threat Modeling (Level 2)](#user-management-threat-modeling-level-2)
     * [Course and Assignment Management Threat Modeling (Level 2)](#course-and-assignment-management-threat-modeling-level-2)
-  * [11. Risk Assessment](#11-risk-assessment)
-    * [11.2 System-Wide Risk Assessment (Level 0)](#112-system-wide-risk-assessment-level-0)
-    * [11.3 User Management Risk Assessment (Level 2)](#113-user-management-risk-assessment-level-2)
+  * [12. Risk Assessment](#12-risk-assessment)
+    * [System-Wide Risk Assessment (Level 0)](#system-wide-risk-assessment-level-0)
+    * [User Management Risk Assessment (Level 2)](#user-management-risk-assessment-level-2)
     * [Course and Assignment Management Risk Assessment](#course-and-assignment-management-risk-assessment)
-  * [12. Mitigations](#12-mitigations)
+  * [13. Mitigations](#13-mitigations)
     * [System-Wide Mitigations (Level 0)](#system-wide-mitigations-level-0)
     * [User Management Mitigations (Level 2)](#user-management-mitigations-level-2)
     * [Course and Assignment Management Mitigations](#course-and-assignment-management-mitigations)
-  * [13. Secure Design Principles](#13-secure-design-principles)
-  * [14. Secure Architecture](#14-secure-architecture)
-  * [15. Security Test Planning](#15-security-test-planning)
+  * [14. Secure Design Principles](#14-secure-design-principles)
+  * [15. Secure Architecture](#15-secure-architecture)
+  * [16. Security Test Planning](#16-security-test-planning)
     * [System-Wide Security Test Planning (Level 0)](#system-wide-security-test-planning-level-0)
     * [User Management Security Test Planning (Level 2)](#user-management-security-test-planning-level-2)
     * [Course and Assignment Management Security Test Planning](#course-and-assignment-management-security-test-planning)
-  * [16. Traceability Matrix](#16-traceability-matrix)
+  * [17. Traceability Matrix](#17-traceability-matrix)
     * [System-Wide Traceability Matrix (Level 0)](#system-wide-traceability-matrix-level-0)
     * [User Management Traceability Matrix (Level 2)](#user-management-traceability-matrix-level-2)
     * [Course and Assignment Management Traceability Matrix (Level 2)](#course-and-assignment-management-traceability-matrix-level-2)
@@ -162,12 +163,18 @@ which serves as the primary gateway for data exchange and functional execution.
 
 ---
 
-## 5. Security Requirements
+## 5. Use Case Diagram
+
+![Use Case Diagram](analysis-and-requirements/use-case-diagram.png)
+
+---
+
+## 6. Security Requirements
 
 Requirements are justified by threat model results (STRIDE), OWASP ASVS good practices, and academic-record protection 
 obligations (confidentiality, integrity, accountability).
 
-### 5.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)
+### 6.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)
 
 * SR1: Passwords must be stored using strong hashing algorithms.
 * SR2: The system must enforce secure authentication mechanisms.
@@ -180,7 +187,7 @@ Justification:
 
 * Addresses spoofing and elevation-of-privilege threats (forged token, credential stuffing, role escalation, authorization bypass).
 
-### 5.2 Data Security and Data Handling (Threat-driven + ASVS V8)
+### 6.2 Data Security and Data Handling (Threat-driven + ASVS V8)
 
 * SR7: Sensitive data must not be exposed in logs.
 * SR8: File storage must be secured outside public directories.
@@ -190,7 +197,7 @@ Justification:
 
 * Addresses information-disclosure and tampering threats on grades, submissions, enrollment data, and stored files.
 
-### 5.3 Communication Security (ASVS V9)
+### 6.3 Communication Security (ASVS V9)
 
 * SR13: All communication must be secured using HTTPS.
 * SR14: Secure headers must be implemented.
@@ -199,7 +206,7 @@ Justification:
 
 * Reduces token/session leakage and data exposure risks in transit.
 
-### 5.4 Input Validation and Request Integrity (ASVS V5)
+### 6.4 Input Validation and Request Integrity (ASVS V5)
 
 * SR10: All inputs must be validated server-side.
 * SR11: File uploads must be validated (type, size, format).
@@ -209,7 +216,7 @@ Justification:
 
 * Addresses SQL injection, malicious payload, and path/file manipulation risks.
 
-### 5.5 Third-Party Components (ASVS V14 + supply-chain best practice)
+### 6.5 Third-Party Components (ASVS V14 + supply-chain best practice)
 
 * SR15: Third-party dependencies must be monitored for vulnerabilities.
 
@@ -217,7 +224,7 @@ Justification:
 
 * Limits exploitability through known vulnerable libraries and transitive dependencies.
 
-### 5.6 Logging and Monitoring (ASVS V7)
+### 6.6 Logging and Monitoring (ASVS V7)
 
 * SR16: The system must log security-relevant events.
 * SR17: Logs must not contain sensitive information.
@@ -226,7 +233,9 @@ Justification:
 
 * Provides non-repudiation and incident investigation capability while preserving confidentiality.
 
-## 6. Abuse Cases
+---
+
+## 7. Abuse Cases
 
 The following abuse cases identify potential scenarios where an attacker attempts to circumvent security controls across
 all system levels (Level 0, 1, and 2):
@@ -258,7 +267,7 @@ all system levels (Level 0, 1, and 2):
 
 ---
 
-## 7. General Design
+## 8. General Design
 
 The system follows a layered architecture designed to enforce security at every level of the application stack, ensuring
 defense-in-depth:
@@ -274,7 +283,7 @@ defense-in-depth:
 
 ---
 
-## 8. Domain Model
+## 9. Domain Model
 
 The domain model is organized into **Aggregates** to ensure data consistency and define clear boundaries between
 different business contexts.
@@ -303,39 +312,39 @@ different business contexts.
 
 ---
 
-## 9. Data Flow Diagrams
+## 10. Data Flow Diagrams
 
-### 9.1 DFD Level 0
+### 10.1 DFD Level 0
 
 ![DFD Level 0](images/DFD%20Level%200%20-%20STRIDE%20diagram.png)
 
-### 9.2 DFD Level 1
+### 10.2 DFD Level 1
 
 ![DFD Level 1](images/Core%20DFD.png)
 
-### 9.3 DFD Level 2 - User Management
+### 10.3 DFD Level 2 - User Management
 
 ![DFD Level 2 - User Management](images/DFD%20Level%202%20-%20User%20Management%20STRIDE%20diagram.png)
 
-### 9.3 DFD Level 2 - Course
+### 10.3 DFD Level 2 - Course
 
 ![DFD Level 2 - Course Management](images/coursedfd.png)
 
-### 9.4 DFD Level 2 - Assignment
+### 10.4 DFD Level 2 - Assignment
 
 ![DFD Level 2 - Assigment Management](images/assignementdfd.png)
 
-### 9.3 DFD Level 2 - Chat
+### 10.3 DFD Level 2 - Chat
 
 ![DFD Level 2 - Chat Management](images/DFD%20Level%202%20-%20Chat%20Management%20STRIDE%20diagram.png)
 
-### 9.4 DFD Level 2 - File
+### 10.4 DFD Level 2 - File
 
 ![DFD Level 2 - File Management](images/DFD%20Level%202%20-%20File%20Management%20STRIDE%20diagram.png)
 
 ---
 
-## 10. Threat Modeling
+## 11. Threat Modeling
 
 Threat modeling was performed using STRIDE for the Level 0, 1 and 2. In Phase 1, for the Level 2 DFDs, it was done for
 the following modules:
@@ -424,7 +433,7 @@ Representative high-risk threats identified:
 
 ---
 
-## 11. Risk Assessment
+## 12. Risk Assessment
 
 Methodology used: Quantitative likelihood-impact scoring with explicit prioritization.
 
@@ -447,7 +456,7 @@ Prioritization rule:
   decisions.
 * High and Critical risks are mandatory mitigation targets for this phase.
 
-### 11.2 System-Wide Risk Assessment (Level 0)
+### System-Wide Risk Assessment (Level 0)
 
 Methodology used: Quantitative likelihood-impact scoring focusing on global trust boundaries and data flows.
 Likelihood (L) is derived from Threat Dragon scores, while Impact (I) is based on the technical severity of the threat.
@@ -461,7 +470,7 @@ Likelihood (L) is derived from Threat Dragon scores, while Impact (I) is based o
 | R5      | Cross-Site Scripting (XSS) via Chat               | 2 | 3 |     6 | Medium   | Malicious scripts sent via chat that can steal session cookies and compromise user accounts in the browser.  |
 | R6      | Unauthorized Access to Student Assignments (BOLA) | 2 | 3 |     6 | Medium   | Lack of explicit validation between Professor ID and Course ID, leading to student privacy breaches.         |
 
-### 11.3 User Management Risk Assessment (Level 2)
+### User Management Risk Assessment (Level 2)
 
 Methodology used: Quantitative likelihood-impact scoring focusing on the identity lifecycle and database integrity.
 Likelihood (L) is derived from Threat Dragon scores, while Impact (I) is based on technical severity.
@@ -505,7 +514,7 @@ Risk acceptance criteria:
 
 ---
 
-## 12. Mitigations
+## 13. Mitigations
 
 ### System-Wide Mitigations (Level 0)
 
@@ -595,7 +604,7 @@ Implementation order:
 3. Observability and accountability controls (R5, R8)
 4. Availability controls and resilience (R7)
 
-## 13. Secure Design Principles
+## 14. Secure Design Principles
 
 These principles are applied across all system levels (Level 0, 1, and 2) to ensure a defense-in-depth strategy:
 
@@ -612,7 +621,7 @@ These principles are applied across all system levels (Level 0, 1, and 2) to ens
 
 ---
 
-## 14. Secure Architecture
+## 15. Secure Architecture
 
 The architecture is designed to separate concerns between layers and enforce security at every trust boundary defined in
 the DFDs:
@@ -629,7 +638,7 @@ the DFDs:
 ---
 
 
-## 15. Security Test Planning
+## 16. Security Test Planning
 
 ### System-Wide Security Test Planning (Level 0)
 
@@ -732,7 +741,7 @@ Traceability standard:
 
 ---
 
-## 16. Traceability Matrix
+## 17. Traceability Matrix
 
 ### System-Wide Traceability Matrix (Level 0)
 
