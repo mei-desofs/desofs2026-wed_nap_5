@@ -1,0 +1,41 @@
+@startuml
+title Component Diagram
+
+skinparam componentStyle uml2
+
+package "Learning More System" {
+
+    component "User Management Module" as UM {
+        [Auth Service]
+        [Profile Manager]
+    }
+
+    component "Course Management Module" as CM {
+        [Content Manager]
+        [Enrollment Service]
+    }
+
+    component "Assignment Module" as AM {
+        [Submission Engine]
+        [Grading Service]
+    }
+
+    component "Communication Module" as COM {
+        [Chat Service]
+    }
+}
+
+' Relacionamentos baseados no teu modelo de domínio
+UM -down-> CM : "provides user identity"
+CM -right-> AM : "links tasks to courses"
+CM -down-> COM : "sets chat room context"
+UM -down-> AM : "validates student identity"
+UM -down-> COM : "identifies message sender"
+
+database "System Database" as DB
+UM --( DB
+CM --( DB
+AM --( DB
+COM --( DB
+
+@enduml

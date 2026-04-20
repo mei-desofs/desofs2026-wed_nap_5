@@ -6,7 +6,6 @@ skinparam shadowing false
 ' USER AGGREGATE
 ' =========================
 package "Aggregate: User" {
-
   class User <<Aggregate Root>> {
     +id: UUID
     +name: String
@@ -21,7 +20,6 @@ package "Aggregate: User" {
 ' COURSE AGGREGATE
 ' =========================
 package "Aggregate: Course" {
-
   class Course <<Aggregate Root>> {
     +id: UUID
     +code: String
@@ -55,10 +53,9 @@ package "Aggregate: Course" {
 }
 
 ' =========================
-' ASSIGNMENT AGGREGATE (CORRIGIDO)
+' ASSIGNMENT AGGREGATE
 ' =========================
 package "Aggregate: Assignment" {
-
   class Assignment <<Aggregate Root>> {
     +id: UUID
     +title: String
@@ -82,7 +79,6 @@ package "Aggregate: Assignment" {
 ' CHAT AGGREGATE
 ' =========================
 package "Aggregate: Chat" {
-
   class ChatRoom <<Aggregate Root>> {
     +id: UUID
     +name: String
@@ -98,15 +94,38 @@ package "Aggregate: Chat" {
 }
 
 ' =========================
+' ENUMS
+' =========================
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum SubmissionStatus {
+  PENDING
+  GRADED
+  LATE
+}
+
+enum ResourceType {
+  PDF
+  VIDEO
+  LINK
+}
+
+' =========================
 ' CROSS-AGGREGATE RELATIONS
 ' =========================
 
-User "1" -- "0..*" Enrollment
-User "1" -- "0..*" Submission : submits >
-
+' Relações de Estrutura
 Course "1" -- "0..*" Assignment
 Course "1" -- "0..*" ChatRoom
+User "1" -- "0..*" Course : "teaches/manages >"
 
-User "1" -- "0..*" ChatMessage : sends >
+' Relações de Interação (Tracejadas)
+User "1" ..> "0..*" Enrollment : "is enrolled via"
+User "1" ..> "0..*" Submission : "submits"
+User "1" ..> "0..*" ChatMessage : "sends"
 
 @enduml

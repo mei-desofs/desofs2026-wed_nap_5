@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor "User" as user
+actor "Admin" as admin
+actor "Professor" as teacher
+actor "Student" as student
+
+admin --|> user
+teacher --|> user
+student --|> user
+
+rectangle "Learning More System" {
+
+  package "Identity & Access" {
+    usecase "Login/Authentication" as login
+    usecase "Create Users" as UC1
+    usecase "Assign Roles" as UC2
+  }
+
+  package "Course Management" {
+    usecase "Manage Courses" as UC4
+    usecase "Enroll in Course" as UC6
+    usecase "View Enrolled Courses" as UC7
+    usecase "Upload Materials" as UC8
+    usecase "Access Materials" as UC9
+  }
+
+  package "Assignments" {
+    usecase "Create Assignments" as UC10
+    usecase "Submit Assignment" as UC12
+    usecase "View Submissions" as UC13
+    usecase "Grade Submissions" as UC14
+  }
+
+  package "Communication" {
+    usecase "Use Course Chat" as UC15
+  }
+}
+
+' Ações comuns a todos (via User)
+user -- login
+user -- UC7
+user -- UC15
+
+' Ações exclusivas do Admin
+admin -- UC1
+admin -- UC2
+
+' Ações do Professor
+teacher -- UC4
+teacher -- UC8
+teacher -- UC10
+teacher -- UC13
+teacher -- UC14
+
+' Ações do Estudante
+student -- UC6
+student -- UC9
+student -- UC12
+
+@enduml
