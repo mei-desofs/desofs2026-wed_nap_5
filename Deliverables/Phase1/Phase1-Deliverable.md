@@ -57,6 +57,8 @@
     * [System-Wide Security Test Planning (Level 0)](#system-wide-security-test-planning-level-0)
     * [User Management Security Test Planning (Level 2)](#user-management-security-test-planning-level-2)
     * [Course and Assignment Management Security Test Planning](#course-and-assignment-management-security-test-planning)
+    * [Chat Security Test Cases](#chat-security-test-cases)
+* [File Security Test Cases](#file-security-test-cases)
   * [17. Traceability Matrix](#17-traceability-matrix)
     * [System-Wide Traceability Matrix (Level 0)](#system-wide-traceability-matrix-level-0)
     * [User Management Traceability Matrix (Level 2)](#user-management-traceability-matrix-level-2)
