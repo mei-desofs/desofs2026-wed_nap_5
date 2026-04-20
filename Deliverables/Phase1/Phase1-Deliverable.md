@@ -791,8 +791,8 @@ Traceability standard:
 
 Threat key:
 
-* L0-R# = Level 0 Threat ID from the System-Wide Risk Assessment table.
-* U-R# = User Management (Level 2) Threat ID from the User Risk Assessment table.
+* L0-R# = Level 0 Threat number from the System-Wide Risk Assessment table.
+* U-R# = User Management (Level 2) Threat number from the User Risk Assessment table.
 * A# = Assignment threat number from docs/diagrams/dfd-level-2-assignement-management-threat-dragon.json
 * C# = Course threat number from docs/diagrams/dfd-level-2-course-management-threat-dragon.json
 

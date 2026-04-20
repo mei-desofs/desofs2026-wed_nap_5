@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User" as User
+actor "Attacker" as Attacker
+
+package "LearningMore: Identity & System Gateway" {
+
+    ' Legitimate Use Cases
+    usecase "Login" as LoginUC
+    usecase "Update Profile/Roles" as ProfileUC
+    usecase "Send Chat Message" as ChatUC
+
+    ' Abuse Cases (Red)
+    usecase "AC3: Brute Force Login Attack" as AC3 #FFCDD2
+    usecase "AC6: Privilege Escalation" as AC6 #FFCDD2
+    usecase "AC8: Chat Spam and Injection" as AC8 #FFCDD2
+    usecase "AC11: Admin Session Hijacking" as AC11 #FFCDD2
+    usecase "AC12: Bulk User Data Exfiltration" as AC12 #FFCDD2
+
+    ' User Connections
+    User --> LoginUC
+    User --> ProfileUC
+    User --> ChatUC
+
+    ' Attacker Connections
+    Attacker --> AC3
+    Attacker --> AC6
+    Attacker --> AC8
+    Attacker --> AC11
+    Attacker --> AC12
+
+    ' Threat Relationships
+    LoginUC -[#red,bold]-> AC3 : threatens
+    LoginUC -[#red,bold]-> AC11 : threatens
+    ProfileUC -[#red,bold]-> AC6 : threatens
+    ProfileUC -[#red,bold]-> AC12 : threatens
+    ChatUC -[#red,bold]-> AC8 : threatens
+}
+@enduml

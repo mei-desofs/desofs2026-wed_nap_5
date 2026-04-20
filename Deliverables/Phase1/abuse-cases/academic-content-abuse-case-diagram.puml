@@ -1,0 +1,49 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Student/Professor" as User
+actor "Attacker" as Attacker
+
+package "LearningMore: Academic & Content Operations" {
+
+    ' Legitimate Use Cases
+    usecase "Submit Assignment" as SubmitUC
+    usecase "Download Materials" as DownloadUC
+    usecase "Enroll in Course" as EnrollUC
+    usecase "View Solutions" as ViewSolUC
+
+    ' Abuse Cases (Red)
+    usecase "AC1: Unauthorized Access to Submissions" as AC1 #FFCDD2
+    usecase "AC2: Unauthorized File Download" as AC2 #FFCDD2
+    usecase "AC4: Malicious File Upload" as AC4 #FFCDD2
+    usecase "AC5: Path Traversal" as AC5 #FFCDD2
+    usecase "AC7: Access Solutions Before Release" as AC7 #FFCDD2
+    usecase "AC9: Unauthorized Course Access" as AC9 #FFCDD2
+    usecase "AC10: Timestamp Manipulation" as AC10 #FFCDD2
+
+    ' User Connections
+    User --> SubmitUC
+    User --> DownloadUC
+    User --> EnrollUC
+    User --> ViewSolUC
+
+    ' Attacker Connections
+    Attacker --> AC1
+    Attacker --> AC2
+    Attacker --> AC4
+    Attacker --> AC5
+    Attacker --> AC7
+    Attacker --> AC9
+    Attacker --> AC10
+
+    ' Threat Relationships
+    SubmitUC -[#red,bold]-> AC4 : threatens
+    SubmitUC -[#red,bold]-> AC10 : threatens
+    DownloadUC -[#red,bold]-> AC2 : threatens
+    DownloadUC -[#red,bold]-> AC5 : threatens
+    EnrollUC -[#red,bold]-> AC9 : threatens
+    ViewSolUC -[#red,bold]-> AC7 : threatens
+    AC1 .[#red].> SubmitUC : threatens
+}
+@enduml
