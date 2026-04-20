@@ -422,7 +422,7 @@ At the architectural level (Level 0), the focus was on external boundaries and t
 LearningMore System as a single entity.
 
 Model artifacts:
-* docs/diagrams/dfd-level-0-threat-dragon.json
+* dfds/dfd-level-0-threat-dragon.json
 
 * **Total threats identified:** 12 threats.
 * **Primary focus:** Trust boundaries between the Public Internet and the System API.
@@ -434,7 +434,7 @@ Model artifacts:
 ### User Management Threat Modeling (Level 2)
 
 Model artifacts:
-* docs/diagrams/dfd-level-2-user-management-threat-dragon.json
+* dfds/dfd-level-2-user-management-threat-dragon.json
 
 Threat model scope decisions:
 
@@ -463,10 +463,10 @@ Representative high-risk threats identified:
 
 Model artifacts:
 
-* docs/diagrams/dfd-level-2-course-management.puml
-* docs/diagrams/dfd-level-2-course-management-threat-dragon.json
-* docs/diagrams/dfd-level-2-assignement-management.puml
-* docs/diagrams/dfd-level-2-assignement-management-threat-dragon.json
+* dfds/dfd-level-2-course-management.puml
+* dfds/dfd-level-2-course-management-threat-dragon.json
+* dfds/dfd-level-2-assignement-management.puml
+* dfds/dfd-level-2-assignement-management-threat-dragon.json
 
 Threat model scope decisions:
 
@@ -491,7 +491,7 @@ Representative high-risk threats identified:
 ### Chat Management Threat Modeling (Level 2)
 
 Model artifacts:
-* docs/diagrams/dfd-level-2-chat-management-threat-dragon.json
+* dfds/dfd-level-2-chat-management-threat-dragon.json
 
 Threat model scope decisions:
 
@@ -515,7 +515,7 @@ Representative high-risk threats identified:
 ### File Management Threat Modeling (Level 2)
 
 Model artifacts:
-* docs/diagrams/dfd-level-2-file-management-threat-dragon.json
+* dfds/dfd-level-2-file-management-threat-dragon.json
 
 Threat model scope decisions:
 
@@ -1013,7 +1013,7 @@ Threat key:
 
 * L0-R# = Level 0 Threat number from the System-Wide Risk Assessment table.
 * U-R# = User Management (Level 2) Threat number from the User Risk Assessment table.
-* A# = Assignment threat number from docs/diagrams/dfd-level-2-assignement-management-threat-dragon.json
-* C# = Course threat number from docs/diagrams/dfd-level-2-course-management-threat-dragon.json
+* A# = Assignment threat number from dfds/dfd-level-2-assignement-management-threat-dragon.json
+* C# = Course threat number from dfds/dfd-level-2-course-management-threat-dragon.json
 
 ---
