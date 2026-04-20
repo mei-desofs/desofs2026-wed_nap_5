@@ -141,15 +141,22 @@ which serves as the primary gateway for data exchange and functional execution.
 * FR13: Professors can view submissions
 * FR14: Professors can grade submissions
 
-### Communication
+## Chat System
 
-* FR15: Users can send messages in course chat
-* FR16: Users can read course messages
+* FR18: The system shall allow creation of course chat rooms
+* FR19: The system shall allow users to send messages in course chat rooms  
+* FR20: The system shall allow users to read messages within their course
+* FR21: The system shall restrict course chat rooms to enrolled students only
+* FR22: The system shall allow moderators (professors) to delete inappropriate messages
+ 
 
-### Logging
+## Logging
 
-* FR17: System logs authentication events
-* FR18: System logs critical actions
+* FR23: The system shall log authentication attempts  
+* FR24: The system shall log critical actions (uploads, submissions, access)
+* FR25: The system shall include timestamp information for all log entries.
+* FR26: The system shall include the user identifier associated with each logged action, where applicable.
+* FR27: The system shall log the origin of requests, including IP address or service identifier.
 
 ---
 
