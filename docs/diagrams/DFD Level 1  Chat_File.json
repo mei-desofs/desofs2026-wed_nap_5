@@ -262,11 +262,11 @@
             },
             "attrs": {
               "text": {
-                "text": "4.0 Chat Management\n"
+                "text": " Chat Management\n\n"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
@@ -358,12 +358,99 @@
             "id": "process-chat",
             "data": {
               "type": "tm.Process",
-              "name": "4.0 Chat Management\n\n",
+              "name": " Chat Managementº\n\n",
               "description": "Handles chat room creation, moderation, and messaging.\n\n",
               "isWebApplication": true,
               "privilegeLevel": "User",
-              "threats": [],
-              "hasOpenThreats": false
+              "threats": [
+                {
+                  "id": "0f179fa0-8e67-4db8-9234-01d7135e9f68",
+                  "title": "Identity impersonation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "An attacker impersonates a student or professor to send messages, join conversations, or access private chats",
+                  "mitigation": "Use strong password policies and implement secure session management",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 1,
+                  "score": "3"
+                },
+                {
+                  "id": "9df4d191-591c-456c-8141-0ad12ffec062",
+                  "title": "Message manipulation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Messages are altered in transit or after being stored ",
+                  "mitigation": "Implement server-side message validation and sanitization",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 2,
+                  "score": "3"
+                },
+                {
+                  "id": "32729479-bb39-47d2-95ec-7416af0846c8",
+                  "title": "Information Disclosure",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Unauthorized users access private chats, group conversations, or sensitive academic discussions.",
+                  "mitigation": "Enforce strict access control per conversation and ensure server-side filtering of messages",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 3,
+                  "score": "3"
+                },
+                {
+                  "id": "f6b7f71b-3ca6-4833-94d2-d38a5bd4a5f3",
+                  "title": "Repudiation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Repudiation",
+                  "description": "A user denies sending or receiving a message in a chat conversation.",
+                  "mitigation": "Maintain immutable audit logs for all messages and store message delivery and read receipts securely",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 4,
+                  "score": "3"
+                },
+                {
+                  "id": "8791d027-428e-4d73-9860-4e549bc95472",
+                  "title": "Denial of Service (DoS)",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "Attackers flood chat with messages, spam, or large payloads causing system overload or degraded performance.",
+                  "mitigation": "Apply rate limiting per user and per chat room ,implement spam detection and filtering mechanisms and limit message size and attachment size",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": "3"
+                },
+                {
+                  "id": "501bc2d5-95a3-467d-84f7-4d47fa7e9d4b",
+                  "title": "Elevation of Privilege",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Elevation of privilege",
+                  "description": "A normal user gains access to admin/moderation capabilities",
+                  "mitigation": "Enforce role-based access control (RBAC) per chat and action type\nValidate permissions server-side for every action",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 6,
+                  "score": "3"
+                }
+              ],
+              "hasOpenThreats": true,
+              "threatFrequency": {
+                "spoofing": 1,
+                "tampering": 1,
+                "repudiation": 1,
+                "informationDisclosure": 1,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 1
+              }
             }
           },
           {
@@ -377,11 +464,11 @@
             },
             "attrs": {
               "text": {
-                "text": "5.0 File Management"
+                "text": "File Management\n \n"
               },
               "body": {
-                "stroke": "#333333",
-                "strokeWidth": 1.5,
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "strokeDasharray": null
               }
             },
@@ -473,12 +560,99 @@
             "id": "process-file",
             "data": {
               "type": "tm.Process",
-              "name": "5.0 File Management\n",
+              "name": "File Management\n\n \n",
               "description": "Handles upload and download of course materials and submissions.",
               "isWebApplication": true,
               "privilegeLevel": "User",
-              "threats": [],
-              "hasOpenThreats": false
+              "threats": [
+                {
+                  "id": "d83cc32b-905c-4033-ae06-7bc8c940fb14",
+                  "title": "Identity impersonation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "An attacker impersonates a valid user (Student or Professor) to upload, download, or delete files they should not access.",
+                  "mitigation": "Use strong password policies and implement secure session management",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": "3"
+                },
+                {
+                  "id": "7d958672-509c-4e1b-84bd-fb3758975eb9",
+                  "title": "File modification or replacement",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "Uploaded files are modified in transit or after storage",
+                  "mitigation": "Validate file content and enforce allowed formats",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 8,
+                  "score": "3"
+                },
+                {
+                  "id": "fe05425e-3ced-4852-ab1d-c5da7c8e7904",
+                  "title": "Repudiation",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Repudiation",
+                  "description": "A user denies uploading, deleting, or downloading a file",
+                  "mitigation": "Maintain immutable audit logs and log file hash , timestamp and user ID for every operation",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": "3"
+                },
+                {
+                  "id": "1ee89e5b-fa7b-4f3b-a3a5-2ca7241cb03a",
+                  "title": "Information Disclosure",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "Unauthorized users access private files such as student submissions, exam materials, or confidential course documents",
+                  "mitigation": "Enforce strict access control per file",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": "3"
+                },
+                {
+                  "id": "6aa066d8-f79b-4533-ac0c-9489efd500d4",
+                  "title": "Denial of Service (DoS)",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "Attackers upload extremely large files or flood upload endpoints, exhausting storage, bandwidth, or processing resources.",
+                  "mitigation": "Enforce file size limits and type restrictions and apply rate limiting on upload endpoints",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": "3"
+                },
+                {
+                  "id": "6203d2f7-cb7a-4718-9f18-265d83614735",
+                  "title": "Elevation of privilege",
+                  "status": "Open",
+                  "severity": "TBD",
+                  "type": "Elevation of privilege",
+                  "description": "A student gains access to professor/admin file operations",
+                  "mitigation": "Enforce strict RBAC for file operations and validate permissions server-side for every request and eparate student vs professor file endpoints",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 12,
+                  "score": ""
+                }
+              ],
+              "hasOpenThreats": true,
+              "threatFrequency": {
+                "spoofing": 1,
+                "tampering": 1,
+                "repudiation": 1,
+                "informationDisclosure": 1,
+                "denialOfService": 1,
+                "elevationOfPrivilege": 1
+              }
             }
           },
           {
@@ -751,7 +925,17 @@
             },
             "target": {
               "cell": "process-chat"
-            }
+            },
+            "vertices": [
+              {
+                "x": 290,
+                "y": 100
+              },
+              {
+                "x": 400,
+                "y": 100
+              }
+            ]
           },
           {
             "shape": "flow",
@@ -1073,8 +1257,8 @@
             },
             "visible": true,
             "shape": "td-text-block",
-            "id": "d2e72cf5-79de-43fd-ac80-feb2bbab22d1",
             "zIndex": 4,
+            "id": "d2e72cf5-79de-43fd-ac80-feb2bbab22d1",
             "data": {
               "type": "tm.Text",
               "name": "Send Messages\n",
@@ -1097,8 +1281,8 @@
             },
             "visible": true,
             "shape": "td-text-block",
-            "id": "6d077e86-e59a-4914-bdac-f9bc4124bc54",
             "zIndex": 5,
+            "id": "6d077e86-e59a-4914-bdac-f9bc4124bc54",
             "data": {
               "type": "tm.Text",
               "name": "Download Materials\n\n",
@@ -1121,8 +1305,8 @@
             },
             "visible": true,
             "shape": "td-text-block",
-            "id": "0e7d3a92-877e-4616-919a-43bd6eedd7ea",
             "zIndex": 6,
+            "id": "0e7d3a92-877e-4616-919a-43bd6eedd7ea",
             "data": {
               "type": "tm.Text",
               "name": "Create/Moderate Chat Rooms\n",
@@ -1145,12 +1329,219 @@
             },
             "visible": true,
             "shape": "td-text-block",
-            "id": "8f595326-26d6-4b60-8fa0-d885d777e60e",
             "zIndex": 7,
+            "id": "8f595326-26d6-4b60-8fa0-d885d777e60e",
             "data": {
               "type": "tm.Text",
               "name": "Upload course materials\n",
               "hasOpenThreats": false
+            }
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Trust Boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [],
+              "containedElements": []
+            },
+            "labels": [
+              "Trust Boundary"
+            ],
+            "id": "db2f632d-3514-490e-b8b2-bb80928b4e04",
+            "source": {
+              "x": 510,
+              "y": 50
+            },
+            "target": {
+              "x": 606,
+              "y": 190
+            },
+            "tools": {
+              "items": [
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead"
+              ],
+              "name": null
+            }
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Trust Boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [],
+              "containedElements": []
+            },
+            "labels": [
+              "Trust Boundary"
+            ],
+            "id": "d83aaa3d-3768-4631-82ea-644f8edd5e41",
+            "source": {
+              "x": 312,
+              "y": 90
+            },
+            "target": {
+              "x": 470,
+              "y": 230
+            },
+            "tools": {
+              "items": [
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead",
+                "boundary",
+                "button-remove",
+                "vertices",
+                "source-arrowhead",
+                "target-arrowhead"
+              ],
+              "name": null
+            }
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Trust Boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [],
+              "containedElements": []
+            },
+            "labels": [
+              "Trust Boundary"
+            ],
+            "id": "f99e1191-2689-47bd-9d1d-dc554c79e8fa",
+            "source": {
+              "x": 310,
+              "y": 310
+            },
+            "target": {
+              "x": 410,
+              "y": 410
+            }
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Trust Boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false,
+              "crossingFlows": [],
+              "containedElements": []
+            },
+            "labels": [
+              "Trust Boundary"
+            ],
+            "id": "d88d0481-1cf3-4e5b-b695-dc6e7b71149a",
+            "source": {
+              "x": 504,
+              "y": 310
+            },
+            "target": {
+              "x": 604,
+              "y": 410
             }
           }
         ]
@@ -1158,6 +1549,6 @@
     ],
     "diagramTop": 1,
     "reviewer": "",
-    "threatTop": 0
+    "threatTop": 12
   }
 }
