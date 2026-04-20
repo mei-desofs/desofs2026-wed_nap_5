@@ -1,5 +1,68 @@
 # Phase 1 – Analysis / Requirements & Design
 
+<!-- TOC -->
+* [Phase 1 – Analysis / Requirements & Design](#phase-1--analysis--requirements--design)
+  * [1. Project Description](#1-project-description)
+  * [2. System Overview](#2-system-overview)
+    * [2.1 Actors](#21-actors)
+    * [2.2 Core Components](#22-core-components)
+    * [2.3 Assets](#23-assets)
+    * [2.4 System Boundary](#24-system-boundary)
+  * [3. Functional Requirements](#3-functional-requirements)
+    * [User Management](#user-management)
+    * [Course Management](#course-management)
+    * [Resource Management](#resource-management)
+    * [Assignment Management](#assignment-management)
+    * [Submission Management](#submission-management)
+    * [Communication](#communication)
+    * [Logging](#logging)
+  * [4. Non-Functional Requirements](#4-non-functional-requirements)
+  * [5. Security Requirements](#5-security-requirements)
+    * [5.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)](#51-authentication-and-access-control-threat-driven--asvs-v2v4)
+    * [5.2 Data Security and Data Handling (Threat-driven + ASVS V8)](#52-data-security-and-data-handling-threat-driven--asvs-v8)
+    * [5.3 Communication Security (ASVS V9)](#53-communication-security-asvs-v9)
+    * [5.4 Input Validation and Request Integrity (ASVS V5)](#54-input-validation-and-request-integrity-asvs-v5)
+    * [5.5 Third-Party Components (ASVS V14 + supply-chain best practice)](#55-third-party-components-asvs-v14--supply-chain-best-practice)
+    * [5.6 Logging and Monitoring (ASVS V7)](#56-logging-and-monitoring-asvs-v7)
+  * [6. Abuse Cases](#6-abuse-cases)
+  * [7. General Design](#7-general-design)
+  * [8. Domain Model](#8-domain-model)
+    * [Main Aggregates (Aggregate Roots):](#main-aggregates-aggregate-roots)
+    * [Supporting Entities (Internal to Aggregates):](#supporting-entities-internal-to-aggregates)
+    * [Domain Model Diagram](#domain-model-diagram)
+  * [9. Data Flow Diagrams](#9-data-flow-diagrams)
+    * [9.1 DFD Level 0](#91-dfd-level-0)
+    * [9.2 DFD Level 1](#92-dfd-level-1)
+    * [9.3 DFD Level 2 - User Management](#93-dfd-level-2---user-management)
+    * [9.3 DFD Level 2 - Course](#93-dfd-level-2---course)
+    * [9.4 DFD Level 2 - Assignment](#94-dfd-level-2---assignment)
+    * [9.3 DFD Level 2 - Chat](#93-dfd-level-2---chat)
+    * [9.4 DFD Level 2 - File](#94-dfd-level-2---file)
+  * [10. Threat Modeling](#10-threat-modeling)
+    * [System-Wide Threat Modeling (Level 0)](#system-wide-threat-modeling-level-0)
+    * [User Management Threat Modeling (Level 2)](#user-management-threat-modeling-level-2)
+    * [Course and Assignment Management Threat Modeling (Level 2)](#course-and-assignment-management-threat-modeling-level-2)
+  * [11. Risk Assessment](#11-risk-assessment)
+    * [11.2 System-Wide Risk Assessment (Level 0)](#112-system-wide-risk-assessment-level-0)
+    * [11.3 User Management Risk Assessment (Level 2)](#113-user-management-risk-assessment-level-2)
+    * [Course and Assignment Management Risk Assessment](#course-and-assignment-management-risk-assessment)
+  * [12. Mitigations](#12-mitigations)
+    * [System-Wide Mitigations (Level 0)](#system-wide-mitigations-level-0)
+    * [User Management Mitigations (Level 2)](#user-management-mitigations-level-2)
+    * [Course and Assignment Management Mitigations](#course-and-assignment-management-mitigations)
+  * [13. Secure Design Principles](#13-secure-design-principles)
+  * [14. Secure Architecture](#14-secure-architecture)
+  * [15. Security Test Planning](#15-security-test-planning)
+    * [System-Wide Security Test Planning (Level 0)](#system-wide-security-test-planning-level-0)
+    * [User Management Security Test Planning (Level 2)](#user-management-security-test-planning-level-2)
+    * [Course and Assignment Management Security Test Planning](#course-and-assignment-management-security-test-planning)
+  * [16. Traceability Matrix](#16-traceability-matrix)
+    * [System-Wide Traceability Matrix (Level 0)](#system-wide-traceability-matrix-level-0)
+    * [User Management Traceability Matrix (Level 2)](#user-management-traceability-matrix-level-2)
+    * [Course and Assignment Management Traceability Matrix (Level 2)](#course-and-assignment-management-traceability-matrix-level-2)
+<!-- TOC -->
+
+
 ## 1. Project Description
 
 LearningMore is a secure academic platform designed to support course management, class materials distribution, assignment
@@ -163,31 +226,51 @@ Justification:
 
 * Provides non-repudiation and incident investigation capability while preserving confidentiality.
 
----
-
 ## 6. Abuse Cases
 
-* AC1: Unauthorized access to submissions
-* AC2: Unauthorized file download
-* AC3: Brute force login
-* AC4: Malicious file upload
-* AC5: Path traversal
-* AC6: Privilege escalation
-* AC7: Access to solutions before release
-* AC8: Chat spam abuse
-* AC9: Unauthorized course access
-* AC10: Submission timestamp manipulation
+The following abuse cases identify potential scenarios where an attacker attempts to circumvent security controls across
+all system levels (Level 0, 1, and 2):
+
+* **AC1 Unauthorized access to submissions**: An actor attempts to view or modify assignments belonging to another
+  student by manipulating resource identifiers.
+* **AC2 Unauthorized file download**: Attempting to bypass authorization checks to download restricted course materials
+  or exam solutions.
+* **AC3 Brute force login**: Automated attempts to guess user credentials at the authentication gateway to gain
+  unauthorized access.
+* **AC4 Malicious file upload**: Uploading executable scripts or malware disguised as assignment submissions to
+  compromise the server or other users.
+* **AC5 Path traversal**: Attempting to access sensitive system files by manipulating file path parameters in download
+  or upload requests.
+* **AC6 Privilege escalation**: A student attempting to gain professor or administrator rights by manipulating
+  role-based tokens or session metadata.
+* **AC7 Access to solutions before release**: Exploiting logic flaws or timing attacks to view assignment solutions
+  before the official release date.
+* **AC8 Chat spam and injection**: Abuse of the communication channel to flood the system or inject malicious scripts
+  such as XSS.
+* **AC9 Unauthorized course access**: Attempting to join or view content of courses where the student is not officially
+  enrolled.
+* **AC10 Submission timestamp manipulation**: Tampering with client-side data or intercepting packets to submit
+  assignments past the deadline.
+* **AC11 Administrative session hijacking**: Capturing session identifiers via network sniffing on unencrypted channels
+  to gain system control.
+* **AC12 Bulk user data exfiltration**: Using injection techniques to extract the entire identity database through user
+  management endpoints.
 
 ---
 
 ## 7. General Design
 
-The system follows a layered architecture:
+The system follows a layered architecture designed to enforce security at every level of the application stack, ensuring
+defense-in-depth:
 
-* API layer (controllers)
-* Application layer (use cases)
-* Domain layer (business logic)
-* Infrastructure layer (database, storage)
+* API Layer (Controllers): Acts as the first line of defense where all incoming requests are authenticated,
+  rate-limited, and validated against strict input schemas.
+* Application Layer (Use Cases): Enforces business-specific authorization rules, ensuring that the authenticated actor
+  has the required permissions to perform the requested action.
+* Domain Layer (Business Logic): Contains core academic rules, such as enrollment validations and grade integrity
+  checks, independent of external interfaces.
+* Infrastructure Layer (Database and Storage): Provides secure data persistence with encryption at rest and isolated
+  file storage accessible only via secure internal channels.
 
 ---
 
@@ -263,10 +346,28 @@ the following modules:
 * Chat Management
 * File Management
 
+The detailed threat modeling reports, including the generated JSON files and threat descriptions, can be found in the
+threat-model-reports folder.
+
+
+### System-Wide Threat Modeling (Level 0)
+
+At the architectural level (Level 0), the focus was on external boundaries and the flow between the User (Actor) and the
+LearningMore System as a single entity.
+
+Model artifacts:
+* docs/diagrams/dfd-level-0-threat-dragon.json
+
+* **Total threats identified:** 12 threats.
+* **Primary focus:** Trust boundaries between the Public Internet and the System API.
+* **Key findings:** * Identity Spoofing (due to the public-facing authentication endpoint).
+  * Denial of Service (targeting the entire API availability).
+  * Information Disclosure (leakage of metadata via HTTP headers).
+
+
 ### User Management Threat Modeling (Level 2)
 
 Model artifacts:
-
 * docs/diagrams/dfd-level-2-user-management-threat-dragon.json
 
 Threat model scope decisions:
@@ -406,7 +507,7 @@ Risk acceptance criteria:
 
 ## 12. Mitigations
 
-### System-Wide (Level 0) Mitigations
+### System-Wide Mitigations (Level 0)
 
 Mitigations for Level 0 focus on securing the external trust boundaries and ensuring the integrity of global data flows
 between actors and the platform.
@@ -436,7 +537,7 @@ are secured before internal flows are refined:
    context.
 
 
-### User Management (Level 2) Mitigations
+### User Management Mitigations (Level 2)
 
 Focused on the identity lifecycle, protecting the user database, and ensuring the integrity of administrative privilege
 commands.
@@ -494,29 +595,90 @@ Implementation order:
 3. Observability and accountability controls (R5, R8)
 4. Availability controls and resilience (R7)
 
----
+## 13. Secure Design Principles
 
-## 13. Secure Design
+These principles are applied across all system levels (Level 0, 1, and 2) to ensure a defense-in-depth strategy:
 
-* Enforce server-side authorization
-* Validate all inputs
-* Use secure file storage
-* Apply least privilege principle
-* Deny access by default
+* Enforce Server-side Authorization: Every request is validated at the API level (User, Course, and Assignment
+  services), ensuring that client-side checks are never trusted.
+* Validate All Inputs: Strict schema validation for all incoming data (JSON payloads, query parameters) to prevent
+  injection attacks such as SQLi and XSS.
+* Use Secure File Storage: All uploaded materials and assignments are stored in isolated buckets with no direct public
+  access, using secure retrieval methods for authorized users.
+* Apply Least Privilege Principle: Users including Students, Professors, and Admins are granted only the minimum
+  permissions necessary for their specific roles.
+* Deny Access by Default: Any request without a valid and authorized session or token is rejected by the gateway before
+  reaching the internal services.
 
 ---
 
 ## 14. Secure Architecture
 
-The architecture separates concerns between layers and enforces:
+The architecture is designed to separate concerns between layers and enforce security at every trust boundary defined in
+the DFDs:
 
-* controlled access to resources
-* secure communication
-* isolation of sensitive components
+* Controlled Access to Resources: Identity is managed by a dedicated User Management service at Level 2, which acts as
+  the single source of truth for authentication and role verification.
+* Secure Communication: All data flows between external actors and the system at Level 0, and between internal processes
+  at Level 1, are encrypted using TLS 1.3.
+* Isolation of Sensitive Components: The database is isolated from direct external access, reachable only by application
+  services through secure internal channels to protect user and academic data.
+* Trust Boundary Enforcement: Every transition between an external entity and a system process is protected by a
+  mandatory authentication and authorization gate.
 
 ---
 
+
 ## 15. Security Test Planning
+
+### System-Wide Security Test Planning (Level 0)
+
+The security testing for Level 0 focuses on the platform's perimeter, public entry points, and the security of data in
+transit across global trust boundaries.
+
+**Abuse cases in scope for Phase 1 (Perimeter):**
+
+* **AC11 Administrative session hijacking:** Attempting to capture and reuse admin session tokens via unencrypted or
+  weak network channels.
+* **AC14 Authentication service exhaustion:** Flooding the login and registration gateway to cause a system-wide denial
+  of service (DoS).
+* **AC16 Global path traversal:** Attempting to access unauthorized system files through public-facing data flows.
+
+**Specific test types:**
+
+* **Network Boundary Tests:** Verification of TLS 1.3 enforcement, HSTS header presence, and automatic redirection of
+  plaintext HTTP.
+* **Availability & Resilience Tests:** Validation of rate limiting per IP and global DDoS protection mechanisms under
+  simulated flood.
+* **Perimeter Integrity Tests:** Scanning for open ports and verifying that only authorized endpoints are exposed to
+  external entities.
+
+
+### User Management Security Test Planning (Level 2)
+
+Testing for the User Management module is centered on the integrity of the identity lifecycle, the protection of
+sensitive user data, and the prevention of privilege escalation.
+
+**Abuse cases in scope for Phase 1 (Identity):**
+
+* **AC12 Bulk user data exfiltration:** Using SQL injection techniques on Name/Email fields to dump the entire identity
+  database.
+* **AC13 Unauthorized privilege grant:** Attempting to modify role-assignment packets in transit to elevate a Student
+  account to Admin status.
+* **AC15 Account recovery takeover:** Tampering with profile update requests to redirect recovery emails to an
+  attacker-controlled address.
+
+**Specific test types:**
+
+* **Identity Lifecycle Tests:** Validation of secure registration flows, verification of Argon2/BCrypt hashing strength,
+  and profile update integrity.
+* **Privilege Logic Tests:** Negative testing of role-assignment commands and RBAC enforcement on administrative API
+  endpoints.
+* **Credential Protection Tests:** Verification of "Secure" and "HttpOnly" flags on all session-related cookies and
+  internal database connection strings.
+* **Audit Trail Tests:** Ensuring that every Create, Update, or Delete (CUD) action on a user profile generates a
+  non-repudiable log entry.
+
 
 ### Course and Assignment Management Security Test Planning
 
@@ -574,29 +736,29 @@ Traceability standard:
 
 ### System-Wide Traceability Matrix (Level 0)
 
-| Requirement                     | Threat(s) | Mitigation(s)                             | Security Test(s)                                   |
-|:--------------------------------|:----------|:------------------------------------------|:---------------------------------------------------|
-| SR18 Centralized Authentication | L0-R1     | OAuth2/OpenID Connect implementation      | ST-16 Bypass login screen attempt rejection        |
-| SR19 Transport Layer Security   | L0-R2     | Mandatory TLS 1.3 and HSTS                | ST-17 Interception attempt on non-HTTPS traffic    |
-| SR20 Global Rate Limiting       | L0-R3     | DDoS protection and IP-based throttling   | ST-18 Service availability under simulated flood   |
-| SR21 Global File Integrity      | L0-R4     | Virus scanning and extension whitelisting | ST-19 Rejection of executable scripts in uploads   |
-| SR22 Content Security Policy    | L0-R5     | Strong CSP and output encoding            | ST-20 Script injection in chat block validation    |
-| SR23 BOLA Validation (Global)   | L0-R6     | Actor-to-resource ownership checks        | ST-21 Professor accessing non-assigned course data |
+| Requirement                    | Threat(s) | Mitigation(s)                             | Security Test(s)                                  |
+|:-------------------------------|:----------|:------------------------------------------|:--------------------------------------------------|
+| SR1 Centralized Authentication | L0-R1     | OAuth2/OpenID Connect implementation      | ST-1 Bypass login screen attempt rejection        |
+| SR2 Transport Layer Security   | L0-R2     | Mandatory TLS 1.3 and HSTS                | ST-2 Interception attempt on non-HTTPS traffic    |
+| SR3 Global Rate Limiting       | L0-R3     | DDoS protection and IP-based throttling   | ST-3 Service availability under simulated flood   |
+| SR4 Global File Integrity      | L0-R4     | Virus scanning and extension whitelisting | ST-4 Rejection of executable scripts in uploads   |
+| SR5 Content Security Policy    | L0-R5     | Strong CSP and output encoding            | ST-5 Script injection in chat block validation    |
+| SR6 BOLA Validation (Global)   | L0-R6     | Actor-to-resource ownership checks        | ST-6 Professor accessing non-assigned course data |
 
 ### User Management Traceability Matrix (Level 2)
 
-| Requirement                    | Threat(s)  | Mitigation(s)                               | Security Test(s)                                        |
-|:-------------------------------|:-----------|:--------------------------------------------|:--------------------------------------------------------|
-| SR24 SQL Injection Protection  | U-R1       | Parameterized queries (Prepared Statements) | ST-22 SQL payload injection in Name/Email fields        |
-| SR25 Data-at-Rest Protection   | U-R2       | AES-256 encryption for user database        | ST-23 Validation of encrypted state in DB storage       |
-| SR26 Secure Password Storage   | U-R2, U-R4 | Argon2 or BCrypt hashing                    | ST-24 Verification of high-entropy hash format          |
-| SR27 Secure Admin Channel      | U-R3, U-R6 | mTLS or Signed requests for admin actions   | ST-25 Rejection of unsigned role-change commands        |
-| SR28 Least Privilege RBAC      | U-R5       | Strict role-based access validation         | ST-26 Student account role-escalation attempt           |
-| SR29 Internal Traffic Security | U-R4       | Internal TLS between App and DB             | ST-27 Sniffing internal DB traffic for cleartext hashes |
-| SR30 Account Creation Guard    | U-R7       | Server-side validation of new user packets  | ST-28 Modification of 'UserRole' in registration packet |
-| SR31 Brute Force Protection    | U-R8       | Progressive lockout and CAPTCHA             | ST-29 Automatic IP lockout after X failed logins        |
-| SR32 Administrative Auditing   | U-R9       | Immutable logging for all CUD operations    | ST-30 Verification of audit trail for user deletion     |
-| SR33 Profile Integrity         | U-R10      | HMAC/Integrity checks for profile updates   | ST-31 Tampering with recovery email in transit          |
+| Requirement                   | Threat(s)  | Mitigation(s)                               | Security Test(s)                                       |
+|:------------------------------|:-----------|:--------------------------------------------|:-------------------------------------------------------|
+| SR1 SQL Injection Protection  | U-R1       | Parameterized queries (Prepared Statements) | ST-1 SQL payload injection in Name/Email fields        |
+| SR2 Data-at-Rest Protection   | U-R2       | AES-256 encryption for user database        | ST-2 Validation of encrypted state in DB storage       |
+| SR3 Secure Password Storage   | U-R2, U-R4 | Argon2 or BCrypt hashing                    | ST-3 Verification of high-entropy hash format          |
+| SR4 Secure Admin Channel      | U-R3, U-R6 | mTLS or Signed requests for admin actions   | ST-4 Rejection of unsigned role-change commands        |
+| SR5 Least Privilege RBAC      | U-R5       | Strict role-based access validation         | ST-5 Student account role-escalation attempt           |
+| SR6 Internal Traffic Security | U-R4       | Internal TLS between App and DB             | ST-6 Sniffing internal DB traffic for cleartext hashes |
+| SR7 Account Creation Guard    | U-R7       | Server-side validation of new user packets  | ST-7 Modification of 'UserRole' in registration packet |
+| SR8 Brute Force Protection    | U-R8       | Progressive lockout and CAPTCHA             | ST-8 Automatic IP lockout after X failed logins        |
+| SR9 Administrative Auditing   | U-R9       | Immutable logging for all CUD operations    | ST-9 Verification of audit trail for user deletion     |
+| SR10 Profile Integrity        | U-R10      | HMAC/Integrity checks for profile updates   | ST-10 Tampering with recovery email in transit         |
 
 
 ### Course and Assignment Management Traceability Matrix (Level 2)
