@@ -14,9 +14,14 @@
     * [Resource Management](#resource-management)
     * [Assignment Management](#assignment-management)
     * [Submission Management](#submission-management)
-  * [Chat System](#chat-system)
-  * [Logging](#logging)
+    * [Chat System](#chat-system)
+    * [Logging](#logging)
   * [4. Non-Functional Requirements](#4-non-functional-requirements)
+    * [Performance and Scalability](#performance-and-scalability)
+    * [Reliability and Consistency](#reliability-and-consistency)
+    * [Security and Auditing](#security-and-auditing)
+    * [Maintainability and Quality](#maintainability-and-quality)
+    * [Portability and Deployment](#portability-and-deployment)
   * [5. Use Case Diagram](#5-use-case-diagram)
   * [6. Security Requirements](#6-security-requirements)
     * [6.1 Authentication and Access Control (Threat-driven + ASVS V2/V4)](#61-authentication-and-access-control-threat-driven--asvs-v2v4)
@@ -134,30 +139,29 @@ which serves as the primary gateway for data exchange and functional execution.
 
 ### Resource Management
 
-* FR8: Professors can upload class materials
-* FR9: Students can access course materials
+* FR11: The system shall allow professors to upload course materials  
+* FR12: The system shall allow students to access materials for enrolled courses
 
 ### Assignment Management
 
-* FR10: Professors can create assignments
-* FR11: Assignments must have deadlines
+* FR13: The system shall allow professors to create assignments  
+* FR14: The system shall define deadlines for assignments
 
 ### Submission Management
 
-* FR12: Students can submit assignments
-* FR13: Professors can view submissions
-* FR14: Professors can grade submissions
+* FR15: The system shall allow students to submit assignments  
+* FR16: The system shall allow professors to view submissions  
+* FR17: The system shall associate submissions with users and assignments
 
-## Chat System
+### Chat System
 
 * FR18: The system shall allow creation of course chat rooms
 * FR19: The system shall allow users to send messages in course chat rooms  
 * FR20: The system shall allow users to read messages within their course
 * FR21: The system shall restrict course chat rooms to enrolled students only
 * FR22: The system shall allow moderators (professors) to delete inappropriate messages
- 
 
-## Logging
+### Logging
 
 * FR23: The system shall log authentication attempts  
 * FR24: The system shall log critical actions (uploads, submissions, access)
@@ -169,13 +173,42 @@ which serves as the primary gateway for data exchange and functional execution.
 
 ## 4. Non-Functional Requirements
 
-* NFR1: The system must be implemented as a REST API
-* NFR2: The system must use a relational database
-* NFR3: The system must support concurrent users
-* NFR4: The system must ensure data consistency
-* NFR5: The system must support logging and monitoring
-* NFR6: The system must be modular and maintainable
-* NFR7: The system must support automated testing
+### Performance and Scalability
+
+* NFR1: The system shall handle multiple concurrent users without degradation of service quality.
+* NFR2: The REST API shall respond to requests within an acceptable latency (e.g., < 500ms for standard
+  operations).
+* NFR3: The system architecture shall support horizontal or vertical scaling of services to accommodate
+  growth in user load.
+
+### Reliability and Consistency
+
+* NFR4: The system must ensure ACID (Atomicity, Consistency, Isolation, Durability) properties
+  through the use of a relational database.
+* NFR5: The system shall handle failures gracefully, implementing error handling mechanisms to prevent
+  system crashes and data loss.
+
+### Security and Auditing
+
+* NFR6: The system must be developed following secure coding practices (e.g., OWASP guidelines) to
+  mitigate common vulnerabilities.
+* NFR7: The system must maintain secure logs of all authentication events and critical administrative
+  actions for auditing purposes.
+* NFR8: All data in transit must be protected using TLS 1.3 or higher.
+
+### Maintainability and Quality
+
+* NFR9: The codebase must follow a modular architecture (e.g., Layered or Hexagonal) to ensure
+  maintainability and ease of updates.
+* NFR10: The system must support automated testing, achieving a minimum defined threshold for unit
+  and integration test coverage.
+
+### Portability and Deployment
+
+* NFR11: The system must be environment-agnostic, supporting deployment across different infrastructures (
+  e.g., Dockerized environments, Cloud, or On-premise).
+* NFR12: The system must be implemented strictly as a RESTful API, adhering to standard HTTP methods
+  and status codes.
 
 ---
 
