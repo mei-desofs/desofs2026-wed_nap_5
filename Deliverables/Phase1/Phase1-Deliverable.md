@@ -1,4 +1,4 @@
-``# Phase 1 – Analysis / Requirements & Design
+# Phase 1 – Analysis / Requirements & Design
 
 <!-- TOC -->
 * [Phase 1 – Analysis / Requirements & Design](#phase-1--analysis--requirements--design)
@@ -14,8 +14,8 @@
     * [Resource Management](#resource-management)
     * [Assignment Management](#assignment-management)
     * [Submission Management](#submission-management)
-    * [Communication](#communication)
-    * [Logging](#logging)
+  * [Chat System](#chat-system)
+  * [Logging](#logging)
   * [4. Non-Functional Requirements](#4-non-functional-requirements)
   * [5. Use Case Diagram](#5-use-case-diagram)
   * [6. Security Requirements](#6-security-requirements)
@@ -43,22 +43,29 @@
     * [System-Wide Threat Modeling (Level 0)](#system-wide-threat-modeling-level-0)
     * [User Management Threat Modeling (Level 2)](#user-management-threat-modeling-level-2)
     * [Course and Assignment Management Threat Modeling (Level 2)](#course-and-assignment-management-threat-modeling-level-2)
+    * [Chat Management Threat Modeling (Level 2)](#chat-management-threat-modeling-level-2)
+    * [File Management Threat Modeling (Level 2)](#file-management-threat-modeling-level-2)
   * [12. Risk Assessment](#12-risk-assessment)
     * [System-Wide Risk Assessment (Level 0)](#system-wide-risk-assessment-level-0)
     * [User Management Risk Assessment (Level 2)](#user-management-risk-assessment-level-2)
     * [Course and Assignment Management Risk Assessment](#course-and-assignment-management-risk-assessment)
+    * [Chat Management Risk Assessment (Level 2)](#chat-management-risk-assessment-level-2)
+    * [File Management Risk Assessment (Level 2)](#file-management-risk-assessment-level-2)
   * [13. Mitigations](#13-mitigations)
     * [System-Wide Mitigations (Level 0)](#system-wide-mitigations-level-0)
     * [User Management Mitigations (Level 2)](#user-management-mitigations-level-2)
     * [Course and Assignment Management Mitigations](#course-and-assignment-management-mitigations)
+    * [Chat Management Mitigations (Level 2)](#chat-management-mitigations-level-2)
+    * [File Management Mitigations (Level 2)](#file-management-mitigations-level-2)
   * [14. Secure Design Principles](#14-secure-design-principles)
   * [15. Secure Architecture](#15-secure-architecture)
   * [16. Security Test Planning](#16-security-test-planning)
     * [System-Wide Security Test Planning (Level 0)](#system-wide-security-test-planning-level-0)
     * [User Management Security Test Planning (Level 2)](#user-management-security-test-planning-level-2)
     * [Course and Assignment Management Security Test Planning](#course-and-assignment-management-security-test-planning)
-    * [Chat Security Test Cases](#chat-security-test-cases)
-* [File Security Test Cases](#file-security-test-cases)
+    * [Chat and File Management Security Test Planning](#chat-and-file-management-security-test-planning)
+  * [Chat Security Test Cases](#chat-security-test-cases)
+  * [File Security Test Cases](#file-security-test-cases)
   * [17. Traceability Matrix](#17-traceability-matrix)
     * [System-Wide Traceability Matrix (Level 0)](#system-wide-traceability-matrix-level-0)
     * [User Management Traceability Matrix (Level 2)](#user-management-traceability-matrix-level-2)
@@ -579,17 +586,17 @@ Methodology used: Quantitative likelihood-impact scoring focusing on communicati
 
 Top prioritized risks (chat module):
 
-| Risk ID | Threat                                  | L | I | Score | Priority | Justification                                                                 |
-|---------|------------------------------------------|--:|--:|------:|----------|------------------------------------------------------------------------------|
-| R1      | Unauthorized chat room management        | 3 | 5 |    15 | High     | Students may gain control over chat rooms without proper permissions         |
-| R2      | Unauthorized access to chat history      | 3 | 5 |    15 | High     | Exposure of sensitive communication between students and professors          |
-| R3      | Modification of stored chat messages     | 3 | 5 |    15 | High     | Compromises integrity and trust of communication                             |
-| R4      | Message alteration before storage        | 3 | 5 |    15 | High     | Malicious content injected before persistence                                |
-| R5      | Interception of chat history data        | 3 | 5 |    15 | High     | Sensitive data exposure during transmission                                  |
-| R6      | Message manipulation in transit          | 3 | 5 |    15 | High     | Attackers alter messages between client and server                           |
-| R7      | Unauthorized access to chat history      | 3 | 5 |    15 | High     | Unauthorized users retrieving chat data                                      |
-| R8      | User impersonation in chat messages      | 3 | 5 |    15 | High     | Attackers send messages as other users (spoofing)                            |
-| R9      | Chat message flooding                   | 3 | 5 |    15 | High     | System overload and degradation of service availability                      |
+| Risk ID | Threat                               | L | I | Score | Priority | Justification                                                        |
+|---------|--------------------------------------|--:|--:|------:|----------|----------------------------------------------------------------------|
+| R1      | Unauthorized chat room management    | 3 | 5 |    15 | High     | Students may gain control over chat rooms without proper permissions |
+| R2      | Unauthorized access to chat history  | 3 | 5 |    15 | High     | Exposure of sensitive communication between students and professors  |
+| R3      | Modification of stored chat messages | 3 | 5 |    15 | High     | Compromises integrity and trust of communication                     |
+| R4      | Message alteration before storage    | 3 | 5 |    15 | High     | Malicious content injected before persistence                        |
+| R5      | Interception of chat history data    | 3 | 5 |    15 | High     | Sensitive data exposure during transmission                          |
+| R6      | Message manipulation in transit      | 3 | 5 |    15 | High     | Attackers alter messages between client and server                   |
+| R7      | Unauthorized access to chat history  | 3 | 5 |    15 | High     | Unauthorized users retrieving chat data                              |
+| R8      | User impersonation in chat messages  | 3 | 5 |    15 | High     | Attackers send messages as other users (spoofing)                    |
+| R9      | Chat message flooding                | 3 | 5 |    15 | High     | System overload and degradation of service availability              |
 
 Risk acceptance criteria:
 
@@ -603,20 +610,20 @@ Methodology used: Quantitative likelihood-impact scoring focusing on file upload
 
 Top prioritized risks (file module):
 
-| Risk ID | Threat                              | L | I | Score | Priority | Justification                                                                 |
-|---------|-------------------------------------|--:|--:|------:|----------|------------------------------------------------------------------------------|
-| R1      | Forged authentication token         | 4 | 5 |    20 | Critical | Allows bypass of access control to protected files                           |
-| R2      | Authorization bypass                | 4 | 5 |    20 | Critical | Users access files without proper enrollment or permissions                  |
-| R3      | Unauthorized file download          | 4 | 5 |    20 | Critical | Exposure of restricted academic materials                                    |
-| R4      | Direct file access                  | 4 | 5 |    20 | Critical | Bypass of application logic to access stored files                           |
-| R5      | Malicious file upload               | 3 | 5 |    15 | High     | Upload of malware or harmful files affecting system/users                    |
-| R6      | Unauthorized upload                 | 3 | 5 |    15 | High     | Students uploading content without permissions                               |
-| R7      | Unauthorized metadata access        | 3 | 5 |    15 | High     | Exposure of sensitive file-related information                               |
-| R8      | Metadata manipulation               | 3 | 5 |    15 | High     | Tampering with file ownership or permissions                                 |
-| R9      | Metadata leakage                    | 3 | 5 |    15 | High     | Disclosure of internal paths or sensitive attributes                         |
-| R10     | File modification                   | 3 | 5 |    15 | High     | Integrity compromise of stored files                                         |
-| R11     | Large file upload attack            | 3 | 3 |     9 | Medium   | Resource exhaustion through large uploads                                    |
-| R12     | Download flooding                   | 3 | 3 |     9 | Medium   | System overload via repeated download requests                               |
+| Risk ID | Threat                       | L | I | Score | Priority | Justification                                               |
+|---------|------------------------------|--:|--:|------:|----------|-------------------------------------------------------------|
+| R1      | Forged authentication token  | 4 | 5 |    20 | Critical | Allows bypass of access control to protected files          |
+| R2      | Authorization bypass         | 4 | 5 |    20 | Critical | Users access files without proper enrollment or permissions |
+| R3      | Unauthorized file download   | 4 | 5 |    20 | Critical | Exposure of restricted academic materials                   |
+| R4      | Direct file access           | 4 | 5 |    20 | Critical | Bypass of application logic to access stored files          |
+| R5      | Malicious file upload        | 3 | 5 |    15 | High     | Upload of malware or harmful files affecting system/users   |
+| R6      | Unauthorized upload          | 3 | 5 |    15 | High     | Students uploading content without permissions              |
+| R7      | Unauthorized metadata access | 3 | 5 |    15 | High     | Exposure of sensitive file-related information              |
+| R8      | Metadata manipulation        | 3 | 5 |    15 | High     | Tampering with file ownership or permissions                |
+| R9      | Metadata leakage             | 3 | 5 |    15 | High     | Disclosure of internal paths or sensitive attributes        |
+| R10     | File modification            | 3 | 5 |    15 | High     | Integrity compromise of stored files                        |
+| R11     | Large file upload attack     | 3 | 3 |     9 | Medium   | Resource exhaustion through large uploads                   |
+| R12     | Download flooding            | 3 | 3 |     9 | Medium   | System overload via repeated download requests              |
 
 Risk acceptance criteria:
 
@@ -722,12 +729,12 @@ Implementation order:
 Priority mitigation plan:
 
 | Risk ID | Key Mitigations                                                                 | Feasibility | Priority  |
-|---------|----------------------------------------------------------------------------------|-------------|-----------|
+|---------|---------------------------------------------------------------------------------|-------------|-----------|
 | R1      | RBAC enforcement on chat room actions, role validation per request              | High        | Immediate |
 | R2      | Access control checks on message retrieval (enrollment + membership validation) | High        | Immediate |
 | R3      | Immutable message storage or audit logging for message edits                    | Medium      | Immediate |
 | R4      | TLS enforcement and message integrity validation                                | High        | Immediate |
-| R5      | Input sanitization and output encoding (XSS prevention)                          | High        | Immediate |
+| R5      | Input sanitization and output encoding (XSS prevention)                         | High        | Immediate |
 | R6      | Rate limiting per user/chat room                                                | High        | Immediate |
 | R7      | Anti-spam controls and message throttling                                       | Medium      | Planned   |
 
@@ -735,16 +742,16 @@ Priority mitigation plan:
 
 Priority mitigation plan:
 
-| Risk ID | Key Mitigations                                                                                  | Feasibility | Priority  |
-|---------|---------------------------------------------------------------------------------------------------|-------------|-----------|
-| R1      | Strong JWT validation (issuer, audience, expiration)                                             | High        | Immediate |
-| R2      | Strict authorization checks for file access (ownership + enrollment validation)                  | High        | Immediate |
-| R3      | Indirect file access via API (no direct storage exposure)                                         | High        | Immediate |
-| R4      | Signed URLs with expiration for secure file downloads                                             | Medium      | Immediate |
-| R5      | File upload validation (type, size, MIME)                                                         | High        | Immediate |
-| R6      | Malware scanning on upload                                                                       | Medium      | Immediate |
-| R7      | Metadata integrity validation and access control                                                  | Medium      | Immediate |
-| R8      | Rate limiting and quota on uploads/downloads                                                      | High        | Immediate |
+| Risk ID | Key Mitigations                                                                 | Feasibility | Priority  |
+|---------|---------------------------------------------------------------------------------|-------------|-----------|
+| R1      | Strong JWT validation (issuer, audience, expiration)                            | High        | Immediate |
+| R2      | Strict authorization checks for file access (ownership + enrollment validation) | High        | Immediate |
+| R3      | Indirect file access via API (no direct storage exposure)                       | High        | Immediate |
+| R4      | Signed URLs with expiration for secure file downloads                           | Medium      | Immediate |
+| R5      | File upload validation (type, size, MIME)                                       | High        | Immediate |
+| R6      | Malware scanning on upload                                                      | Medium      | Immediate |
+| R7      | Metadata integrity validation and access control                                | Medium      | Immediate |
+| R8      | Rate limiting and quota on uploads/downloads                                    | High        | Immediate |
 
 ---
 
@@ -972,4 +979,3 @@ Threat key:
 * C# = Course threat number from docs/diagrams/dfd-level-2-course-management-threat-dragon.json
 
 ---
-``
