@@ -1,28 +1,37 @@
 package com.grupo.learningmore.domain.chat;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import org.springframework.data.annotation.Id;
+
+import java.util.UUID;
+
+@Entity
+@Getter
 public class ChatRoom {
 
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
     private String name;
+
+    //TODO: verificar se está correto depois de ter a classe
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
 
     public ChatRoom() {
     }
 
-    public ChatRoom(Long id, String name) {
+    public ChatRoom(UUID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {

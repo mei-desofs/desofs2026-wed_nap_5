@@ -2,10 +2,10 @@ package com.grupo.learningmore.domain.chat;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
+import java.util.UUID;
 
 
 @Getter
