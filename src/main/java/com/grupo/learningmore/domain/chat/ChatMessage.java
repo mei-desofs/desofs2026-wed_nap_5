@@ -1,0 +1,47 @@
+package com.grupo.learningmore.domain.chat;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import org.hibernate.validator.constraints.UUID;
+import org.springframework.data.annotation.Id;
+
+import java.util.Date;
+
+
+@Getter
+public class ChatMessage {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private ChatRoom chatRoom;
+    private String content;
+    private Date sentAt;
+
+    public ChatMessage() {
+    }
+
+    public ChatMessage(UUID id, ChatRoom chatRoom, String content, Date sentAt) {
+        this.id = id;
+        this.chatRoom = chatRoom;
+        this.content = content;
+        this.sentAt = sentAt;
+    }
+
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setSentAt(Date sentAt) {
+        this.sentAt = sentAt;
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
+}
