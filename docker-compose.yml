@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: learningmore-postgres
+    environment:
+      POSTGRES_DB: learningmore
+      POSTGRES_USER: learningmore
+      POSTGRES_PASSWORD: learningmore
+    ports:
+      - "5432:5432"
+    volumes:
+      - learningmore_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  learningmore_postgres_data:

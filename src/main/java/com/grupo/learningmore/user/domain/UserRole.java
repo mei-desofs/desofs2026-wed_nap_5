@@ -1,4 +1,4 @@
-package com.grupo.learningmore.domain.user;
+package com.grupo.learningmore.user.domain;
 
 public enum UserRole {
     ADMIN,
