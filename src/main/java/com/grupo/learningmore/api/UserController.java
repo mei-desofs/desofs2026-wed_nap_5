@@ -1,8 +1,9 @@
-package com.grupo.learningmore.user.api;
+package com.grupo.learningmore.api;
 
-import com.grupo.learningmore.user.application.UserService;
-import com.grupo.learningmore.user.domain.User;
-import com.grupo.learningmore.user.domain.UserRole;
+import com.grupo.learningmore.domain.user.User;
+import com.grupo.learningmore.domain.user.User;
+import com.grupo.learningmore.domain.user.UserRole;
+import com.grupo.learningmore.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;

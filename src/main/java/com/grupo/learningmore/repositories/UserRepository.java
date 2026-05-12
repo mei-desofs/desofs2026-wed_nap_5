@@ -1,6 +1,6 @@
-package com.grupo.learningmore.user.infrastructure;
+package com.grupo.learningmore.repositories;
 
-import com.grupo.learningmore.user.domain.User;
+import com.grupo.learningmore.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

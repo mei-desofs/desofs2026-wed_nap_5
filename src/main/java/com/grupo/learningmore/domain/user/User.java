@@ -1,4 +1,4 @@
-package com.grupo.learningmore.user.domain;
+package com.grupo.learningmore.domain.user;
 
 import jakarta.persistence.*;
 
