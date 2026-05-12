@@ -5,6 +5,10 @@ import com.grupo.learningmore.user.domain.User;
 import com.grupo.learningmore.user.domain.UserRole;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.List;
 
 @RestController
@@ -18,11 +22,11 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody CreateUserRequest request) {
+    public User create(@Valid @RequestBody CreateUserRequest request) {
         return service.createUser(
                 request.name(),
                 request.email(),
-                request.passwordHash(),
+                request.password(),
                 request.role()
         );
     }
@@ -33,9 +37,17 @@ public class UserController {
     }
 
     public record CreateUserRequest(
+
+            @NotBlank
             String name,
+
+            @Email
+            @NotBlank
             String email,
-            String passwordHash,
+
+            @NotBlank
+            String password,
+
             UserRole role
     ) {}
 }
