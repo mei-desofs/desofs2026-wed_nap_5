@@ -1,4 +1,5 @@
-/*package com.grupo.learningmore.api;
+/* 
+package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.dto.Request.CreateCourseRequest;
@@ -138,4 +139,4 @@ public class CourseControllerIntegrationTest {
         mockMvc.perform(get("/api/courses/" + course.getId()))
                 .andExpect(status().isNotFound());
     }
-}*/
+}  /* */

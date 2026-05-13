@@ -17,8 +17,10 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 public class ResourceControllerIntegrationTest {
 
     @Autowired
@@ -156,4 +158,4 @@ public class ResourceControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
-}*/
+} */
