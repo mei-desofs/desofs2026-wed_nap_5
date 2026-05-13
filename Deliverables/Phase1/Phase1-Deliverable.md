@@ -392,11 +392,11 @@ different business contexts.
 
 ### DFD Level 2 - Course Management
 
-![DFD Level 2 - Course Management](images/dfd%20level%202%20course%20management.png)
+  ![DFD Level 2 - Course Management](images/DFD%20Level%202%20-%20Course%20Management.png)
 
 ### DFD Level 2 - Assignment Management
 
-![DFD Level 2 - Assigment Management](images/dfd%20level%202%20Assignment%20Management.png)
+![DFD Level 2 - Assigment Management](images/DFD%20Level%202%20-%20Assignment%20Management.png)
 
 ### DFD Level 2 - Chat Management
 
