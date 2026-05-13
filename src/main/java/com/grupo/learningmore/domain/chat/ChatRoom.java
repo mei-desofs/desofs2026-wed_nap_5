@@ -1,8 +1,9 @@
 package com.grupo.learningmore.domain.chat;
 
+import com.grupo.learningmore.domain.course.Course;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
+//import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class ChatRoom {
 
     private String name;
 
-    //TODO: verificar se está correto depois de ter a classe
+     
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;

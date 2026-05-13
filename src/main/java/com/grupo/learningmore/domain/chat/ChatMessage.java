@@ -2,19 +2,24 @@ package com.grupo.learningmore.domain.chat;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
+//import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 import java.util.UUID;
 
 
+@Entity
 @Getter
 public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    
+    @ManyToOne
+    @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
+    
     private String content;
     private Date sentAt;
 

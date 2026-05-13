@@ -1,13 +1,15 @@
 package com.grupo.learningmore.repositories;
 
+import com.grupo.learningmore.domain.enrollment.Enrollment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.UUID;
 
-//TODO: colocar a dependencia depois de ter a classe de dominio Enrollement
 public interface EnrollmentRepository
         extends JpaRepository<Enrollment, UUID> {
 
     boolean existsByUserIdAndCourseId(
             Long userId,
-            Long courseId
+            UUID courseId
     );
 }

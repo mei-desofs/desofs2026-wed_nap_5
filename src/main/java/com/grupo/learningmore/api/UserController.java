@@ -1,7 +1,7 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
-import com.grupo.learningmore.domain.user.User;
+//import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.services.UserService;
 import org.springframework.web.bind.annotation.*;
