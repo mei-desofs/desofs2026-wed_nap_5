@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -27,7 +28,7 @@ public class ChatController {
     @PostMapping("/{chatRoomId}/messages")
     public ResponseEntity<ChatMessageResponse> sendMessage(
             Authentication authentication,
-            @PathVariable Long chatRoomId,
+            @PathVariable UUID chatRoomId,
             @Valid @RequestBody SendMessageRequest request
     ) {
 
@@ -48,7 +49,7 @@ public class ChatController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT') or hasRole('PROFESSOR')")
     @GetMapping("/{chatRoomId}/messages")
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
-            @PathVariable Long chatRoomId
+            @PathVariable UUID chatRoomId
     ) {
 
         return ResponseEntity.ok(

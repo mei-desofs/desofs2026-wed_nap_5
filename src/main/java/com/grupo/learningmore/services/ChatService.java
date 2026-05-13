@@ -40,7 +40,7 @@ public class ChatService {
     @Transactional
     public ChatMessageResponse sendMessage(
             Long userId,
-            Long chatRoomId,
+            UUID chatRoomId,
             SendMessageRequest request
     ) {
 
@@ -76,7 +76,7 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMessageResponse> getMessages(Long chatRoomId) {
+    public List<ChatMessageResponse> getMessages(UUID chatRoomId) {
 
         if (!chatRoomRepository.existsById(chatRoomId)) {
             throw new RuntimeException("Chat room not found");
