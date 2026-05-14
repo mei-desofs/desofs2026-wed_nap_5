@@ -32,4 +32,11 @@ public class EnrollmentService {
                         chatRoom.getCourse().getId()
                 );
     }
+
+    /**
+     * Check if a user is enrolled in a specific course
+     */
+    public boolean isUserEnrolledInCourse(Long userId, UUID courseId) {
+        return enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
+    }
 }
