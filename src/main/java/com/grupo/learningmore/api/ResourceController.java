@@ -3,6 +3,7 @@ package com.grupo.learningmore.api;
 import com.grupo.learningmore.domain.course.Resource;
 import com.grupo.learningmore.dto.Response.ResourceResponse;
 import com.grupo.learningmore.services.ResourceService;
+import com.grupo.learningmore.services.EnrollmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class ResourceController {
 
     private final ResourceService resourceService;
+    private final EnrollmentService enrollmentService;
 
-    public ResourceController(ResourceService resourceService) {
+    public ResourceController(ResourceService resourceService, EnrollmentService enrollmentService) {
         this.resourceService = resourceService;
+        this.enrollmentService = enrollmentService;
     }
 
     @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
@@ -43,7 +46,20 @@ public class ResourceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResourceResponse>> getResourcesByCourse(@PathVariable UUID courseId) {
+    public ResponseEntity<List<ResourceResponse>> getResourcesByCourse(
+            @PathVariable UUID courseId,
+            Authentication authentication
+    ) {
+        // Check if user is authorized to see resources
+        // Students can only see resources if they're enrolled
+        // Professors and Admins can always see resources
+        if (authentication != null && !hasAdminOrProfessorRole(authentication)) {
+            Long userId = Long.parseLong(authentication.getName());
+            if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
+
         List<Resource> resources = resourceService.findByCourseId(courseId);
         List<ResourceResponse> responses = resources.stream()
                 .map(this::mapToResourceResponse)
@@ -54,13 +70,24 @@ public class ResourceController {
     @GetMapping("/{resourceId}")
     public ResponseEntity<ResourceResponse> getResourceById(
             @PathVariable UUID courseId,
-            @PathVariable UUID resourceId
+            @PathVariable UUID resourceId,
+            Authentication authentication
     ) {
         Resource resource = resourceService.findById(resourceId);
 
         // Verify that the resource belongs to the course
         if (!resource.getCourseId().equals(courseId)) {
             return ResponseEntity.notFound().build();
+        }
+
+        // Check if user is authorized to see this resource
+        // Students can only see resources if they're enrolled
+        // Professors and Admins can always see resources
+        if (authentication != null && !hasAdminOrProfessorRole(authentication)) {
+            Long userId = Long.parseLong(authentication.getName());
+            if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         }
 
         return ResponseEntity.ok(mapToResourceResponse(resource));
@@ -93,5 +120,10 @@ public class ResourceController {
                 resource.getUploadedAt(),
                 resource.getUploadedBy()
         );
+    }
+
+    private boolean hasAdminOrProfessorRole(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ROLE_PROFESSOR"));
     }
 }

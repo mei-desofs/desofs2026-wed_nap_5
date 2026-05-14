@@ -15,7 +15,7 @@ public class Enrollment {
     private UUID id;
 
     @Column(nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(nullable = false)
     private UUID courseId;
@@ -26,7 +26,7 @@ public class Enrollment {
     public Enrollment() {
     }
 
-    public Enrollment(Long userId, UUID courseId) {
+    public Enrollment(UUID userId, UUID courseId) {
         this.userId = userId;
         this.courseId = courseId;
         this.enrolledAt = LocalDateTime.now();
@@ -36,7 +36,7 @@ public class Enrollment {
         this.id = id;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 

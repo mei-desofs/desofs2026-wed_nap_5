@@ -47,6 +47,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
     public ResponseEntity<CourseResponse> getCourseById(@PathVariable UUID id) {
         Course course = courseService.findById(id);
         return ResponseEntity.ok(mapToCourseResponse(course));
