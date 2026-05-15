@@ -119,7 +119,7 @@ public class SubmissionServiceTest {
         );
 
         Submission submission = new Submission(
-                assignment.getId(),
+                assignment,
                 studentId,
                 LocalDateTime.now(),
                 SubmissionStatus.PENDING,
@@ -128,7 +128,6 @@ public class SubmissionServiceTest {
         submission.setId(UUID.randomUUID());
 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
-        when(assignmentRepository.findById(assignment.getId())).thenReturn(Optional.of(assignment));
 
         assertThrows(AccessDeniedException.class, () -> submissionService.gradeSubmission(
                 submission.getId(),

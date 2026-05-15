@@ -68,7 +68,7 @@ public class SubmissionService {
         Files.write(storedPath, file.getBytes());
 
         Submission submission = new Submission(
-                assignmentId,
+                assignment,
                 userId,
                 LocalDateTime.now(),
                 SubmissionStatus.PENDING,
@@ -116,8 +116,11 @@ public class SubmissionService {
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
 
-        var assignment = assignmentRepository.findById(submission.getAssignmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+        var assignment = submission.getAssignment();
+
+        if (assignment == null) {
+            throw new IllegalArgumentException("Assignment not found");
+        }
 
         if (!isAdmin && !assignment.getCreatedBy().equals(actorId)) {
             throw new AccessDeniedException("Only the assignment owner can grade submissions");
