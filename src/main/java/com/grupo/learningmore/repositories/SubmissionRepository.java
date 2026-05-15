@@ -21,7 +21,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
      * @param userId the user ID
      * @return optional containing the submission if exists
      */
-    Optional<Submission> findByAssignmentIdAndUserId(UUID assignmentId, Long userId);
+    Optional<Submission> findByAssignmentIdAndUserId(UUID assignmentId, UUID userId);
     
     /**
      * Find all submissions for a specific assignment (with pagination).
@@ -44,7 +44,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
      * @param userId the user ID
      * @return true if submission exists
      */
-    boolean existsByAssignmentIdAndUserId(UUID assignmentId, Long userId);
+    boolean existsByAssignmentIdAndUserId(UUID assignmentId, UUID userId);
     
     /**
      * Find all submissions by a specific user (across all assignments).
@@ -52,7 +52,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
      * @param pageable pagination info
      * @return paginated list of user's submissions
      */
-    Page<Submission> findByUserId(Long userId, Pageable pageable);
+    Page<Submission> findByUserId(UUID userId, Pageable pageable);
     
     /**
      * Find all submissions by a specific user for a specific assignment list.
@@ -62,7 +62,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
      * @return list of submissions
      */
     @Query("SELECT s FROM Submission s WHERE s.userId = :userId AND s.assignmentId IN :assignmentIds")
-    List<Submission> findByUserIdAndAssignmentIdIn(@Param("userId") Long userId, @Param("assignmentIds") List<UUID> assignmentIds);
+    List<Submission> findByUserIdAndAssignmentIdIn(@Param("userId") UUID userId, @Param("assignmentIds") List<UUID> assignmentIds);
     
     /**
      * Find all submissions with a specific status.

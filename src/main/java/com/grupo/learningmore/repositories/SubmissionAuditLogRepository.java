@@ -30,5 +30,5 @@ public interface SubmissionAuditLogRepository extends JpaRepository<SubmissionAu
      * @param actorId the user ID
      * @return list of audit logs
      */
-    List<SubmissionAuditLog> findByActorId(Long actorId);
+    List<SubmissionAuditLog> findByActorId(UUID actorId);
 }

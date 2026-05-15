@@ -24,7 +24,7 @@ public class Submission {
     private UUID assignmentId;
 
     @Column(nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(nullable = false)
     private LocalDateTime submittedAt;
@@ -52,12 +52,12 @@ public class Submission {
     private LocalDateTime updatedAt;
 
     @Column(name = "last_modified_by")
-    private Long lastModifiedBy;
+    private UUID lastModifiedBy;
 
     public Submission() {
     }
 
-    public Submission(UUID assignmentId, Long userId, LocalDateTime submittedAt, SubmissionStatus status, String filePath) {
+    public Submission(UUID assignmentId, UUID userId, LocalDateTime submittedAt, SubmissionStatus status, String filePath) {
         this.assignmentId = assignmentId;
         this.userId = userId;
         this.submittedAt = submittedAt;
@@ -68,7 +68,7 @@ public class Submission {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Submission(UUID id, Long userId, LocalDateTime submittedAt, SubmissionStatus status, String filePath, BigDecimal grade, String feedback) {
+    public Submission(UUID id, UUID userId, LocalDateTime submittedAt, SubmissionStatus status, String filePath, BigDecimal grade, String feedback) {
         this.id = id;
         this.userId = userId;
         this.submittedAt = submittedAt;
@@ -89,7 +89,7 @@ public class Submission {
         this.assignmentId = assignmentId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
@@ -128,7 +128,7 @@ public class Submission {
         this.updatedAt = updatedAt;
     }
 
-    public void setLastModifiedBy(Long lastModifiedBy) {
+    public void setLastModifiedBy(UUID lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
@@ -142,7 +142,7 @@ public class Submission {
      * @param graderId the user ID of the professor grading
      * @throws IllegalStateException if submission is already graded
      */
-    public void grade(BigDecimal grade, String feedback, Long graderId) {
+    public void grade(BigDecimal grade, String feedback, UUID graderId) {
         if (this.status == SubmissionStatus.GRADED) {
             throw new IllegalStateException("Submission already graded");
         }
