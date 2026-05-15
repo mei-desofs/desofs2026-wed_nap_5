@@ -54,7 +54,12 @@ public class ResourceController {
         // Students can only see resources if they're enrolled
         // Professors and Admins can always see resources
         if (authentication != null && !hasAdminOrProfessorRole(authentication)) {
-            Long userId = Long.parseLong(authentication.getName());
+            final long userId;
+            try {
+                userId = Long.parseLong(authentication.getName());
+            } catch (NumberFormatException ex) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
@@ -84,7 +89,12 @@ public class ResourceController {
         // Students can only see resources if they're enrolled
         // Professors and Admins can always see resources
         if (authentication != null && !hasAdminOrProfessorRole(authentication)) {
-            Long userId = Long.parseLong(authentication.getName());
+            final Long userId;
+            try {
+                userId = Long.parseLong(authentication.getName());
+            } catch (NumberFormatException ex) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }

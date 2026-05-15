@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -32,18 +33,24 @@ public class ChatController {
             @Valid @RequestBody SendMessageRequest request
     ) {
 
-        Long userId = Long.parseLong(authentication.getName());
+        try {
+            Long userId = Long.parseLong(authentication.getName());
 
-        ChatMessageResponse response =
-                chatService.sendMessage(
-                        userId,
-                        chatRoomId,
-                        request
-                );
+            ChatMessageResponse response =
+                    chatService.sendMessage(
+                            userId,
+                            chatRoomId,
+                            request
+                    );
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(response);
+        } catch (NumberFormatException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT') or hasRole('PROFESSOR')")

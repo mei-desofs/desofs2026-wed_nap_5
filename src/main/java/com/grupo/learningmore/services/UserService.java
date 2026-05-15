@@ -2,9 +2,7 @@ package com.grupo.learningmore.services;
 
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.repositories.UserRepository;
-import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
-import com.grupo.learningmore.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

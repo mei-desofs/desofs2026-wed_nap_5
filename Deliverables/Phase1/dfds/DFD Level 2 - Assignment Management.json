@@ -1,5 +1,5 @@
 {
-  "version": "2.6.0",
+  "version": "2.6.2",
   "summary": {
     "title": "DFD Level 2 - Assignment Management",
     "owner": "DESOFS Team",
@@ -14,7 +14,7 @@
     ],
     "diagrams": [
       {
-        "version": "2.6.0",
+        "version": "2.6.2",
         "id": 0,
         "title": "Assignment Management",
         "description": "Professor creates assignments, students submit work, and professors grade submissions with authorization, validation, and logging.",
@@ -174,7 +174,19 @@
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
               "providesAuthentication": false,
-              "threats": []
+              "threats": [
+                {
+                  "threatId": "a1b2c3d4-0000-4000-8000-000000010101",
+                  "number": 101,
+                  "title": "Privilege escalation via credential compromise",
+                  "description": "Attacker compromises professor credentials and performs privileged actions (create/modify assignments).",
+                  "mitigation": "Require MFA for professor accounts; monitor and alert on privileged actions; enforce least-privilege RBAC.",
+                  "modelType": "STRIDE",
+                  "type": "Elevation of Privilege",
+                  "severity": "High",
+                  "status": "Open"
+                }
+              ]
             }
           },
           {
@@ -291,7 +303,19 @@
               "reasonOutOfScope": "",
               "hasOpenThreats": false,
               "providesAuthentication": false,
-              "threats": []
+              "threats": [
+                {
+                  "threatId": "b1c2d3e4-0000-4000-8000-000000010102",
+                  "number": 102,
+                  "title": "Credential theft leading to impersonation",
+                  "description": "Stolen student credentials allow impersonation and unauthorized access to submissions or course data.",
+                  "mitigation": "Encourage strong passwords and MFA for students; detect anomalous activity; rate-limit login attempts.",
+                  "modelType": "STRIDE",
+                  "type": "Spoofing",
+                  "severity": "Medium",
+                  "status": "Open"
+                }
+              ]
             }
           },
           {
@@ -305,7 +329,7 @@
             },
             "attrs": {
               "text": {
-                "text": "Validate Access + Enrollment"
+                "text": "Validate Access\n"
               },
               "body": {
                 "stroke": "red",
@@ -401,7 +425,7 @@
             "id": "8a31db7d-b7a4-47db-bf9b-510000000004",
             "data": {
               "type": "tm.Process",
-              "name": "Validate Access + Enrollment\n",
+              "name": "Validate Access\n",
               "description": "Validates JWT, role permissions, and course enrollment before allowing assignment actions.",
               "outOfScope": false,
               "isTrustBoundary": false,
@@ -1322,7 +1346,8 @@
             "shape": "flow",
             "attrs": {
               "line": {
-                "stroke": "#333333",
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "targetMarker": {
                   "name": "block"
                 },
@@ -1343,15 +1368,34 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "isBidirectional": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
               "protocol": "HTTPS",
-              "threats": [],
+              "threats": [
+                {
+                  "id": "0cb8c4a7-2d46-472b-a1b0-25ce572ab0aa",
+                  "title": "Credential theft leading to impersonation",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "Stolen student credentials are used to impersonate the student and access submissions/course data.",
+                  "mitigation": "Strong passwords + MFA, anomaly detection, login rate limiting.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 17,
+                  "score": ""
+                }
+              ],
               "trustBoundaryIds": [
                 "8a31db7d-b7a4-47db-bf9b-510000000003"
-              ]
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             },
             "labels": [
               "Student access request"
@@ -2081,6 +2125,6 @@
     ],
     "diagramTop": 1,
     "reviewer": "",
-    "threatTop": 16
+    "threatTop": 17
   }
 }
