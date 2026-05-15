@@ -21,7 +21,7 @@ CREATE INDEX idx_assignments_deadline ON assignments(deadline);
 CREATE TABLE submissions (
     id UUID PRIMARY KEY,
     assignment_id UUID NOT NULL,
-    user_id BIGINT NOT NULL,
+    user_id UUID NOT NULL,
     submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     file_path VARCHAR(500),
@@ -30,8 +30,10 @@ CREATE TABLE submissions (
     version INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_by BIGINT,
+    last_modified_by UUID,
     FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (last_modified_by) REFERENCES users(id),
     UNIQUE(assignment_id, user_id)
 );
 
@@ -61,11 +63,12 @@ CREATE TABLE submission_audit_logs (
     id UUID PRIMARY KEY,
     submission_id UUID NOT NULL,
     action VARCHAR(50) NOT NULL,
-    actor_id BIGINT NOT NULL,
+    actor_id UUID NOT NULL,
     old_values TEXT,
     new_values TEXT,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (submission_id) REFERENCES submissions(id) ON DELETE CASCADE
+    FOREIGN KEY (submission_id) REFERENCES submissions(id) ON DELETE CASCADE,
+    FOREIGN KEY (actor_id) REFERENCES users(id)
 );
 
 CREATE INDEX idx_submission_audit_logs_submission_id ON submission_audit_logs(submission_id);

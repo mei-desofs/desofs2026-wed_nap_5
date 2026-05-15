@@ -26,7 +26,7 @@ public class SubmissionAuditLog {
     private String action; // CREATE, UPDATE (grade/feedback), DELETE
 
     @Column(nullable = false)
-    private Long actorId; // User who performed the action
+    private UUID actorId; // User who performed the action
 
     @Column(columnDefinition = "TEXT")
     private String oldValues; // JSON representation of previous values
@@ -40,7 +40,7 @@ public class SubmissionAuditLog {
     public SubmissionAuditLog() {
     }
 
-    public SubmissionAuditLog(UUID submissionId, String action, Long actorId, String oldValues, String newValues, LocalDateTime timestamp) {
+    public SubmissionAuditLog(UUID submissionId, String action, UUID actorId, String oldValues, String newValues, LocalDateTime timestamp) {
         this.submissionId = submissionId;
         this.action = action;
         this.actorId = actorId;
@@ -61,7 +61,7 @@ public class SubmissionAuditLog {
         this.action = action;
     }
 
-    public void setActorId(Long actorId) {
+    public void setActorId(UUID actorId) {
         this.actorId = actorId;
     }
 

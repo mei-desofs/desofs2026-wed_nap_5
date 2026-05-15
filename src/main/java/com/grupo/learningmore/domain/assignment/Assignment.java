@@ -176,7 +176,7 @@ public class Assignment {
      * @param userId the user ID
      * @return the submission or null if not found
      */
-    public Submission findSubmissionByUserId(Long userId) {
+    public Submission findSubmissionByUserId(UUID userId) {
         return this.submissions.stream()
                 .filter(submission -> submission.getUserId().equals(userId))
                 .findFirst()

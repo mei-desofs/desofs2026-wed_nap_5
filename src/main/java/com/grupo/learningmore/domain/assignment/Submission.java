@@ -20,15 +20,17 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID assignmentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id", nullable = false)
+    private Assignment assignment;
 
     @Column(nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(nullable = false)
     private LocalDateTime submittedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SubmissionStatus status;
 
@@ -52,13 +54,18 @@ public class Submission {
     private LocalDateTime updatedAt;
 
     @Column(name = "last_modified_by")
-    private Long lastModifiedBy;
+    private UUID lastModifiedBy;
 
     public Submission() {
     }
 
-    public Submission(UUID assignmentId, Long userId, LocalDateTime submittedAt, SubmissionStatus status, String filePath) {
-        this.assignmentId = assignmentId;
+    public Submission(Assignment assignment,
+                      UUID userId,
+                      LocalDateTime submittedAt,
+                      SubmissionStatus status,
+                      String filePath) {
+
+        this.assignment = assignment;
         this.userId = userId;
         this.submittedAt = submittedAt;
         this.status = status;
@@ -68,8 +75,17 @@ public class Submission {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Submission(UUID id, Long userId, LocalDateTime submittedAt, SubmissionStatus status, String filePath, BigDecimal grade, String feedback) {
+    public Submission(UUID id,
+                      Assignment assignment,
+                      UUID userId,
+                      LocalDateTime submittedAt,
+                      SubmissionStatus status,
+                      String filePath,
+                      BigDecimal grade,
+                      String feedback) {
+
         this.id = id;
+        this.assignment = assignment;
         this.userId = userId;
         this.submittedAt = submittedAt;
         this.status = status;
@@ -85,11 +101,11 @@ public class Submission {
         this.id = id;
     }
 
-    public void setAssignmentId(UUID assignmentId) {
-        this.assignmentId = assignmentId;
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
@@ -128,24 +144,18 @@ public class Submission {
         this.updatedAt = updatedAt;
     }
 
-    public void setLastModifiedBy(Long lastModifiedBy) {
+    public void setLastModifiedBy(UUID lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
-    // ============ Business logic methods ============
+    public void grade(BigDecimal grade,
+                      String feedback,
+                      UUID graderId) {
 
-    /**
-     * Grade this submission.
-     * Performs immutable audit trail tracking for academic integrity (R4, R5).
-     * @param grade the grade (0-100)
-     * @param feedback optional feedback message
-     * @param graderId the user ID of the professor grading
-     * @throws IllegalStateException if submission is already graded
-     */
-    public void grade(BigDecimal grade, String feedback, Long graderId) {
         if (this.status == SubmissionStatus.GRADED) {
             throw new IllegalStateException("Submission already graded");
         }
+
         this.grade = grade;
         this.feedback = feedback;
         this.status = SubmissionStatus.GRADED;
@@ -153,27 +163,14 @@ public class Submission {
         this.updatedAt = LocalDateTime.now();
     }
 
-    /**
-     * Check if this submission is late.
-     * @param deadline the assignment deadline
-     * @return true if submitted after deadline
-     */
     public boolean isLate(LocalDateTime deadline) {
         return this.submittedAt.isAfter(deadline);
     }
 
-    /**
-     * Check if this submission has been graded.
-     * @return true if status is GRADED
-     */
     public boolean isGraded() {
         return this.status == SubmissionStatus.GRADED;
     }
 
-    /**
-     * Check if this submission has pending grade.
-     * @return true if status is PENDING
-     */
     public boolean isPending() {
         return this.status == SubmissionStatus.PENDING;
     }
