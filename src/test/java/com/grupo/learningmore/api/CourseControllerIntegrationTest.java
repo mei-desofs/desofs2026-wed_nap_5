@@ -39,7 +39,7 @@ public class CourseControllerIntegrationTest {
                 .webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
                 .build();
-        
+
         courseRepository.deleteAll();
         professorId = UUID.randomUUID();
     }

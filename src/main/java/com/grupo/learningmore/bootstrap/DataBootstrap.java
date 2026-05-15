@@ -11,6 +11,7 @@ import com.grupo.learningmore.repositories.EnrollmentRepository;
 import com.grupo.learningmore.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 

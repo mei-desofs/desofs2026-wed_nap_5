@@ -69,7 +69,8 @@ public class UserController {
             String password,
 
             UserRole role
-    ) {}
+    ) {
+    }
 
     public record UserResponse(
             UUID id,
@@ -77,5 +78,6 @@ public class UserController {
             String email,
             UserRole role,
             boolean active
-    ) {}
+    ) {
+    }
 }

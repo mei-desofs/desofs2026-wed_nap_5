@@ -15,11 +15,11 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     @ManyToOne
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
-    
+
     private String content;
     private Date sentAt;
 
