@@ -1,5 +1,11 @@
 package com.grupo.learningmore.api;
 
+import com.grupo.learningmore.domain.user.User;
+import com.grupo.learningmore.services.UserService;
+import com.grupo.learningmore.security.JwtService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import com.grupo.learningmore.security.JwtService;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.repositories.UserRepository;
@@ -16,55 +22,53 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthenticationManager authenticationManager,
-                          JwtService jwtService,
-                          UserRepository userRepository) {
-
-        this.authenticationManager = authenticationManager;
+    public AuthController(UserService userService, JwtService jwtService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.jwtService = jwtService;
-        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
-    public LoginResponse login(
-            @Valid @RequestBody LoginRequest request
-    ) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        try {
+            User user = userService.findByEmail(request.email());
+            
+            if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+                return ResponseEntity.status(401).build();
+            }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                )
-        );
-
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow();
-
-        String token = jwtService.generateToken(
+            String token = jwtService.generateToken(user.getId().toString(), user.getRole().name());
+            
+            return ResponseEntity.ok(new LoginResponse(
+                token,
+                user.getId().toString(),
+                user.getName(),
                 user.getEmail(),
                 user.getRole().name()
-        );
-
-        return new LoginResponse(token);
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(401).build();
+        }
     }
 
     public record LoginRequest(
-
-            @Email
-            @NotBlank
-            String email,
-
-            @NotBlank
-            String password
-    ) {
-    }
+        @Email
+        @NotBlank
+        String email,
+        
+        @NotBlank
+        String password
+    ) {}
 
     public record LoginResponse(
-            String token
-    ) {
-    }
+        String token,
+        String userId,
+        String name,
+        String email,
+        String role
+    ) {}
 }

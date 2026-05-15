@@ -90,6 +90,13 @@ public class CourseController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/code/{code}")
+    public ResponseEntity<Void> deleteCourseByCode(@PathVariable String code) {
+        courseService.deleteCourseByCode(code);
+        return ResponseEntity.noContent().build();
+    }
+
     private CourseResponse mapToCourseResponse(Course course) {
         return new CourseResponse(
                 course.getId(),
@@ -107,4 +114,9 @@ public class CourseController {
             String description
     ) {
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+}
 }
