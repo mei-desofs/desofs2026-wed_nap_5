@@ -31,8 +31,8 @@ jobs:
 
       - name: Build backend
         run: mvn clean install
-        working-directory: backend
+        working-directory: src
 
       - name: Run backend tests
         run: mvn test
-        working-directory: backend
+        working-directory: src
