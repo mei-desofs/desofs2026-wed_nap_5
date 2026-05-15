@@ -11,17 +11,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Java setup + Maven cache
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+          cache: maven
 
+      # Cache OWASP DB
+      - name: Cache OWASP Dependency Check data
+        uses: actions/cache@v4
+        with:
+          path: ~/.dependency-check
+          key: owasp-db-${{ runner.os }}
+          restore-keys: |
+            owasp-db-
+
+      # Run OWASP
       - name: Run OWASP Dependency Check (Maven)
-        run: mvn org.owasp:dependency-check-maven:check
+        run: |
+          mvn -B org.owasp:dependency-check-maven:check \
+            -DfailBuildOnCVSS=7 \
+            -DossindexAnalyzerEnabled=false
 
+      # Upload report
       - name: Upload report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: target/dependency-check-report
+          path: target/dependency-check-report.*
