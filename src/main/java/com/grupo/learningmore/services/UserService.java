@@ -51,4 +51,10 @@ public class UserService {
                 .orElseThrow(() ->
                         new IllegalArgumentException("User not found"));
     }
+
+    public User findByEmail(String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("User not found"));
+    }
 }

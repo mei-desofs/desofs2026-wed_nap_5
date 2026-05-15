@@ -58,4 +58,10 @@ public class CourseService {
     public void deleteCourse(UUID id) {
         courseRepository.deleteById(id);
     }
+
+    @Transactional
+    public void deleteCourseByCode(String code) {
+        Course course = findByCode(code);
+        courseRepository.deleteById(course.getId());
+    }
 }
