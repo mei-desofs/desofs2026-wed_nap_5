@@ -6,6 +6,8 @@ on:
       - main
       - develop
       - feature/**
+      ## To be removed, just for testing worflows
+      - pipeline
   pull_request:
     branches:
       - main
