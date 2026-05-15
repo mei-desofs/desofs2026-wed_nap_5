@@ -77,7 +77,7 @@ public class ResourceService {
     @Transactional
     public void deleteResource(UUID id) throws IOException {
         Resource resource = findById(id);
-        
+
         // Delete file from disk
         Path filePath = Paths.get(resource.getFilePath());
         if (Files.exists(filePath)) {

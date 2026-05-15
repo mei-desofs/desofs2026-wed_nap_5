@@ -60,9 +60,11 @@ public class AuthController {
 
             @NotBlank
             String password
-    ) {}
+    ) {
+    }
 
     public record LoginResponse(
             String token
-    ) {}
+    ) {
+    }
 }

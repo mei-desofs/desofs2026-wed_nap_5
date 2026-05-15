@@ -10,34 +10,38 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
-    
+
     /**
      * Find all assignments for a specific course.
+     *
      * @param courseId the course ID
      * @return list of assignments in the course
      */
     List<Assignment> findByCourseId(UUID courseId);
-    
+
     /**
      * Find an assignment by ID with ownership validation.
      * Used to ensure the requester is the course owner.
-     * @param id the assignment ID
+     *
+     * @param id       the assignment ID
      * @param courseId the course ID
      * @return optional containing the assignment if it exists in the given course
      */
     @Query("SELECT a FROM Assignment a WHERE a.id = :id AND a.courseId = :courseId")
     Optional<Assignment> findByIdAndCourseId(@Param("id") UUID id, @Param("courseId") UUID courseId);
-    
+
     /**
      * Check if an assignment exists in a specific course.
+     *
      * @param assignmentId the assignment ID
-     * @param courseId the course ID
+     * @param courseId     the course ID
      * @return true if assignment exists in the course
      */
     boolean existsByIdAndCourseId(UUID assignmentId, UUID courseId);
-    
+
     /**
      * Find assignments created by a specific professor.
+     *
      * @param createdBy the UUID of the professor (user ID)
      * @return list of assignments created by the professor
      */

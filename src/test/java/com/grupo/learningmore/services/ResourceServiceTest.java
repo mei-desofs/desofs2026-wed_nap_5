@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import java.io.File;
 
 import java.io.IOException;
@@ -93,8 +94,8 @@ public class ResourceServiceTest {
         when(courseService.findById(courseId)).thenReturn(course);
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> 
-            resourceService.uploadResource(courseId, emptyFile, userId)
+        assertThrows(IllegalArgumentException.class, () ->
+                resourceService.uploadResource(courseId, emptyFile, userId)
         );
 
         verify(resourceRepository, never()).save(any());
@@ -113,8 +114,8 @@ public class ResourceServiceTest {
         when(courseService.findById(courseId)).thenThrow(new IllegalArgumentException("Course not found"));
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> 
-            resourceService.uploadResource(courseId, file, userId)
+        assertThrows(IllegalArgumentException.class, () ->
+                resourceService.uploadResource(courseId, file, userId)
         );
 
         verify(resourceRepository, never()).save(any());
