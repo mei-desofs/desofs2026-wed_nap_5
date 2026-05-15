@@ -146,7 +146,7 @@
                     <outputFormats>
                         <outputFormat>HTML</outputFormat>
                     </outputFormats>
-                    <includeLaunchClasspath>false</includeLaunchClasspath>
+<!--                    <includeLaunchClasspath>false</includeLaunchClasspath>-->
                     <jvmArgs>
                         <value>-Xmx2048m</value>
                     </jvmArgs>
