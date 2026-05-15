@@ -12,6 +12,9 @@ on:
     branches:
       - main
       - develop
+      - feature/**
+      ## To be removed, just for testing worflows
+      - pipeline
 
 jobs:
   backend:
