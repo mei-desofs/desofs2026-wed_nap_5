@@ -122,6 +122,15 @@ public class ResourceController {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        // Se a mensagem contiver "not found", retorna 404, caso contrário 400
+        if (ex.getMessage().toLowerCase().contains("not found")) {
+            return ResponseEntity.status(404).body(ex.getMessage());
+        }
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
     private boolean hasAdminOrProfessorRole(Authentication authentication) {
         return authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ROLE_PROFESSOR"));
