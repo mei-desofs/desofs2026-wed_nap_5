@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class learningmoreApplication {
+public class LearningmoreApplication {
     public static void main(String[] args) {
-        SpringApplication.run(learningmoreApplication.class, args);
+        SpringApplication.run(LearningmoreApplication.class, args);
     }
 
 }

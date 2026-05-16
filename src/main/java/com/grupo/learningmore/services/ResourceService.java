@@ -38,14 +38,26 @@ public class ResourceService {
             throw new IllegalArgumentException("File cannot be empty");
         }
 
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || originalFilename.isBlank()) {
+            throw new IllegalArgumentException("Invalid file name");
+        }
+        if (originalFilename.contains("..") || originalFilename.contains("/") || originalFilename.contains("\\")) {
+            throw new IllegalArgumentException("Invalid file name");
+        }
+        String safeOriginalFilename = Paths.get(originalFilename).getFileName().toString();
+
+
         // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir, courseId.toString());
+        Path uploadPath = Paths.get(uploadDir, courseId.toString()).normalize().toAbsolutePath();
         Files.createDirectories(uploadPath);
 
         // Generate unique filename
-        String originalFilename = file.getOriginalFilename();
-        String filename = UUID.randomUUID() + "_" + originalFilename;
-        Path filePath = uploadPath.resolve(filename);
+        String filename = UUID.randomUUID() + "_" + safeOriginalFilename;
+        Path filePath = uploadPath.resolve(filename).normalize().toAbsolutePath();
+        if (!filePath.startsWith(uploadPath)) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
 
         // Save file to disk
         Files.write(filePath, file.getBytes());
@@ -53,7 +65,7 @@ public class ResourceService {
         // Create and save resource entity
         Resource resource = new Resource(
                 courseId,
-                originalFilename,
+                safeOriginalFilename,
                 filePath.toString(),
                 file.getSize(),
                 file.getContentType(),
@@ -77,9 +89,14 @@ public class ResourceService {
     @Transactional
     public void deleteResource(UUID id) throws IOException {
         Resource resource = findById(id);
-        
+
         // Delete file from disk
-        Path filePath = Paths.get(resource.getFilePath());
+        Path baseUploadPath = Paths.get(uploadDir).normalize().toAbsolutePath();
+        Path filePath = Paths.get(resource.getFilePath()).normalize().toAbsolutePath();
+        if (!filePath.startsWith(baseUploadPath)) {
+            throw new IllegalArgumentException("Invalid file path");
+        }
+
         if (Files.exists(filePath)) {
             Files.delete(filePath);
         }

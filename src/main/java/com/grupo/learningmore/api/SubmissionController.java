@@ -89,7 +89,7 @@ public class SubmissionController {
     private SubmissionResponse mapToResponse(Submission submission) {
         return new SubmissionResponse(
                 submission.getId(),
-                submission.getAssignment().getId(),
+                submission.getAssignmentId(),
                 submission.getUserId(),
                 submission.getSubmittedAt(),
                 submission.getStatus(),

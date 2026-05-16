@@ -56,8 +56,8 @@ public class CourseServiceTest {
         when(courseRepository.existsByCode("MATH101")).thenReturn(true);
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> 
-            courseService.createCourse("MATH101", "Mathematics", "Calc 1", professorId)
+        assertThrows(IllegalArgumentException.class, () ->
+                courseService.createCourse("MATH101", "Mathematics", "Calc 1", professorId)
         );
 
         verify(courseRepository).existsByCode("MATH101");

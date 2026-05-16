@@ -36,19 +36,19 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
             User user = userService.findByEmail(request.email());
-            
+
             if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
                 return ResponseEntity.status(401).build();
             }
 
             String token = jwtService.generateToken(user.getId().toString(), user.getRole().name());
-            
+
             return ResponseEntity.ok(new LoginResponse(
-                token,
-                user.getId().toString(),
-                user.getName(),
-                user.getEmail(),
-                user.getRole().name()
+                    token,
+                    user.getId().toString(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getRole().name()
             ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(401).build();
@@ -56,19 +56,21 @@ public class AuthController {
     }
 
     public record LoginRequest(
-        @Email
-        @NotBlank
-        String email,
-        
-        @NotBlank
-        String password
-    ) {}
+            @Email
+            @NotBlank
+            String email,
+
+            @NotBlank
+            String password
+    ) {
+    }
 
     public record LoginResponse(
-        String token,
-        String userId,
-        String name,
-        String email,
-        String role
-    ) {}
+            String token,
+            String userId,
+            String name,
+            String email,
+            String role
+    ) {
+    }
 }

@@ -1,5 +1,6 @@
 package com.grupo.learningmore.domain.assignment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -47,7 +48,8 @@ public class Assignment {
     @Column(nullable = false)
     private Integer version;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "assignment_id")
     private List<Submission> submissions = new ArrayList<>();
 
@@ -125,6 +127,7 @@ public class Assignment {
     /**
      * Check if the assignment deadline has expired.
      * Used to prevent late submissions and validate submission eligibility.
+     *
      * @return true if deadline has passed
      */
     public boolean isDeadlineExpired() {
@@ -134,6 +137,7 @@ public class Assignment {
     /**
      * Check if assignment can accept submissions.
      * Performs server-side validation to prevent deadline tampering (AC10, R8).
+     *
      * @return true if submissions are still accepted
      */
     public boolean canBeSubmitted() {
@@ -142,6 +146,7 @@ public class Assignment {
 
     /**
      * Add a submission to this assignment.
+     *
      * @param submission the submission to add
      */
     public void addSubmission(Submission submission) {
@@ -152,6 +157,7 @@ public class Assignment {
 
     /**
      * Remove a submission from this assignment.
+     *
      * @param submission the submission to remove
      */
     public void removeSubmission(Submission submission) {
@@ -160,6 +166,7 @@ public class Assignment {
 
     /**
      * Find a submission by its ID.
+     *
      * @param submissionId the submission ID
      * @return the submission or null if not found
      */
@@ -173,6 +180,7 @@ public class Assignment {
     /**
      * Find a submission by user ID.
      * Returns the first (and should be only) submission from a specific user.
+     *
      * @param userId the user ID
      * @return the submission or null if not found
      */

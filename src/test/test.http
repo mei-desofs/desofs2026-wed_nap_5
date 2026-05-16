@@ -39,11 +39,12 @@ Content-Type: application/json
   "password": "Password123!"
 }
 
-  
+
 
 ### 1. Create a Course (requires PROFESSOR role - use token from login above)
 @token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2YjkyOTFkNC1iMGQxLTQ3ODktYjkyOC04NGI5ZTc4ZDY1YjciLCJyb2xlIjoiUFJPRkVTU09SIiwiaWF0IjoxNzc4ODY0MTE4LCJleHAiOjE3Nzg5NTA1MTh9.9RXhgyScj_X_ARPkaONXf4jOAbgM_sDy-F1tefb9hHA
-POST {{baseUrl}}/courses
+POST
+{{baseUrl}}/courses
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -76,7 +77,7 @@ DELETE {{baseUrl}}/courses/code/CS101
 Authorization: Bearer {{token}}
 
 ### 5. Update Course
-PUT {{baseUrl}}/courses/5acdb722-7309-41a7-a50a-b9feb5e6bf4b 
+PUT {{baseUrl}}/courses/5acdb722-7309-41a7-a50a-b9feb5e6bf4b
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
