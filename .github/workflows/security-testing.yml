@@ -26,7 +26,6 @@ jobs:
       matrix:
         language:
           - java
-          - javascript
 
     steps:
       - name: Checkout repository

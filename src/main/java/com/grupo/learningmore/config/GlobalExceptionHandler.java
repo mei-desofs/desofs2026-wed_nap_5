@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(
-            AccessDeniedException ex,
-            WebRequest request
+            AccessDeniedException ex
     ) {
         logger.warn("Access denied: {}", ex.getMessage());
         ErrorResponse error = new ErrorResponse(
@@ -39,8 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
-            IllegalArgumentException ex,
-            WebRequest request
+            IllegalArgumentException ex
     ) {
         logger.warn("Invalid argument: {}", ex.getMessage());
         ErrorResponse error = new ErrorResponse(
@@ -53,8 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalStateException(
-            IllegalStateException ex,
-            WebRequest request
+            IllegalStateException ex
     ) {
         logger.warn("Invalid state: {}", ex.getMessage());
         ErrorResponse error = new ErrorResponse(
@@ -67,8 +63,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            WebRequest request
+            MethodArgumentNotValidException ex
     ) {
         logger.warn("Validation error: {}", ex.getBindingResult().getFieldError());
         ErrorResponse error = new ErrorResponse(
@@ -81,8 +76,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(
-            Exception ex,
-            WebRequest request
+            Exception ex
     ) {
         logger.error("Unexpected error", ex);
         ErrorResponse error = new ErrorResponse(

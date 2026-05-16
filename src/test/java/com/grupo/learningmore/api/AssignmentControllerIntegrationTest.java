@@ -168,7 +168,6 @@ public class AssignmentControllerIntegrationTest {
 
     @Test
     public void testUpdateAssignmentForbiddenOtherProfessor() throws Exception {
-        UUID otherProfessorId = UUID.randomUUID();
         User otherProf = new User("Other Prof", "other@test.com", passwordEncoder.encode("pass"), UserRole.PROFESSOR);
         otherProf = userRepository.save(otherProf);
 
