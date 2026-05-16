@@ -59,7 +59,11 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -129,27 +133,39 @@
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
-                <version>1.16.1</version> <dependencies>
+                <version>1.16.1</version>
+
+                <dependencies>
                     <dependency>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-junit5-plugin</artifactId>
                         <version>1.2.1</version>
                     </dependency>
                 </dependencies>
+
                 <configuration>
+
                     <targetClasses>
-                        <param>com.grupo.learningmore.*</param>
+                        <param>com.grupo.learningmore.service.*</param>
                     </targetClasses>
+
                     <targetTests>
                         <param>com.grupo.learningmore.*</param>
                     </targetTests>
+
                     <outputFormats>
-                        <outputFormat>HTML</outputFormat>
+                        <param>HTML</param>
                     </outputFormats>
-                    <includeLaunchClasspath>false</includeLaunchClasspath>
+
+                    <threads>4</threads>
+
+                    <timestampedReports>false</timestampedReports>
+
                     <jvmArgs>
-                        <value>-Xmx2048m</value>
+                        <jvmArg>-Xmx2048m</jvmArg>
+                        <jvmArg>-XX:+EnableDynamicAgentLoading</jvmArg>
                     </jvmArgs>
+
                 </configuration>
             </plugin>
             <plugin>

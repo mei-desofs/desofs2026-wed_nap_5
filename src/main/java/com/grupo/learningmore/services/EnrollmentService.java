@@ -20,7 +20,7 @@ public class EnrollmentService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    public boolean isUserEnrolled(Long userId, UUID chatRoomId) {
+    public boolean isUserEnrolled(UUID userId, UUID chatRoomId) {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() ->
@@ -36,7 +36,7 @@ public class EnrollmentService {
     /**
      * Check if a user is enrolled in a specific course
      */
-    public boolean isUserEnrolledInCourse(Long userId, UUID courseId) {
+    public boolean isUserEnrolledInCourse(UUID userId, UUID courseId) {
         return enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
     }
 }

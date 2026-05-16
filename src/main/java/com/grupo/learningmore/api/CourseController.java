@@ -1,9 +1,11 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Course;
+import com.grupo.learningmore.domain.enrollment.Enrollment;
 import com.grupo.learningmore.dto.Request.CreateCourseRequest;
 import com.grupo.learningmore.dto.Response.CourseResponse;
 import com.grupo.learningmore.services.CourseService;
+import com.grupo.learningmore.repositories.EnrollmentRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +21,14 @@ import java.util.UUID;
 public class CourseController {
 
     private final CourseService courseService;
+    private final EnrollmentRepository enrollmentRepository;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, EnrollmentRepository enrollmentRepository) {
         this.courseService = courseService;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
-    @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CourseResponse> createCourse(
             Authentication authentication,
@@ -46,20 +50,24 @@ public class CourseController {
                 .body(response);
     }
 
+     
+    
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
     public ResponseEntity<CourseResponse> getCourseById(@PathVariable UUID id) {
         Course course = courseService.findById(id);
         return ResponseEntity.ok(mapToCourseResponse(course));
     }
 
+     
+    
     @GetMapping("/code/{code}")
     public ResponseEntity<CourseResponse> getCourseByCode(@PathVariable String code) {
         Course course = courseService.findByCode(code);
         return ResponseEntity.ok(mapToCourseResponse(course));
     }
 
-    @GetMapping
+    
+    @GetMapping  
     public ResponseEntity<List<CourseResponse>> getAllCourses() {
         List<Course> courses = courseService.findAll();
         List<CourseResponse> responses = courses.stream()
@@ -68,7 +76,7 @@ public class CourseController {
         return ResponseEntity.ok(responses);
     }
 
-    @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponse> updateCourse(
             @PathVariable UUID id,
@@ -113,6 +121,30 @@ public class CourseController {
             String name,
             String description
     ) {
+    }
+
+     
+
+    @PreAuthorize("hasRole('STUDENT')and hasRole('ADMIN')")
+    @PostMapping("/{courseId}/enroll")
+    public ResponseEntity<Void> enrollInCourse(
+            Authentication authentication, 
+            @PathVariable UUID courseId
+    ) {
+        UUID userId = UUID.fromString(authentication.getName());
+        
+        // Verify the course actually exists first via your courseService
+        courseService.findById(courseId); 
+        
+        // Handle the enrollment logic
+        if (enrollmentRepository.existsByUserIdAndCourseIdAndActiveTrue(userId, courseId)) {
+            throw new IllegalArgumentException("You are already enrolled in this course.");
+        }
+        
+        Enrollment enrollment = new Enrollment(userId, courseId);
+        enrollmentRepository.save(enrollment);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

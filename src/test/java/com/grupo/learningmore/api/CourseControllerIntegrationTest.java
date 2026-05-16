@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 
 import java.util.UUID;
 
@@ -30,6 +32,7 @@ public class CourseControllerIntegrationTest {
     private CourseRepository courseRepository;
 
     private MockMvc mockMvc;
+    private UUID adminId;
     private UUID professorId;
 
     @BeforeEach
@@ -41,6 +44,7 @@ public class CourseControllerIntegrationTest {
                 .build();
         
         courseRepository.deleteAll();
+        adminId = UUID.randomUUID();
         professorId = UUID.randomUUID();
     }
 
@@ -55,7 +59,7 @@ public class CourseControllerIntegrationTest {
                 """;
 
         mockMvc.perform(post("/api/courses")
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(user(adminId.toString()).roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
@@ -65,7 +69,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testCreateCourseDuplicateCodeFails() throws Exception {
-        courseRepository.save(new Course("MATH101", "Calculus", "Advanced math", professorId));
+        courseRepository.save(new Course("MATH101", "Calculus", "Advanced math", adminId));
 
         String requestBody = """
                 {
@@ -76,7 +80,7 @@ public class CourseControllerIntegrationTest {
                 """;
 
         mockMvc.perform(post("/api/courses")
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(user(adminId.toString()).roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest());
@@ -118,7 +122,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testUpdateCourse() throws Exception {
-        Course course = courseRepository.save(new Course("ART101", "Art History", "Renaissance", professorId));
+        Course course = courseRepository.save(new Course("ART101", "Art History", "Renaissance", adminId));
 
         String updateBody = """
                 {
@@ -128,7 +132,7 @@ public class CourseControllerIntegrationTest {
                 """;
 
         mockMvc.perform(put("/api/courses/" + course.getId())
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(user(adminId.toString()).roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody))
                 .andExpect(status().isOk())
@@ -137,11 +141,21 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testDeleteCourse() throws Exception {
-        Course course = courseRepository.save(new Course("MUSIC101", "Music", "Theory basics", professorId));
+        Course course = courseRepository.save(new Course("MUSIC101", "Music", "Theory basics", adminId));
 
-        // Usei ROLE ADMIN aqui pois o seu código anterior indicava que Delete exige ADMIN
-        mockMvc.perform(delete("/api/courses/" + course.getId())
-                        .with(user("admin").roles("ADMIN")))
+         mockMvc.perform(delete("/api/courses/" + course.getId())
+                        .with(user(adminId.toString()).roles("ADMIN")))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testDeleteCourseByCode() throws Exception {
+        // 1. Save a fresh course with a unique code to use for this test
+        Course course = courseRepository.save(new Course("MUSIC202", "Advanced Music", "Theory advanced", adminId));
+
+        // 2. Perform the delete using the course code path and the dynamic adminId
+        mockMvc.perform(delete("/api/courses/code/" + course.getCode())
+                        .with(user(adminId.toString()).roles("ADMIN")))
                 .andExpect(status().isNoContent());
     }
 }
