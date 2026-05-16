@@ -32,6 +32,7 @@ Content-Type: application/json
 
 ### 0.5. Login to get JWT Token
 POST {{baseUrl}}/auth/login
+# @name login
 Content-Type: application/json
 
 {
@@ -39,12 +40,12 @@ Content-Type: application/json
   "password": "Password123!"
 }
 
+### Login token
+@token = {{login.response.body.token}}
 
 
 ### 1. Create a Course (requires PROFESSOR role - use token from login above)
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2YjkyOTFkNC1iMGQxLTQ3ODktYjkyOC04NGI5ZTc4ZDY1YjciLCJyb2xlIjoiUFJPRkVTU09SIiwiaWF0IjoxNzc4ODY0MTE4LCJleHAiOjE3Nzg5NTA1MTh9.9RXhgyScj_X_ARPkaONXf4jOAbgM_sDy-F1tefb9hHA
-POST
-{{baseUrl}}/courses
+POST {{baseUrl}}/courses
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -54,7 +55,6 @@ Authorization: Bearer {{token}}
   "description": "Basic CS concepts and programming fundamentals"
 }
 
-//# @name createCourse
 
 ### 2. Get All Courses
 GET {{baseUrl}}/courses
