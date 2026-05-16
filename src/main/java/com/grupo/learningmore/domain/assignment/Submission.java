@@ -24,6 +24,9 @@ public class Submission {
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
 
+    @Column(name = "assignment_id", insertable = false, updatable = false)
+    private UUID assignmentId;
+
     @Column(nullable = false)
     private UUID userId;
 

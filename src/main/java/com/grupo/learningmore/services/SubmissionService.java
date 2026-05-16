@@ -20,12 +20,33 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SubmissionService {
 
     private static final long MAX_FILE_SIZE_BYTES = 50L * 1024L * 1024L;
+
+    // Whitelist of allowed MIME types for submissions (R11, AC4 - prevent malicious uploads)
+    private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "text/plain",
+            "text/csv",
+            "image/jpeg",
+            "image/png",
+            "application/zip",
+            "application/x-zip-compressed"
+    );
+
+    // Whitelist of allowed file extensions (secondary validation)
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
+            "pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx",
+            "txt", "csv", "jpg", "jpeg", "png", "zip"
+    );
 
     private final SubmissionRepository submissionRepository;
     private final AssignmentRepository assignmentRepository;
@@ -65,6 +86,14 @@ public class SubmissionService {
         String safeOriginalName = sanitizeFilename(file.getOriginalFilename());
         String generatedName = UUID.randomUUID() + "_" + safeOriginalName;
         Path storedPath = assignmentUploadPath.resolve(generatedName);
+
+        // Prevent path traversal (AC5, R12): ensure resolved path is within assignment directory
+        Path normalizedPath = storedPath.normalize();
+        Path uploadBase = assignmentUploadPath.normalize();
+        if (!normalizedPath.startsWith(uploadBase)) {
+            throw new IllegalArgumentException("Invalid file path: potential path traversal detected");
+        }
+
         Files.write(storedPath, file.getBytes());
 
         Submission submission = new Submission(
@@ -151,6 +180,23 @@ public class SubmissionService {
         if (file.getSize() > MAX_FILE_SIZE_BYTES) {
             throw new IllegalArgumentException("Submission file exceeds maximum size of 50MB");
         }
+
+        // Validate MIME type (R11, AC4 - prevent malicious uploads)
+        String mimeType = file.getContentType();
+        if (mimeType == null || !ALLOWED_MIME_TYPES.contains(mimeType.toLowerCase())) {
+            throw new IllegalArgumentException("File type not allowed. Allowed types: PDF, Word, PowerPoint, Excel, Text, CSV, Images, ZIP");
+        }
+
+        // Validate file extension as secondary check
+        String filename = file.getOriginalFilename();
+        if (filename == null || filename.isBlank()) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
+
+        String extension = getFileExtension(filename).toLowerCase();
+        if (!ALLOWED_EXTENSIONS.contains(extension)) {
+            throw new IllegalArgumentException("File extension not allowed. Allowed extensions: " + String.join(", ", ALLOWED_EXTENSIONS));
+        }
     }
 
     private String sanitizeFilename(String filename) {
@@ -158,7 +204,29 @@ public class SubmissionService {
             return "submission.bin";
         }
 
+        // Extract just the filename without path (prevents path traversal - R12, AC5)
         String cleanName = Paths.get(filename).getFileName().toString();
-        return cleanName.replace("..", "_");
+
+        // Remove potentially dangerous characters
+        cleanName = cleanName.replaceAll("[^a-zA-Z0-9._-]", "_");
+
+        // Remove path traversal attempts
+        cleanName = cleanName.replace("..", "_");
+        cleanName = cleanName.replace("/", "_");
+        cleanName = cleanName.replace("\\", "_");
+
+        // Limit filename length
+        if (cleanName.length() > 100) {
+            cleanName = cleanName.substring(0, 100);
+        }
+
+        return cleanName;
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || !filename.contains(".")) {
+            return "";
+        }
+        return filename.substring(filename.lastIndexOf(".") + 1);
     }
 }

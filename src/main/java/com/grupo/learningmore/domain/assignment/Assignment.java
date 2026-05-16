@@ -1,5 +1,6 @@
 package com.grupo.learningmore.domain.assignment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -47,7 +48,8 @@ public class Assignment {
     @Column(nullable = false)
     private Integer version;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "assignment_id")
     private List<Submission> submissions = new ArrayList<>();
 
