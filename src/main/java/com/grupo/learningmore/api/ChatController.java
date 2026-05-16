@@ -34,7 +34,7 @@ public class ChatController {
     ) {
 
         try {
-            Long userId = Long.parseLong(authentication.getName());
+            UUID userId = UUID.fromString(authentication.getName());
 
             ChatMessageResponse response =
                     chatService.sendMessage(

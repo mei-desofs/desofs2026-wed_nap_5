@@ -24,6 +24,9 @@ public class Enrollment {
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
 
+    @Column(nullable = false)
+    private boolean active;
+
     public Enrollment() {
     }
 
@@ -31,6 +34,7 @@ public class Enrollment {
         this.userId = userId;
         this.courseId = courseId;
         this.enrolledAt = LocalDateTime.now();
+        this.active = true;
     }
 
     public void setId(UUID id) {
@@ -47,5 +51,9 @@ public class Enrollment {
 
     public void setEnrolledAt(LocalDateTime enrolledAt) {
         this.enrolledAt = enrolledAt;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

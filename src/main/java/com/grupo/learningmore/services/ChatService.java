@@ -39,7 +39,7 @@ public class ChatService {
 
     @Transactional
     public ChatMessageResponse sendMessage(
-            Long userId,
+            UUID userId,
             UUID chatRoomId,
             SendMessageRequest request
     ) {

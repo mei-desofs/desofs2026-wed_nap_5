@@ -35,14 +35,8 @@ public class ResourceController {
             @RequestParam("file") MultipartFile file
     ) throws IOException {
         UUID userId = UUID.fromString(authentication.getName());
-
         Resource resource = resourceService.uploadResource(courseId, file, userId);
-
-        ResourceResponse response = mapToResourceResponse(resource);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapToResourceResponse(resource));
     }
 
     @GetMapping
@@ -50,19 +44,10 @@ public class ResourceController {
             @PathVariable UUID courseId,
             Authentication authentication
     ) {
-        // Check if user is authorized to see resources
-        // Students can only see resources if they're enrolled
-        // Professors and Admins can always see resources
-        if (authentication != null && !hasAdminOrProfessorRole(authentication)) {
-            final long userId;
-            try {
-                userId = Long.parseLong(authentication.getName());
-            } catch (NumberFormatException ex) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-            if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+        // Use the centralized security validation method
+        ResponseEntity<List<ResourceResponse>> accessCheck = validateUserAccess(authentication, courseId);
+        if (accessCheck != null) {
+            return accessCheck; // Returns 401 or 403 early if validation fails
         }
 
         List<Resource> resources = resourceService.findByCourseId(courseId);
@@ -85,19 +70,10 @@ public class ResourceController {
             return ResponseEntity.notFound().build();
         }
 
-        // Check if user is authorized to see this resource
-        // Students can only see resources if they're enrolled
-        // Professors and Admins can always see resources
-        if (authentication != null && !hasAdminOrProfessorRole(authentication)) {
-            final Long userId;
-            try {
-                userId = Long.parseLong(authentication.getName());
-            } catch (NumberFormatException ex) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-            if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+        // Use the centralized security validation method
+        ResponseEntity<ResourceResponse> accessCheck = validateUserAccess(authentication, courseId);
+        if (accessCheck != null) {
+            return accessCheck; // Returns 401 or 403 early if validation fails
         }
 
         return ResponseEntity.ok(mapToResourceResponse(resource));
@@ -111,7 +87,6 @@ public class ResourceController {
     ) throws IOException {
         Resource resource = resourceService.findById(resourceId);
 
-        // Verify that the resource belongs to the course
         if (!resource.getCourseId().equals(courseId)) {
             return ResponseEntity.notFound().build();
         }
@@ -134,11 +109,34 @@ public class ResourceController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
-        // Se a mensagem contiver "not found", retorna 404, caso contrário 400
         if (ex.getMessage().toLowerCase().contains("not found")) {
-            return ResponseEntity.status(404).body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
         return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    /**
+     * Reusable verification helper. 
+     * Returns null if access is allowed, or a pre-built ResponseEntity (401/403) if denied.
+     */
+    private <T> ResponseEntity<T> validateUserAccess(Authentication authentication, UUID courseId) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if (!hasAdminOrProfessorRole(authentication)) {
+            try {
+                // FIXED: Changed from NumberFormatException to IllegalArgumentException
+                UUID userId = UUID.fromString(authentication.getName());
+                
+                if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                }
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        }
+        return null; // Access granted
     }
 
     private boolean hasAdminOrProfessorRole(Authentication authentication) {
