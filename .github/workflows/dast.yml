@@ -34,22 +34,11 @@ jobs:
         env:
           SPRING_PROFILES_ACTIVE: test
 
-      - name: Wait for application
+      - name: Wait for application to be ready
         run: |
-          echo "Waiting for Spring Boot..."
-
-          for i in {1..20}; do
-            if curl -f http://localhost:9393/actuator/health; then
-              echo "Application started!"
-              exit 0
-            fi
-
-            sleep 10
-          done
-
-          echo "Application failed to start"
-          cat app.log
-          exit 1
+          echo "Waiting for Spring Boot to start..."
+          sleep 30
+          curl --retry 10 --retry-delay 3 --retry-connrefused http://localhost:9393/actuator/health
 
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
