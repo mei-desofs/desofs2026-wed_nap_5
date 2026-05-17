@@ -8,6 +8,9 @@ import com.grupo.learningmore.domain.enrollment.Enrollment;
 import com.grupo.learningmore.repositories.CourseRepository;
 import com.grupo.learningmore.repositories.ResourceRepository;
 import com.grupo.learningmore.repositories.EnrollmentRepository; 
+import com.grupo.learningmore.repositories.ChatRoomRepository;
+import com.grupo.learningmore.repositories.UserRepository;
+import com.grupo.learningmore.repositories.ChatMessageRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,9 +42,16 @@ public class ResourceControllerIntegrationTest {
     private CourseRepository courseRepository;
 
     @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
+    @Autowired
     private EnrollmentRepository enrollmentRepository; 
-    
-  
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ResourceRepository resourceRepository;
@@ -50,6 +60,16 @@ public class ResourceControllerIntegrationTest {
     private UUID courseId;
     private UUID professorId;
 
+    
+    @BeforeEach
+    public void clean() {     
+        chatMessageRepository.deleteAll();
+        enrollmentRepository.deleteAll();
+        chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
+        courseRepository.deleteAll();
+        }
+    
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders
@@ -57,7 +77,7 @@ public class ResourceControllerIntegrationTest {
                 .apply(springSecurity())
                 .build();
 
-        enrollmentRepository.deleteAll(); // Keep your test contexts completely isolated
+        enrollmentRepository.deleteAll();   
         resourceRepository.deleteAll();
         courseRepository.deleteAll();
 
