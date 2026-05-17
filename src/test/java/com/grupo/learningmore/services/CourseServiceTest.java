@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -158,6 +159,65 @@ public class CourseServiceTest {
         assertThrows(IllegalArgumentException.class, () -> courseService.deleteCourseByCode(invalidCode));
         verify(courseRepository).findByCode(invalidCode);
         verify(courseRepository, never()).delete(any());
+    }
+
+    @Test
+    public void testFindAllCourses() {
+        // Arrange
+        java.util.List<Course> courses = java.util.List.of(
+            new Course("CS101", "Science", "Intro", professorId),
+            new Course("MATH101", "Math", "Calc", professorId)
+        );
+        when(courseRepository.findAll()).thenReturn(courses);
+
+        // Act
+        java.util.List<Course> result = courseService.findAll();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(courseRepository).findAll();
+    }
+
+    @Test
+    public void testUpdateCourseSuccess() {
+        // Arrange
+        UUID courseId = UUID.randomUUID();
+        Course existingCourse = new Course("CS101", "Old Name", "Old Desc", professorId);
+        existingCourse.setId(courseId);
+        
+         
+        LocalDateTime dataAntiga = LocalDateTime.now().minusDays(5);
+        existingCourse.setUpdatedAt(dataAntiga);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
+        when(courseRepository.save(any(Course.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Course updated = courseService.updateCourse(courseId, "New Name", "New Desc");
+
+        // Assert
+        assertNotNull(updated);
+        assertEquals("New Name", updated.getName());
+        assertEquals("New Desc", updated.getDescription());
+        
+         
+        assertTrue(updated.getUpdatedAt().isAfter(dataAntiga), 
+                "O mutante sobreviveu! A data de atualização não foi modificada para o momento presente.");
+        
+        verify(courseRepository).save(existingCourse);
+    }
+
+    @Test
+    public void testDeleteCourseSuccess() {
+        // Arrange
+        UUID targetId = UUID.randomUUID();
+ 
+        // Act
+        courseService.deleteCourse(targetId);
+
+        // Assert
+        verify(courseRepository).deleteById(targetId);
     }
 
     
