@@ -1,0 +1,111 @@
+
+ ### ==========================================
+### REST API Testing - Click "Send Request" to test each endpoint
+### ==========================================
+### Make sure the application is running before testing!
+### 
+### QUICK START:
+### 1. First, click "Send Request" on section "0. Create Test User" to create a professor
+### 2. Then, click "Send Request" on section "0.5. Login" to get a JWT token
+### 3. Copy the token from the response and update @token variable at the top
+### 4. Now test the other endpoints (sections 1-10)
+
+### Test Variables
+@baseUrl = http://localhost:9393/api
+@token = your-jwt-token-here
+@professorId = 550e8400-e29b-41d4-a716-446655440000
+@studentId = 550e8400-e29b-41d4-a716-446655440001
+@courseId = 550e8400-e29b-41d4-a716-446655440002
+@resourceId = 550e8400-e29b-41d4-a716-446655440003
+
+### ==========================================
+### 0. Create Test User (PROFESSOR role)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Test Professor",
+  "email": "professor@test.com",
+  "password": "Password123!",
+  "role": "PROFESSOR"
+}
+
+### 0.5. Login to get JWT Token
+POST {{baseUrl}}/auth/login
+# @name login
+Content-Type: application/json
+
+{
+  "email": "professor@test.com",
+  "password": "Password123!"
+}
+
+### Login token
+@token = {{login.response.body.token}}
+
+
+### 1. Create a Course (requires PROFESSOR role - use token from login above)
+POST {{baseUrl}}/courses
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "code": "CS101",
+  "name": "Introduction to Computer Science",
+  "description": "Basic CS concepts and programming fundamentals"
+}
+
+
+### 2. Get All Courses
+GET {{baseUrl}}/courses
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 3. Get Course by ID
+//@id = 5acdb722-7309-41a7-a50a-b9feb5e6bf4b
+GET {{baseUrl}}/courses/5acdb722-7309-41a7-a50a-b9feb5e6bf4b
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 4. Get Course by Code
+GET {{baseUrl}}/courses/code/CS101
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 4.5. Delete Course by Code (requires ADMIN role)
+DELETE {{baseUrl}}/courses/code/CS101
+Authorization: Bearer {{token}}
+
+### 5. Update Course
+PUT {{baseUrl}}/courses/5acdb722-7309-41a7-a50a-b9feb5e6bf4b
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Course Name",
+  "description": "Updated description"
+}
+
+### 6. Upload a Resource/File (requires PROFESSOR role)
+POST {{baseUrl}}/courses/5acdb722-7309-41a7-a50a-b9feb5e6bf4b/resources
+Authorization: Bearer {{token}}
+Content-Type: text/plain
+
+< ./sample-file.txt
+
+### 7. Get All Resources for a Course
+GET {{baseUrl}}/courses/5acdb722-7309-41a7-a50a-b9feb5e6bf4b/resources
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 8. Get Specific Resource
+GET {{baseUrl}}/courses/{{courseId}}/resources/{{resourceId}}
+Content-Type: application/json
+
+### 9. Delete Resource (requires PROFESSOR role)
+DELETE {{baseUrl}}/courses/{{courseId}}/resources/{{resourceId}}
+Authorization: Bearer {{token}}
+
+### 10. Delete Course (requires ADMIN role)
+DELETE {{baseUrl}}/courses/{{courseId}}
+Authorization: Bearer {{token}}

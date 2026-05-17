@@ -1,5 +1,5 @@
 {
-  "version": "2.6.0",
+  "version": "2.6.2",
   "summary": {
     "title": "DFD Level 2 - Course Management",
     "owner": "DESOFS Team",
@@ -14,7 +14,7 @@
     ],
     "diagrams": [
       {
-        "version": "2.6.0",
+        "version": "2.6.2",
         "id": 0,
         "title": "Course Management",
         "description": "Professor creates courses and sessions, students enroll in courses and view course information with authorization, validation, and audit logging.",
@@ -37,7 +37,7 @@
             },
             "visible": true,
             "shape": "trust-boundary-box",
-            "zIndex": 0,
+            "zIndex": -1,
             "id": "8a31db7d-b7a4-47db-bf9b-520000000003",
             "data": {
               "type": "tm.BoundaryBox",
@@ -46,7 +46,6 @@
               "isTrustBoundary": true,
               "hasOpenThreats": false,
               "crossingFlows": [
-                "8a31db7d-b7a4-47db-bf9b-520000000011",
                 "8a31db7d-b7a4-47db-bf9b-520000000013",
                 "8a31db7d-b7a4-47db-bf9b-520000000014",
                 "8a31db7d-b7a4-47db-bf9b-520000000012"
@@ -76,8 +75,8 @@
                 "text": "Professor\n"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -174,21 +173,9 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
+              "hasOpenThreats": false,
               "providesAuthentication": false,
-              "threats": [
-                {
-                  "threatId": "f70f9114-e8db-45f8-b4fb-200000000002",
-                  "number": 2,
-                  "title": "Credential stuffing attacks on course access",
-                  "description": "Attacker uses compromised credentials from external breaches to gain unauthorized access to course operations.",
-                  "mitigation": "Implement account lockout after 5 failed attempts (15 min lockout). Require multi-factor authentication (MFA) for professor accounts. Monitor for credential reuse patterns.",
-                  "modelType": "STRIDE",
-                  "type": "Spoofing",
-                  "severity": "High",
-                  "status": "Open"
-                }
-              ]
+              "threats": []
             }
           },
           {
@@ -205,8 +192,8 @@
                 "text": "Student"
               },
               "body": {
-                "stroke": "red",
-                "strokeWidth": 2.5,
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
                 "strokeDasharray": null
               }
             },
@@ -303,82 +290,10 @@
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": true,
-              "providesAuthentication": false,
-              "threats": [
-                {
-                  "threatId": "f70f9114-e8db-45f8-b4fb-200000000014",
-                  "number": 14,
-                  "title": "Student denies course enrollment",
-                  "description": "Student denies enrolling in course claiming unauthorized access, causing liability issues.",
-                  "mitigation": "Capture enrollment requests with user confirmation. Log enrollment with student IP, browser fingerprint, timestamp. Require explicit student acknowledgment of course terms.",
-                  "modelType": "STRIDE",
-                  "type": "Repudiation",
-                  "severity": "Medium",
-                  "status": "Open"
-                }
-              ]
-            }
-          },
-          {
-            "shape": "flow",
-            "attrs": {
-              "line": {
-                "stroke": "#333333",
-                "targetMarker": {
-                  "name": "block"
-                },
-                "sourceMarker": {
-                  "name": ""
-                },
-                "strokeDasharray": null
-              }
-            },
-            "width": 200,
-            "height": 100,
-            "zIndex": 1,
-            "connector": "smooth",
-            "data": {
-              "type": "tm.Flow",
-              "name": "JWT + Create course (HTTPS)\n",
-              "description": "Professor sends authenticated request to create course.",
-              "outOfScope": false,
-              "isTrustBoundary": false,
-              "reasonOutOfScope": "",
               "hasOpenThreats": false,
-              "isBidirectional": false,
-              "isEncrypted": true,
-              "isPublicNetwork": false,
-              "protocol": "HTTPS",
-              "threats": [],
-              "trustBoundaryIds": [
-                "8a31db7d-b7a4-47db-bf9b-520000000003"
-              ]
-            },
-            "labels": [
-              "JWT + Create course (HTTPS)"
-            ],
-            "id": "8a31db7d-b7a4-47db-bf9b-520000000011",
-            "position": {
-              "x": 150,
-              "y": 100
-            },
-            "size": {
-              "width": 100,
-              "height": 40
-            },
-            "source": {
-              "cell": "8a31db7d-b7a4-47db-bf9b-520000000001"
-            },
-            "target": {
-              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
-            },
-            "vertices": [
-              {
-                "x": 230,
-                "y": 250
-              }
-            ]
+              "providesAuthentication": false,
+              "threats": []
+            }
           },
           {
             "shape": "flow",
@@ -436,7 +351,8 @@
             "shape": "flow",
             "attrs": {
               "line": {
-                "stroke": "#333333",
+                "stroke": "red",
+                "strokeWidth": 2.5,
                 "targetMarker": {
                   "name": "block"
                 },
@@ -452,23 +368,42 @@
             "connector": "smooth",
             "data": {
               "type": "tm.Flow",
-              "name": "JWT + View courses (HTTPS)\n",
+              "name": "Access Request (HTTPS + JWT)\n",
               "description": "Student sends authenticated request to view courses.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
-              "hasOpenThreats": false,
+              "hasOpenThreats": true,
               "isBidirectional": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
               "protocol": "HTTPS",
-              "threats": [],
+              "threats": [
+                {
+                  "id": "557a13ba-9d21-43fc-a008-e84f8c0f76e1",
+                  "title": "Credential theft leading to impersonation",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "Stolen student credentials are used to impersonate the student and access submissions/course data.",
+                  "mitigation": "Strong passwords + MFA, anomaly detection, login rate limiting.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 19,
+                  "score": ""
+                }
+              ],
               "trustBoundaryIds": [
                 "8a31db7d-b7a4-47db-bf9b-520000000003"
-              ]
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             },
             "labels": [
-              "JWT + View courses (HTTPS)"
+              "Access Request (HTTPS + JWT)\n"
             ],
             "id": "8a31db7d-b7a4-47db-bf9b-520000000014",
             "position": {
@@ -542,6 +477,18 @@
           },
           {
             "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
             "width": 200,
             "height": 100,
             "zIndex": 1,
@@ -562,16 +509,7 @@
               "trustBoundaryIds": []
             },
             "labels": [
-              {
-                "attrs": {
-                  "label": {
-                    "text": "Data Flow"
-                  },
-                  "labelText": {
-                    "text": "Authorized (RBAC)"
-                  }
-                }
-              }
+              "Authorized (RBAC)"
             ],
             "id": "8a31db7d-b7a4-47db-bf9b-520000000016",
             "position": {
@@ -588,7 +526,12 @@
             "target": {
               "cell": "8a31db7d-b7a4-47db-bf9b-520000000006"
             },
-            "vertices": []
+            "vertices": [
+              {
+                "x": 460,
+                "y": 310
+              }
+            ]
           },
           {
             "shape": "flow",
@@ -885,6 +828,18 @@
           },
           {
             "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
             "width": 200,
             "height": 100,
             "zIndex": 1,
@@ -905,16 +860,7 @@
               "trustBoundaryIds": []
             },
             "labels": [
-              {
-                "attrs": {
-                  "label": {
-                    "text": "Data Flow"
-                  },
-                  "labelText": {
-                    "text": "Read courses"
-                  }
-                }
-              }
+              "Read courses"
             ],
             "id": "8a31db7d-b7a4-47db-bf9b-520000000022",
             "position": {
@@ -931,7 +877,20 @@
             "target": {
               "cell": "8a31db7d-b7a4-47db-bf9b-520000000008"
             },
-            "vertices": []
+            "vertices": [
+              {
+                "x": 1070,
+                "y": 190
+              },
+              {
+                "x": 1050,
+                "y": 210
+              },
+              {
+                "x": 900,
+                "y": 400
+              }
+            ]
           },
           {
             "shape": "flow",
@@ -1242,88 +1201,42 @@
             "connector": "smooth",
             "data": {
               "type": "tm.Flow",
-              "name": "Absence of repudiation\n",
-              "description": "Course action repudiation risk.",
+              "name": "Access Request (HTTPS + JWT)\n",
+              "description": "Professor sends authenticated request to create class sessions.",
               "outOfScope": false,
               "isTrustBoundary": false,
               "reasonOutOfScope": "",
               "hasOpenThreats": true,
               "isBidirectional": false,
-              "isEncrypted": false,
-              "isPublicNetwork": false,
-              "protocol": "Internal API",
-              "threats": [
-                {
-                  "threatId": "f70f9114-e8db-45f8-b4fb-200000000013",
-                  "number": 13,
-                  "title": "Absence of course action repudiation",
-                  "description": "Professor denies creating a course or modifying enrollment, claiming unauthorized access due to weak audit trail.",
-                  "mitigation": "Log all course operations with actor identification, timestamp, IP address. Include request signatures. Use digital signatures for critical operations. Retain audit logs for 7+ years.",
-                  "modelType": "STRIDE",
-                  "type": "Repudiation",
-                  "severity": "Medium",
-                  "status": "Open"
-                }
-              ],
-              "trustBoundaryIds": []
-            },
-            "labels": [
-              "Absence of repudiation"
-            ],
-            "id": "8a31db7d-b7a4-47db-bf9b-520000000028",
-            "position": {
-              "x": 280,
-              "y": 230
-            },
-            "size": {
-              "width": 100,
-              "height": 40
-            },
-            "source": {
-              "cell": "8a31db7d-b7a4-47db-bf9b-520000000004"
-            },
-            "target": {
-              "cell": "8a31db7d-b7a4-47db-bf9b-520000000006"
-            },
-            "vertices": []
-          },
-          {
-            "shape": "flow",
-            "attrs": {
-              "line": {
-                "stroke": "#333333",
-                "targetMarker": {
-                  "name": "block"
-                },
-                "sourceMarker": {
-                  "name": ""
-                },
-                "strokeDasharray": null
-              }
-            },
-            "width": 200,
-            "height": 100,
-            "zIndex": 1,
-            "connector": "smooth",
-            "data": {
-              "type": "tm.Flow",
-              "name": "JWT + Create sessions (HTTPS)\n",
-              "description": "Professor sends authenticated request to create class sessions.",
-              "outOfScope": false,
-              "isTrustBoundary": false,
-              "reasonOutOfScope": "",
-              "hasOpenThreats": false,
-              "isBidirectional": false,
               "isEncrypted": true,
               "isPublicNetwork": false,
               "protocol": "HTTPS",
-              "threats": [],
+              "threats": [
+                {
+                  "id": "0a9aaaff-8935-40ec-9b1a-f30ce120362e",
+                  "title": "Privilege escalation via credential compromise",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "An attacker compromises a professor account and performs professor-only actions (create/modify assignments).",
+                  "mitigation": "MFA for professor accounts, alerting on privileged actions, strict RBAC checks.Provide remediation for this threat or a reason if status is N/A",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 20,
+                  "score": ""
+                }
+              ],
               "trustBoundaryIds": [
                 "8a31db7d-b7a4-47db-bf9b-520000000003"
-              ]
+              ],
+              "threatFrequency": {
+                "tampering": 1,
+                "informationDisclosure": 0,
+                "denialOfService": 0
+              }
             },
             "labels": [
-              "JWT + Create sessions (HTTPS)"
+              "Access Request (HTTPS + JWT)\n"
             ],
             "id": "8a31db7d-b7a4-47db-bf9b-520000000012",
             "position": {
@@ -2354,6 +2267,6 @@
     ],
     "diagramTop": 1,
     "reviewer": "",
-    "threatTop": 18
+    "threatTop": 20
   }
 }

@@ -1,0 +1,193 @@
+package com.grupo.learningmore.domain.assignment;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Getter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Assignment aggregate root.
+ * Manages the definition and lifecycle of assignment tasks within a course.
+ * Includes submission collection management and audit trail for academic integrity (R4, R5, R8).
+ */
+@Entity
+@Getter
+@Table(name = "assignments")
+public class Assignment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(nullable = false)
+    private LocalDateTime deadline;
+
+    @Column(nullable = false)
+    private UUID courseId;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    private UUID createdBy;
+
+    @Version
+    @Column(nullable = false)
+    private Integer version;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "assignment_id")
+    private List<Submission> submissions = new ArrayList<>();
+
+    public Assignment() {
+    }
+
+    public Assignment(String title, String description, LocalDateTime deadline, UUID courseId, UUID createdBy) {
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
+        this.courseId = courseId;
+        this.createdBy = createdBy;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.version = 0;
+        this.submissions = new ArrayList<>();
+    }
+
+    public Assignment(UUID id, String title, String description, LocalDateTime deadline, UUID courseId, UUID createdBy) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
+        this.courseId = courseId;
+        this.createdBy = createdBy;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.version = 0;
+        this.submissions = new ArrayList<>();
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void setCourseId(UUID courseId) {
+        this.courseId = courseId;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setCreatedBy(UUID createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public void setSubmissions(List<Submission> submissions) {
+        this.submissions = submissions;
+    }
+
+    // ============ Business logic methods ============
+
+    /**
+     * Check if the assignment deadline has expired.
+     * Used to prevent late submissions and validate submission eligibility.
+     *
+     * @return true if deadline has passed
+     */
+    public boolean isDeadlineExpired() {
+        return LocalDateTime.now().isAfter(this.deadline);
+    }
+
+    /**
+     * Check if assignment can accept submissions.
+     * Performs server-side validation to prevent deadline tampering (AC10, R8).
+     *
+     * @return true if submissions are still accepted
+     */
+    public boolean canBeSubmitted() {
+        return !isDeadlineExpired();
+    }
+
+    /**
+     * Add a submission to this assignment.
+     *
+     * @param submission the submission to add
+     */
+    public void addSubmission(Submission submission) {
+        if (submission != null) {
+            this.submissions.add(submission);
+        }
+    }
+
+    /**
+     * Remove a submission from this assignment.
+     *
+     * @param submission the submission to remove
+     */
+    public void removeSubmission(Submission submission) {
+        this.submissions.remove(submission);
+    }
+
+    /**
+     * Find a submission by its ID.
+     *
+     * @param submissionId the submission ID
+     * @return the submission or null if not found
+     */
+    public Submission findSubmissionById(UUID submissionId) {
+        return this.submissions.stream()
+                .filter(submission -> submission.getId().equals(submissionId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Find a submission by user ID.
+     * Returns the first (and should be only) submission from a specific user.
+     *
+     * @param userId the user ID
+     * @return the submission or null if not found
+     */
+    public Submission findSubmissionByUserId(UUID userId) {
+        return this.submissions.stream()
+                .filter(submission -> submission.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+    }
+}
