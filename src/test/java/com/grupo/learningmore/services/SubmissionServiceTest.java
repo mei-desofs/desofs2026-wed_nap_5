@@ -4,6 +4,7 @@ import com.grupo.learningmore.domain.assignment.Assignment;
 import com.grupo.learningmore.domain.assignment.Submission;
 import com.grupo.learningmore.domain.assignment.SubmissionStatus;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
+import com.grupo.learningmore.services.EnrollmentService;
 import com.grupo.learningmore.repositories.AssignmentRepository;
 import com.grupo.learningmore.repositories.SubmissionAuditLogRepository;
 import com.grupo.learningmore.repositories.SubmissionRepository;
@@ -40,6 +41,9 @@ public class SubmissionServiceTest {
     @Mock
     private SubmissionAuditLogRepository submissionAuditLogRepository;
 
+    @Mock
+    private EnrollmentService enrollmentService;
+
     @InjectMocks
     private SubmissionService submissionService;
 
@@ -73,6 +77,7 @@ public class SubmissionServiceTest {
 
         when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
         when(submissionRepository.existsByAssignmentIdAndUserId(assignmentId, studentId)).thenReturn(false);
+        when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
             s.setId(UUID.randomUUID());
@@ -102,6 +107,27 @@ public class SubmissionServiceTest {
         when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
 
         assertThrows(IllegalStateException.class, () -> submissionService.submit(assignmentId, studentId, file));
+        verify(submissionRepository, never()).save(any());
+    }
+
+    @Test
+    public void testSubmitFailsWhenStudentNotEnrolled() {
+        Assignment assignment = new Assignment(
+                assignmentId,
+                "Project",
+                "Desc",
+                LocalDateTime.now().plusDays(3),
+                UUID.randomUUID(),
+                professorId
+        );
+
+        MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/pdf", "content".getBytes());
+
+        when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
+        when(submissionRepository.existsByAssignmentIdAndUserId(assignmentId, studentId)).thenReturn(false);
+        when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(false);
+
+        assertThrows(AccessDeniedException.class, () -> submissionService.submit(assignmentId, studentId, file));
         verify(submissionRepository, never()).save(any());
     }
 
