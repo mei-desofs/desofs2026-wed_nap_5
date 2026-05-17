@@ -2,19 +2,7 @@ name: CI Pipeline
 
 on:
   push:
-    branches:
-      - main
-      - develop
-      - feature/**
-      ## To be removed, just for testing worflows
-      - pipeline
   pull_request:
-    branches:
-      - main
-      - develop
-      - feature/**
-      ## To be removed, just for testing worflows
-      - pipeline
 
 jobs:
   backend:

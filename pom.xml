@@ -133,7 +133,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -148,19 +147,14 @@
                 </dependencies>
 
                 <configuration>
-
                     <targetClasses>
-                        <param>com.grupo.learningmore.service.*</param>
-                    </targetClasses>
-
+                        <param>com.grupo.learningmore.services.*</param>                    </targetClasses>
                     <targetTests>
                         <param>com.grupo.learningmore.*</param>
                     </targetTests>
-
                     <outputFormats>
                         <param>HTML</param>
                     </outputFormats>
-
                     <threads>4</threads>
 
                     <timestampedReports>false</timestampedReports>
