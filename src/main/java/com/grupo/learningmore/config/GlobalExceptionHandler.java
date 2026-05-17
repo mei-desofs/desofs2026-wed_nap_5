@@ -35,6 +35,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
+        @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+        public ResponseEntity<ErrorResponse> handleSpringSecurityAccessDeniedException(
+                        org.springframework.security.access.AccessDeniedException ex
+        ) {
+                logger.warn("Access denied by security layer: {}", ex.getMessage());
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.FORBIDDEN.value(),
+                                "Access Denied",
+                                LocalDateTime.now()
+                );
+                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+        }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex

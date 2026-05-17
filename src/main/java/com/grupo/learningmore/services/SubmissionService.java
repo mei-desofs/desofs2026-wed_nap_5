@@ -51,6 +51,7 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final AssignmentRepository assignmentRepository;
     private final SubmissionAuditLogRepository submissionAuditLogRepository;
+    private final EnrollmentService enrollmentService;
 
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
@@ -58,11 +59,13 @@ public class SubmissionService {
     public SubmissionService(
             SubmissionRepository submissionRepository,
             AssignmentRepository assignmentRepository,
-            SubmissionAuditLogRepository submissionAuditLogRepository
+            SubmissionAuditLogRepository submissionAuditLogRepository,
+            EnrollmentService enrollmentService
     ) {
         this.submissionRepository = submissionRepository;
         this.assignmentRepository = assignmentRepository;
         this.submissionAuditLogRepository = submissionAuditLogRepository;
+        this.enrollmentService = enrollmentService;
     }
 
     @Transactional
@@ -76,6 +79,10 @@ public class SubmissionService {
 
         if (submissionRepository.existsByAssignmentIdAndUserId(assignmentId, userId)) {
             throw new IllegalArgumentException("User already submitted this assignment");
+        }
+
+        if (!enrollmentService.isUserEnrolledInCourse(userId, assignment.getCourseId())) {
+            throw new AccessDeniedException("User is not enrolled in the course for this assignment");
         }
 
         validateSubmissionFile(file);

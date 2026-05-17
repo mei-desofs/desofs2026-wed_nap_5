@@ -1,7 +1,9 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Course;
-import com.grupo.learningmore.repositories.CourseRepository;
+import com.grupo.learningmore.repositories.*;
+import com.grupo.learningmore.repositories.EnrollmentRepository;
+import com.grupo.learningmore.repositories.ChatRoomRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +35,33 @@ public class CourseControllerIntegrationTest {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired    
+    private EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
+    
+
     private MockMvc mockMvc;
     private UUID adminId;
     private UUID professorId;
 
+    @BeforeEach
+    public void clean() {     
+        chatMessageRepository.deleteAll();
+        enrollmentRepository.deleteAll();
+        chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
+        courseRepository.deleteAll();
+        }
+    
     @BeforeEach
     public void setUp() {
         // IMPORTANTE: Adicionado .apply(springSecurity()) para garantir que as Roles sejam validadas
@@ -48,6 +73,7 @@ public class CourseControllerIntegrationTest {
         courseRepository.deleteAll();
         adminId = UUID.randomUUID();
         professorId = UUID.randomUUID();
+        
     }
 
     @Test
