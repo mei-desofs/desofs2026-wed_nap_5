@@ -198,13 +198,13 @@ public class SubmissionControllerIntegrationTest {
                 .andExpect(jsonPath("$.content[0].userId").value(studentId.toString()));
     }
 
-    // @Test
-    // public void testGetSubmissionsByAssignmentStudentForbidden() throws Exception {
-    //     mockMvc.perform(get("/api/assignments/" + assignmentId + "/submissions")
-    //                     .with(user(studentId.toString()).roles("STUDENT"))
-    //                     .with(csrf()))
-    //             .andExpect(status().isForbidden());
-    // }
+        @Test
+        public void testGetSubmissionsByAssignmentStudentForbidden() throws Exception {
+                mockMvc.perform(get("/api/assignments/" + assignmentId + "/submissions")
+                                                .with(user(studentId.toString()).roles("STUDENT"))
+                                                .with(csrf()))
+                                .andExpect(status().isForbidden());
+        }
 
     @Test
     public void testGradeSubmissionSuccess() throws Exception {
@@ -268,31 +268,32 @@ public class SubmissionControllerIntegrationTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    // @Test
-    // public void testGradeSubmissionUnauthorizedStudent() throws Exception {
-    //     MockMultipartFile file = new MockMultipartFile(
-    //             "file",
-    //             "solution.pdf",
-    //             "application/pdf",
-    //             "PDF content".getBytes()
-    //     );
-    //
-    //     var submitResponse = mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
-    //                     .file(file)
-    //                     .with(user(studentId.toString()).roles("STUDENT")))
-    //             .andReturn();
-    //
-    //     String submissionId = objectMapper.readTree(submitResponse.getResponse().getContentAsString()).get("id").asText();
-    //
-    //     GradeSubmissionRequest gradeRequest = new GradeSubmissionRequest(
-    //             new BigDecimal("18.50"),
-    //             "Grading from student"
-    //     );
-    //
-    //     mockMvc.perform(put("/api/submissions/" + submissionId + "/grade")
-    //                     .with(user(studentId.toString()).roles("STUDENT"))
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .content(objectMapper.writeValueAsString(gradeRequest)))
-    //             .andExpect(status().isForbidden());
-    // }
+    @Test
+    public void testGradeSubmissionUnauthorizedStudent() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "solution.pdf",
+                "application/pdf",
+                "PDF content".getBytes()
+        );
+
+        var submitResponse = mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
+                        .file(file)
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
+                .andReturn();
+
+        String submissionId = objectMapper.readTree(submitResponse.getResponse().getContentAsString()).get("id").asText();
+
+        GradeSubmissionRequest gradeRequest = new GradeSubmissionRequest(
+                new BigDecimal("18.50"),
+                "Grading from student"
+        );
+
+        mockMvc.perform(put("/api/submissions/" + submissionId + "/grade")
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(gradeRequest)))
+                .andExpect(status().isForbidden());
+    }
 }
