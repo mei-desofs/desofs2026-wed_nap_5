@@ -175,7 +175,7 @@ public class ResourceServiceTest {
         // Criamos um ficheiro físico temporário real para o Files.delete conseguir apagar
         String filename = "temp_to_delete.txt";
         File tempFile = new File("uploads/" + filename);
-        tempFile.createNewFile(); 
+        assertTrue(tempFile.createNewFile(), "Falha ao criar ficheiro temporário para o teste.");
 
         // O percurso guardado na BD deve apontar para este ficheiro
         Resource resourceToDelete = new Resource(courseId, filename, tempFile.getPath(), 100L, "text/plain", userId);
