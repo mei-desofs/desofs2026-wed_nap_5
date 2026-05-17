@@ -6,9 +6,8 @@ import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.dto.Request.CreateAssignmentRequest;
-import com.grupo.learningmore.repositories.AssignmentRepository;
-import com.grupo.learningmore.repositories.CourseRepository;
-import com.grupo.learningmore.repositories.UserRepository;
+import com.grupo.learningmore.repositories.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +46,15 @@ public class AssignmentControllerIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private MockMvc mockMvc;
@@ -55,6 +63,16 @@ public class AssignmentControllerIntegrationTest {
     private UUID studentId;
     private UUID courseId;
 
+    @BeforeEach
+    public void clean() {     
+        chatMessageRepository.deleteAll();
+        enrollmentRepository.deleteAll();
+        chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
+        courseRepository.deleteAll();
+        }
+    
+    
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders

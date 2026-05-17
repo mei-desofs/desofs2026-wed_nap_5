@@ -65,6 +65,16 @@ public class ChatControllerIntegrationTest {
     private UUID professorId;
 
     @BeforeEach
+    public void clean() {     
+        chatMessageRepository.deleteAll();
+        enrollmentRepository.deleteAll();
+        chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
+        courseRepository.deleteAll();
+        }
+    
+    
+    @BeforeEach
     void setUp() {
 
         mockMvc = MockMvcBuilders

@@ -50,7 +50,15 @@ public class SubmissionControllerIntegrationTest {
     private EnrollmentRepository enrollmentRepository;
 
     @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -62,6 +70,15 @@ public class SubmissionControllerIntegrationTest {
     private UUID courseId;
     private UUID assignmentId;
 
+    @BeforeEach
+    public void clean() {     
+        chatMessageRepository.deleteAll();
+        enrollmentRepository.deleteAll();
+        chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
+        courseRepository.deleteAll();
+        }
+    
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders
