@@ -262,11 +262,18 @@ public class ResourceServiceTest {
     public void testDeleteResourcePathTraversalThrowsException() {
         UUID resourceId = UUID.randomUUID();
          
-        Resource maliciousResource = new Resource(courseId, "evil.txt", "../../evil.txt", 100L, "text/plain", userId);
+         
+         
+         
+        String maliciousPath = java.nio.file.Paths.get("/", "absolute-outside-path", "evil.txt")
+                .toAbsolutePath().toString();
+
+        Resource maliciousResource = new Resource(courseId, "evil.txt", maliciousPath, 100L, "text/plain", userId);
         maliciousResource.setId(resourceId);
 
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(maliciousResource));
 
+         
         assertThrows(IllegalArgumentException.class, () ->
                 resourceService.deleteResource(resourceId)
         );
