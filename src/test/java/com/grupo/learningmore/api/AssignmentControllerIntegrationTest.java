@@ -42,9 +42,6 @@ public class AssignmentControllerIntegrationTest {
     @Autowired
     private CourseRepository courseRepository;
 
-        @Autowired
-        private com.grupo.learningmore.repositories.ChatRoomRepository chatRoomRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -86,7 +83,6 @@ public class AssignmentControllerIntegrationTest {
         objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
 
         assignmentRepository.deleteAll();
-        chatRoomRepository.deleteAll();
         courseRepository.deleteAll();
         userRepository.deleteAll();
 

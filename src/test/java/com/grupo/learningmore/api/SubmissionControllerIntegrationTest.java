@@ -46,9 +46,6 @@ public class SubmissionControllerIntegrationTest {
     @Autowired
     private CourseRepository courseRepository;
 
-        @Autowired
-        private com.grupo.learningmore.repositories.ChatRoomRepository chatRoomRepository;
-
     @Autowired
     private EnrollmentRepository enrollmentRepository;
 
@@ -94,7 +91,6 @@ public class SubmissionControllerIntegrationTest {
         submissionRepository.deleteAll();
         assignmentRepository.deleteAll();
         enrollmentRepository.deleteAll();
-        chatRoomRepository.deleteAll();
         courseRepository.deleteAll();
         userRepository.deleteAll();
 
