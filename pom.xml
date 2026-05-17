@@ -144,28 +144,26 @@
                         <artifactId>pitest-junit5-plugin</artifactId>
                         <version>1.2.1</version>
                     </dependency>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-launcher</artifactId>
+                        <version>6.0.3</version>
+                    </dependency>
                 </dependencies>
 
                 <configuration>
+                     
                     <targetClasses>
-                        <param>com.grupo.learningmore.services.*</param>                    </targetClasses>
+                        <param>com.grupo.learningmore.services.*</param>
+                    </targetClasses>
+
                     <targetTests>
-                        <param>com.grupo.learningmore.*</param>
+                        <param>com.grupo.learningmore.services.*Test</param>
                     </targetTests>
-                    <outputFormats>
-                        <param>HTML</param>
-                    </outputFormats>
-                    <threads>4</threads>
-
-                    <timestampedReports>false</timestampedReports>
-
-                    <jvmArgs>
-                        <jvmArg>-Xmx2048m</jvmArg>
-                        <jvmArg>-XX:+EnableDynamicAgentLoading</jvmArg>
-                    </jvmArgs>
-
+                     
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -184,7 +182,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

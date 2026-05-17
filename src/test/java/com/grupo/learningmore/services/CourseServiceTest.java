@@ -5,6 +5,7 @@ import com.grupo.learningmore.repositories.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,21 +35,30 @@ public class CourseServiceTest {
 
     @Test
     public void testCreateCourseSuccess() {
-        // Arrange
         when(courseRepository.existsByCode("CS101")).thenReturn(false);
-        Course expectedCourse = new Course("CS101", "Computer Science", "Intro to CS", professorId);
-        when(courseRepository.save(any(Course.class))).thenReturn(expectedCourse);
 
-        // Act
-        Course result = courseService.createCourse("CS101", "Computer Science", "Intro to CS", professorId);
+        when(courseRepository.save(any(Course.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Assert
+        Course result = courseService.createCourse(
+                "CS101",
+                "Computer Science",
+                "Intro to CS",
+                professorId
+        );
+
         assertNotNull(result);
-        assertEquals("CS101", result.getCode());
-        assertEquals("Computer Science", result.getName());
-        verify(courseRepository).existsByCode("CS101");
-        verify(courseRepository).save(any(Course.class));
+
+        ArgumentCaptor<Course> captor = ArgumentCaptor.forClass(Course.class);
+        verify(courseRepository).save(captor.capture());
+
+        Course saved = captor.getValue();
+
+        assertEquals("CS101", saved.getCode());
+        assertEquals("Computer Science", saved.getName());
+        assertEquals(professorId, saved.getCreatedBy());
     }
+
 
     @Test
     public void testCreateCourseDuplicateCodeThrowsException() {
@@ -116,4 +126,39 @@ public class CourseServiceTest {
         assertThrows(IllegalArgumentException.class, () -> courseService.findByCode("INVALID"));
         verify(courseRepository).findByCode("INVALID");
     }
+
+
+    @Test
+    public void testDeleteCourseByCodeSuccess() {
+        // Arrange
+        String courseCode = "CS101";
+        Course expectedCourse = new Course(courseCode, "Computer Science", "Intro", professorId);
+        UUID courseId = UUID.randomUUID();
+        expectedCourse.setId(courseId); // O ID que o deleteById vai receber
+
+        // Simulamos o findByCode que o service invoca internamente
+        when(courseRepository.findByCode(courseCode)).thenReturn(Optional.of(expectedCourse));
+
+        // Act
+        courseService.deleteCourseByCode(courseCode);
+
+        // Assert
+        verify(courseRepository).findByCode(courseCode);
+        
+         verify(courseRepository).deleteById(courseId); 
+    }
+
+    @Test
+    public void testDeleteCourseByCodeNotFoundThrowsException() {
+        // Arrange
+        String invalidCode = "UNKNOWN";
+        when(courseRepository.findByCode(invalidCode)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> courseService.deleteCourseByCode(invalidCode));
+        verify(courseRepository).findByCode(invalidCode);
+        verify(courseRepository, never()).delete(any());
+    }
+
+    
 }
