@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -91,6 +91,7 @@ public class AssignmentControllerIntegrationTest {
 
         mockMvc.perform(post("/api/courses/" + courseId + "/assignments")
                         .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf())                 
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -124,6 +125,7 @@ public class AssignmentControllerIntegrationTest {
 
         mockMvc.perform(post("/api/courses/" + courseId + "/assignments")
                         .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -142,6 +144,7 @@ public class AssignmentControllerIntegrationTest {
 
         mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
                         .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -161,6 +164,7 @@ public class AssignmentControllerIntegrationTest {
 
         mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
                         .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -188,6 +192,7 @@ public class AssignmentControllerIntegrationTest {
 
         mockMvc.perform(put("/api/courses/" + courseId + "/assignments/" + assignment.getId())
                         .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isForbidden());
@@ -205,7 +210,8 @@ public class AssignmentControllerIntegrationTest {
         assignment = assignmentRepository.save(assignment);
 
         mockMvc.perform(delete("/api/courses/" + courseId + "/assignments/" + assignment.getId())
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
 }

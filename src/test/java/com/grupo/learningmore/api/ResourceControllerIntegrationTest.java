@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,6 +29,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class ResourceControllerIntegrationTest {
 
     @Autowired
@@ -77,8 +79,9 @@ public class ResourceControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/courses/" + courseId + "/resources")
                         .file(file)
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
-                .andExpect(status().isCreated())
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
+                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.filename").value("lecture1.pdf"))
                 .andExpect(jsonPath("$.courseId").value(courseId.toString()));
     }
@@ -94,7 +97,8 @@ public class ResourceControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/courses/" + courseId + "/resources")
                         .file(emptyFile)
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -103,7 +107,8 @@ public class ResourceControllerIntegrationTest {
         resourceRepository.save(new Resource(courseId, "lecture1.pdf", "/path/1", 1024L, "application/pdf", professorId));
 
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
@@ -115,7 +120,8 @@ public class ResourceControllerIntegrationTest {
         );
 
         mockMvc.perform(get("/api/courses/" + courseId + "/resources/" + resource.getId())
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.filename").value("notes.txt"));
     }
@@ -138,7 +144,8 @@ public class ResourceControllerIntegrationTest {
 
      // 4. Perform the delete request
          mockMvc.perform(delete("/api/courses/" + courseId + "/resources/" + resource.getId())
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
 
     // 5. Clean up safety check: Verify the service actually deleted the physical file from disk
@@ -156,8 +163,9 @@ public class ResourceControllerIntegrationTest {
         );
 
          mockMvc.perform(delete("/api/courses/" + courseId + "/resources/" + resource.getId())
-                .with(user(professorId.toString()).roles("PROFESSOR")))
-        .andExpect(status().isNoContent()); // Should still succeed with 204!
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
+                .andExpect(status().isNoContent()); // Should still succeed with 204!
 
          org.junit.jupiter.api.Assertions.assertFalse(resourceRepository.existsById(resource.getId()));
  }     
@@ -169,7 +177,8 @@ public class ResourceControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/courses/" + nonExistentCourseId + "/resources")
                         .file(file)
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isNotFound());
     }
 
@@ -183,7 +192,8 @@ public class ResourceControllerIntegrationTest {
 
         // Admin checks don't read from the enrollment table
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
-                        .with(user(adminId.toString()).roles("ADMIN")))
+                        .with(user(adminId.toString()).roles("ADMIN"))
+                        .with(csrf()))
                 .andExpect(status().isOk()); 
     }
 
@@ -196,7 +206,8 @@ public class ResourceControllerIntegrationTest {
         resourceRepository.save(new Resource(courseId, "student-view.pdf", "/path/2", 1024L, "application/pdf", professorId));
 
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
@@ -207,7 +218,8 @@ public class ResourceControllerIntegrationTest {
 
         // We specifically DO NOT add an enrollment mapping for this user ID
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
-                        .with(user(maliciousStudentId.toString()).roles("STUDENT")))
+                        .with(user(maliciousStudentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().isForbidden()); 
     }
 
@@ -215,7 +227,8 @@ public class ResourceControllerIntegrationTest {
     public void testGetResourcesWithMalformedUserUuid_ReturnsUnauthorized() throws Exception {
         // Simulates an unparseable authentication name (e.g. not a valid UUID format string)
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
-                        .with(user("malformed-string-id-abc").roles("STUDENT")))
+                        .with(user("malformed-string-id-abc").roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().isUnauthorized()); 
     }
 

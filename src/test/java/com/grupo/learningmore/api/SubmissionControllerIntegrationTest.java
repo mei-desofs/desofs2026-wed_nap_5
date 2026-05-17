@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -114,7 +114,8 @@ public class SubmissionControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
                         .file(file)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userId").value(studentId.toString()))
                 .andExpect(jsonPath("$.status").value("PENDING"));
@@ -140,7 +141,8 @@ public class SubmissionControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/assignments/" + saved.getId() + "/submissions")
                         .file(file)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -155,7 +157,8 @@ public class SubmissionControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
                         .file(file)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().isCreated());
 
         MockMultipartFile file2 = new MockMultipartFile(
@@ -167,7 +170,8 @@ public class SubmissionControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
                         .file(file2)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -182,11 +186,13 @@ public class SubmissionControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
                         .file(file)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(get("/api/assignments/" + assignmentId + "/submissions")
-                        .with(user(professorId.toString()).roles("PROFESSOR")))
+                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)))
                 .andExpect(jsonPath("$.content[0].userId").value(studentId.toString()));
@@ -195,7 +201,8 @@ public class SubmissionControllerIntegrationTest {
     // @Test
     // public void testGetSubmissionsByAssignmentStudentForbidden() throws Exception {
     //     mockMvc.perform(get("/api/assignments/" + assignmentId + "/submissions")
-    //                     .with(user(studentId.toString()).roles("STUDENT")))
+    //                     .with(user(studentId.toString()).roles("STUDENT"))
+    //                     .with(csrf()))
     //             .andExpect(status().isForbidden());
     // }
 
@@ -210,7 +217,8 @@ public class SubmissionControllerIntegrationTest {
 
         var submitResponse = mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
                         .file(file)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andReturn();
 
         String submissionId = objectMapper.readTree(submitResponse.getResponse().getContentAsString()).get("id").asText();
@@ -223,7 +231,8 @@ public class SubmissionControllerIntegrationTest {
         mockMvc.perform(put("/api/submissions/" + submissionId + "/grade")
                         .with(user(professorId.toString()).roles("PROFESSOR"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(gradeRequest)))
+                        .content(objectMapper.writeValueAsString(gradeRequest))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.grade").value(18.50))
                 .andExpect(jsonPath("$.status").value("GRADED"));
@@ -240,7 +249,8 @@ public class SubmissionControllerIntegrationTest {
 
         var submitResponse = mockMvc.perform(multipart("/api/assignments/" + assignmentId + "/submissions")
                         .file(file)
-                        .with(user(studentId.toString()).roles("STUDENT")))
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf()))
                 .andReturn();
 
         String submissionId = objectMapper.readTree(submitResponse.getResponse().getContentAsString()).get("id").asText();
@@ -253,6 +263,7 @@ public class SubmissionControllerIntegrationTest {
         mockMvc.perform(put("/api/submissions/" + submissionId + "/grade")
                         .with(user(professorId.toString()).roles("PROFESSOR"))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(objectMapper.writeValueAsString(gradeRequest)))
                 .andExpect(status().is4xxClientError());
     }

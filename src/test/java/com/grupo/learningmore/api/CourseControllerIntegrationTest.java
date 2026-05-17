@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -23,6 +24,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class CourseControllerIntegrationTest {
 
     @Autowired
@@ -61,6 +63,7 @@ public class CourseControllerIntegrationTest {
         mockMvc.perform(post("/api/courses")
                         .with(user(adminId.toString()).roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.code").value("CS101"))
@@ -82,6 +85,7 @@ public class CourseControllerIntegrationTest {
         mockMvc.perform(post("/api/courses")
                         .with(user(adminId.toString()).roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .content(requestBody))
                 .andExpect(status().isBadRequest());
     }
@@ -133,6 +137,7 @@ public class CourseControllerIntegrationTest {
 
         mockMvc.perform(put("/api/courses/" + course.getId())
                         .with(user(adminId.toString()).roles("ADMIN"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateBody))
                 .andExpect(status().isOk())
@@ -144,7 +149,8 @@ public class CourseControllerIntegrationTest {
         Course course = courseRepository.save(new Course("MUSIC101", "Music", "Theory basics", adminId));
 
          mockMvc.perform(delete("/api/courses/" + course.getId())
-                        .with(user(adminId.toString()).roles("ADMIN")))
+                        .with(user(adminId.toString()).roles("ADMIN"))
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
 
@@ -155,7 +161,8 @@ public class CourseControllerIntegrationTest {
 
         // 2. Perform the delete using the course code path and the dynamic adminId
         mockMvc.perform(delete("/api/courses/code/" + course.getCode())
-                        .with(user(adminId.toString()).roles("ADMIN")))
+                        .with(user(adminId.toString()).roles("ADMIN"))
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
 }
