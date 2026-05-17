@@ -57,7 +57,6 @@ public class ChatService {
         String sanitizedContent = sanitize(request.getContent());
 
         ChatMessage message = new ChatMessage();
-        message.setId(UUID.randomUUID());
         message.setChatRoom(chatRoom);
         message.setContent(sanitizedContent);
         message.setSentAt(new Date());

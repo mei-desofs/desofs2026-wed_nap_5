@@ -134,20 +134,21 @@ public class ChatControllerIntegrationTest {
                 .authorities(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
-//    @Test
-//    void shouldSendMessageSuccessfully() throws Exception {
-//
-//        SendMessageRequest request = new SendMessageRequest();
-//        request.setContent("Hello professor");
-//
-//        mockMvc.perform(post("/api/chat/" + chatRoomId + "/messages")
-//                        .with(user(studentId.toString()).roles("STUDENT"))
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(request)))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.content").value("Hello professor"))
-//                .andExpect(jsonPath("$.id").exists());
-//    }
+    @Test
+    void shouldSendMessageSuccessfully() throws Exception {
+
+        SendMessageRequest request = new SendMessageRequest();
+        request.setContent("Hello professor");
+
+        mockMvc.perform(post("/api/chat/" + chatRoomId + "/messages")
+                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.content").value("Hello professor"))
+                .andExpect(jsonPath("$.id").exists());
+    }
 
     @Test
     void shouldRejectWhenUserNotEnrolled() throws Exception {
