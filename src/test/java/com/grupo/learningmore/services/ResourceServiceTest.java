@@ -177,7 +177,7 @@ public class ResourceServiceTest {
         File tempFile = new File("uploads/" + filename);
         
         tempFile.createNewFile();  
-          
+
         // O percurso guardado na BD deve apontar para este ficheiro
         Resource resourceToDelete = new Resource(courseId, filename, tempFile.getPath(), 100L, "text/plain", userId);
         resourceToDelete.setId(resourceId);
@@ -262,7 +262,7 @@ public class ResourceServiceTest {
     public void testDeleteResourcePathTraversalThrowsException() {
         UUID resourceId = UUID.randomUUID();
          
-        Resource maliciousResource = new Resource(courseId, "evil.txt", "C:/Windows/System32/cmd.exe", 100L, "text/plain", userId);
+        Resource maliciousResource = new Resource(courseId, "evil.txt", "../../evil.txt", 100L, "text/plain", userId);
         maliciousResource.setId(resourceId);
 
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(maliciousResource));
