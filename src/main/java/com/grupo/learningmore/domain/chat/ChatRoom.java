@@ -3,7 +3,6 @@ package com.grupo.learningmore.domain.chat;
 import com.grupo.learningmore.domain.course.Course;
 import jakarta.persistence.*;
 import lombok.Getter;
-//import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
 
@@ -28,6 +27,10 @@ public class ChatRoom {
 
     public ChatRoom(UUID id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public ChatRoom(String name) {
         this.name = name;
     }
 
