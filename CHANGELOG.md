@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v1.1.0...v1.1.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* fix code error ([6401416](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/64014160ecb19c275e0088b47387c83eb746b2e0))
+* fix not needed code ([fa0f749](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/fa0f749e8b1c20b1cd71a86953a1010c787e86e5))
+
 ## [1.1.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v1.0.0...v1.1.0) (2026-05-18)
 
 
