@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v1.1.1...v2.0.0) (2026-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* Changed ASVS
+
+### Features
+
+* Changed ASVS ([97cb955](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/97cb955f94362691cf9bae533c5a67cf4f5226bb))
+
 ## [1.1.1](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v1.1.0...v1.1.1) (2026-05-18)
 
 
