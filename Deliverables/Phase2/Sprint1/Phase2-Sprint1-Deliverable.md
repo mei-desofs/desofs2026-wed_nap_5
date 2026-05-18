@@ -312,6 +312,9 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Create OWASP cache directory
+        run: mkdir -p ~/.dependency-check
+
       - name: Cache OWASP Dependency Check data
         uses: actions/cache@v4
         with:
@@ -324,7 +327,8 @@ jobs:
         run: |
           mvn -B org.owasp:dependency-check-maven:check \
             -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
-            -DossindexAnalyzerEnabled=false
+            -DossindexAnalyzerEnabled=false \
+            -DdataDirectory=~/.dependency-check
 
       - name: Upload report
         if: always()
@@ -334,10 +338,7 @@ jobs:
           path: target/dependency-check-report.*
 ```
 
-  📌 Insert here:
-
-* TO-DO: PUT PRINT OF THE CACHE HERE
-
+![SCA Report](images/sca-dependency-report.png)
 
 
 ### 3.6 Secret Detection
