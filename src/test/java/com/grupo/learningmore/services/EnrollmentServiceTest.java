@@ -41,11 +41,9 @@ public class EnrollmentServiceTest {
         courseId = UUID.randomUUID();
         chatRoomId = UUID.randomUUID();
 
-        // Criamos o Mock do ChatRoom e do Course
         mockChatRoom = mock(ChatRoom.class);
         Course mockCourse = mock(Course.class);
 
-        // Usamos lenient() para avisar o Mockito que nem todos os testes vão invocar estas linhas
         Mockito.lenient().when(mockChatRoom.getCourse()).thenReturn(mockCourse);
         Mockito.lenient().when(mockCourse.getId()).thenReturn(courseId);
     }
@@ -107,7 +105,7 @@ public class EnrollmentServiceTest {
 
         assertEquals("Chat room not found", exception.getMessage());
         verify(chatRoomRepository).findById(chatRoomId);
-        verifyNoInteractions(enrollmentRepository); // Se a sala não existe, nem valida a inscrição
+        verifyNoInteractions(enrollmentRepository);
     }
 }
 

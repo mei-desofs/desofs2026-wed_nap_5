@@ -22,10 +22,8 @@ public class AssignmentUnitTest {
                 creator
         );
 
-        // should accept submissions when deadline in future
         assertTrue(assignment.canBeSubmitted());
 
-        // add a submission and verify retrieval by id and user
         UUID studentId = UUID.randomUUID();
         Submission submission = new Submission(
                 assignment,
@@ -43,7 +41,6 @@ public class AssignmentUnitTest {
         assertEquals(submission, assignment.findSubmissionById(subId));
         assertEquals(submission, assignment.findSubmissionByUserId(studentId));
 
-        // adding null should be ignored
         assignment.addSubmission(null);
         assertEquals(1, assignment.getSubmissions().size());
     }

@@ -64,7 +64,6 @@ public class CourseControllerIntegrationTest {
     
     @BeforeEach
     public void setUp() {
-        // IMPORTANTE: Adicionado .apply(springSecurity()) para garantir que as Roles sejam validadas
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
@@ -132,7 +131,7 @@ public class CourseControllerIntegrationTest {
         courseRepository.save(new Course("BIO101", "Biology", "Life sciences", professorId));
 
         mockMvc.perform(get("/api/courses/code/BIO101")
-                        .with(user("testUser").roles("STUDENT")) // Adicionado para evitar o 403
+                        .with(user("testUser").roles("STUDENT"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("BIO101"));
@@ -144,7 +143,7 @@ public class CourseControllerIntegrationTest {
         courseRepository.save(new Course("HIST101", "History", "World history", professorId));
 
         mockMvc.perform(get("/api/courses")
-                        .with(user("testUser").roles("STUDENT")) // Adicionado para evitar o 403
+                        .with(user("testUser").roles("STUDENT"))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));

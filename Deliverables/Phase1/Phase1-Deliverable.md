@@ -30,6 +30,7 @@
     * [6.4 Input Validation and Request Integrity (ASVS V5)](#64-input-validation-and-request-integrity-asvs-v5)
     * [6.5 Third-Party Components (ASVS V14 + supply-chain best practice)](#65-third-party-components-asvs-v14--supply-chain-best-practice)
     * [6.6 Logging and Monitoring (ASVS V7)](#66-logging-and-monitoring-asvs-v7)
+    * [6.7 Session Management (ASVS V3)](#67-session-management-asvs-v3)
   * [7. Abuse Cases](#7-abuse-cases)
   * [8. General Design](#8-general-design)
   * [9. Domain Model](#9-domain-model)
