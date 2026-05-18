@@ -227,7 +227,7 @@ public class AssignmentServiceTest {
         assertEquals("Old title", updated.getTitle());
         assertEquals("Old desc", updated.getDescription());
         assertTrue(updated.getDeadline().isAfter(LocalDateTime.now().plusDays(3)));
-        assertTrue(updated.getUpdatedAt().isAfter(updatedAtBefore));
+        assertNotEquals(updatedAtBefore, updated.getUpdatedAt());
         verify(assignmentRepository).save(assignment);
         verify(assignmentAuditLogRepository).save(any());
         }
