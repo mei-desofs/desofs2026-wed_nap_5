@@ -4,8 +4,9 @@
 * [Phase 2 – Sprint 1: Development & Testing](#phase-2--sprint-1-development--testing)
   * [1. Overview](#1-overview)
   * [2. Development Practices](#2-development-practices)
-    * [2.1 Secure Coding Practices](#21-secure-coding-practices)
-    * [2.2 Code Reviews](#22-code-reviews)
+    * [2.1 Commit Messages](#21-commit-messages)
+    * [2.2 Pull Requests](#22-pull-requests)
+    * [2.3 CodeReviews](#23-codereviews)
   * [3. Static Analysis (SAST & SCA)](#3-static-analysis-sast--sca)
     * [3.1 Static Application Security Testing (SAST)](#31-static-application-security-testing-sast)
     * [3.2 Software Composition Analysis (SCA)](#32-software-composition-analysis-sca)
@@ -26,51 +27,92 @@
 
 ## 1. Overview
 
-This sprint focuses on the implementation of secure development practices and the execution of security testing
-activities.
+This phase focuses on the integration of secure development and DevSecOps practices into the project lifecycle.
 
-The work is based on Phase 1 outputs:
+This document presents the development conventions and security practices adopted during the implementation process, as
+well as the CI/CD workflows created to support automated validation and secure software delivery.
 
-- Threat Modeling (STRIDE)
-- Risk Assessment
-- Security Requirements
-- Abuse Cases
-
-The main objective is to integrate security into development and validate it through testing.
+A shift-left security approach was followed, integrating automated testing and security verification mechanisms 
+throughout the development lifecycle.
 
 ---
 
 ## 2. Development Practices
 
-### 2.1 Secure Coding Practices
+To ensure consistent code quality and smooth collaboration within the team, a set of development conventions and
+processes was defined. These include standards for commit messages, pull request management, code review practices, and
+branch organization.
 
-The following practices were implemented:
+Following these guidelines helps maintain a clean and maintainable codebase, while also improving traceability and ease
+of navigation throughout the project.
 
-- Server-side validation of all inputs
-- Role-Based Access Control (RBAC) enforcement
-- Secure password storage (e.g., BCrypt / Argon2)
-- Secure error handling (no sensitive data exposure)
-- File upload validation (type, size, format)
+### 2.1 Commit Messages
 
----
+The team adopts the Conventional Commits specification to ensure a clear, structured, and consistent commit history
+throughout the project. Each commit message follows a standard format that improves readability and helps track the
+purpose of changes more effectively.
 
-### 2.2 Code Reviews
+The general structure used is: '**type**': '**description**'
 
-Code reviews were performed using pull requests.
+Where '**description**' should give and explanation of what was done and '**type**' defines the nature of the change:
 
-Process:
+* **docs**: updates or additions to documentation
+* **feat**: introduction of a new feature or functionality
+* **fix**: correction of a bug or issue
+* **test**: addition or modification of tests
+* **chore**: maintenance tasks, dependency updates, and other routine work
+* **refactor**: code changes that improve structure without altering behaviour
 
-- All code changes are submitted via Pull Requests
-- Reviewers validate:
-    - Security issues
-    - Code quality
-    - Compliance with requirements
+### 2.2 Pull Requests
 
-Evidence:
+Before any changes are merged into the `main` branch, a pull request must be created to ensure proper review and
+validation of the implemented work.
 
-- PR links:
-    - [PR #1](#)
-    - [PR #2](#)
+**Title:**
+Each pull request should have a clear and descriptive title summarizing the changes introduced.
+
+**Description:**
+If needed, a description can be provided, including:
+
+* A summary of the changes made
+* Any relevant details that help reviewers understand the modifications
+
+**Assignment:**
+Pull requests are typically assigned to the developer or developers responsible for the changes, ensuring 
+traceability.
+
+**Reviewers:**
+Team members are added as reviewers to validate the changes before merging. Automated tools and pipelines may be used 
+to support the review process when appropriate.
+
+**Labels:**
+When needed labels (e.g., bug, enhancement, documentation) can be used to help organize and categorize pull requests,
+depending on their importance.
+
+
+### 2.3 CodeReviews
+
+Code reviews were used as part of the development workflow to support code quality and encourage knowledge sharing
+within the team, although the level of formality varied depending on the task and context.
+
+**Review approach:**
+Pull requests were generally reviewed by at least one other team member before being merged, when possible. Feedback and
+discussion were used to refine implementations and address potential issues.
+
+**Reviewer focus:**
+During review, attention was typically given to aspects such as:
+
+* General correctness of the implementation
+* Alignment with the expected functionality
+* Results from automated checks and CI/CD pipelines (e.g., workflows, tests, and other validation steps)
+
+**Automated support:**
+In some cases, automated tools were used to assist with the review process by providing suggestions and highlighting 
+potential issues. These tools were used as a complement to manual review rather than a strict requirement.
+
+**Merge process:**
+Once feedback was addressed and the changes were considered appropriate, the pull request could be merged into the main
+branch by the author or another team member, depending on the situation.
 
 ---
 
