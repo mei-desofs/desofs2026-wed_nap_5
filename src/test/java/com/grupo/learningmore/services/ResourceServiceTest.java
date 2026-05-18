@@ -148,4 +148,138 @@ public class ResourceServiceTest {
         assertThrows(IllegalArgumentException.class, () -> resourceService.findById(resourceId));
         verify(resourceRepository).findById(resourceId);
     }
+
+    @Test
+    public void testFindByCourseIdSuccess() {
+        // Arrange
+        java.util.List<Resource> resources = java.util.List.of(
+                new Resource(courseId, "doc1.pdf", "/p1", 10L, "application/pdf", userId),
+                new Resource(courseId, "doc2.txt", "/p2", 20L, "text/plain", userId)
+        );
+        when(resourceRepository.findByCourseId(courseId)).thenReturn(resources);
+
+        // Act
+        java.util.List<Resource> result = resourceService.findByCourseId(courseId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(resourceRepository).findByCourseId(courseId);
+    }
+
+    @Test
+    public void testDeleteResourceSuccess() throws IOException {
+        // Arrange
+        UUID resourceId = UUID.randomUUID();
+        
+        // Criamos um ficheiro físico temporário real para o Files.delete conseguir apagar
+        String filename = "temp_to_delete.txt";
+        File tempFile = new File("uploads/" + filename);
+        
+        tempFile.createNewFile();  
+
+        // O percurso guardado na BD deve apontar para este ficheiro
+        Resource resourceToDelete = new Resource(courseId, filename, tempFile.getPath(), 100L, "text/plain", userId);
+        resourceToDelete.setId(resourceId);
+
+        // Mocks do fluxo
+        when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(resourceToDelete));
+
+        // Act
+        resourceService.deleteResource(resourceId);  
+
+        // Assert
+        assertFalse(tempFile.exists(), "O ficheiro físico deveria ter sido apagado do disco!");
+        verify(resourceRepository).findById(resourceId);
+        verify(resourceRepository).deleteById(resourceId);
+    }
+
+    @Test
+    public void testDeleteResourceNotFoundThrowsException() {
+        // Arrange
+        UUID invalidResourceId = UUID.randomUUID();
+        when(resourceRepository.findById(invalidResourceId)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> resourceService.deleteResource(invalidResourceId));
+        verify(resourceRepository).findById(invalidResourceId);
+        verify(resourceRepository, never()).deleteById(any());
+    }
+
+     
+    @Test
+    public void testUploadResourceFilenameBlankThrowsException() {
+        MockMultipartFile file = new MockMultipartFile("file", "", "text/plain", "content".getBytes());
+        
+        // Mock necessário se o método validar o curso antes do nome (ou vice-versa)
+        Course course = new Course("CS101", "CS", "Intro", userId);
+        course.setId(courseId);
+        lenient().when(courseService.findById(courseId)).thenReturn(course);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                resourceService.uploadResource(courseId, file, userId)
+        );
+    }
+
+     
+    @Test
+    public void testUploadResourceFilenameMaliciousThrowsException() {
+        MockMultipartFile file = new MockMultipartFile("file", "../../../etc/passwd", "text/plain", "content".getBytes());
+        
+        Course course = new Course("CS101", "CS", "Intro", userId);
+        course.setId(courseId);
+        lenient().when(courseService.findById(courseId)).thenReturn(course);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                resourceService.uploadResource(courseId, file, userId)
+        );
+    }
+
+     
+    /*
+    @Test
+    public void testUploadResourcePathTraversalAttackThrowsException() throws java.io.IOException {
+        // Arrange
+        MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", "content".getBytes());
+
+        Course course = new Course("CS101", "CS", "Intro", userId);
+        course.setId(courseId);
+        when(courseService.findById(courseId)).thenReturn(course);
+
+         
+        ReflectionTestUtils.setField(resourceService, "uploadDir", "   ");
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () ->
+                resourceService.uploadResource(courseId, file, userId)
+        );
+
+         
+        ReflectionTestUtils.setField(resourceService, "uploadDir", "uploads");
+    }*/
+
+     
+    @Test
+    public void testDeleteResourcePathTraversalThrowsException() {
+        UUID resourceId = UUID.randomUUID();
+         
+         
+         
+         
+        String maliciousPath = java.nio.file.Paths.get("/", "absolute-outside-path", "evil.txt")
+                .toAbsolutePath().toString();
+
+        Resource maliciousResource = new Resource(courseId, "evil.txt", maliciousPath, 100L, "text/plain", userId);
+        maliciousResource.setId(resourceId);
+
+        when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(maliciousResource));
+
+         
+        assertThrows(IllegalArgumentException.class, () ->
+                resourceService.deleteResource(resourceId)
+        );
+        
+        verify(resourceRepository, never()).deleteById(any());
+    }
+
 }
