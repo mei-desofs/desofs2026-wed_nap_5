@@ -45,6 +45,13 @@ public class SecurityConfig {
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout
+                    .logoutUrl("/api/auth/logout") // Endpoint de logout da API
+                    .addLogoutHandler((request, response, authentication) -> {
+                        // Força a instrução de destruição de dados no cliente via HTTP Header
+                        response.setHeader("Clear-Site-Data", "\"cache\", \"cookies\", \"storage\"");
+                    })
+                )
                 .build();
     }
 
