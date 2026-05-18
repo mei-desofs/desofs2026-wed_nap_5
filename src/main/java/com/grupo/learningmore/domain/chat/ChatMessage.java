@@ -2,7 +2,6 @@ package com.grupo.learningmore.domain.chat;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-//import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 import java.util.UUID;
@@ -28,6 +27,12 @@ public class ChatMessage {
 
     public ChatMessage(UUID id, ChatRoom chatRoom, String content, Date sentAt) {
         this.id = id;
+        this.chatRoom = chatRoom;
+        this.content = content;
+        this.sentAt = sentAt;
+    }
+
+    public ChatMessage(ChatRoom chatRoom, String content, Date sentAt) {
         this.chatRoom = chatRoom;
         this.content = content;
         this.sentAt = sentAt;
