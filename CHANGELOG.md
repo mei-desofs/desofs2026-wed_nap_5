@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v1.0.0...v1.1.0) (2026-05-18)
+
+
+### Features
+
+* cleans code ([3647977](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/36479772e906b87c4a1bda3f756f85d99c8ec3c2))
+
 ## 1.0.0 (2026-05-18)
 
 
