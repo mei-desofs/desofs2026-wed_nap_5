@@ -9,11 +9,13 @@ import com.grupo.learningmore.repositories.CourseRepository;
 import com.grupo.learningmore.repositories.ResourceRepository;
 import com.grupo.learningmore.repositories.EnrollmentRepository;
 import com.grupo.learningmore.repositories.UserRepository;
+import com.grupo.learningmore.domain.chat.ChatRoom;
+import com.grupo.learningmore.domain.chat.ChatMessage;
+import com.grupo.learningmore.repositories.ChatRoomRepository;
+import com.grupo.learningmore.repositories.ChatMessageRepository;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
 public class DataBootstrap implements CommandLineRunner {
@@ -22,22 +24,29 @@ public class DataBootstrap implements CommandLineRunner {
     private final CourseRepository courseRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ResourceRepository resourceRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     public DataBootstrap(
             UserRepository userRepository,
             CourseRepository courseRepository,
             EnrollmentRepository enrollmentRepository,
-            ResourceRepository resourceRepository
+            ResourceRepository resourceRepository,
+            ChatRoomRepository chatRoomRepository,
+            ChatMessageRepository chatMessageRepository
     ) {
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.resourceRepository = resourceRepository;
+
+        this.chatRoomRepository = chatRoomRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // Only load bootstrap data if the database is empty
+
         if (userRepository.count() > 0) {
             System.out.println("Database already populated. Skipping bootstrap data.");
             return;
@@ -131,6 +140,38 @@ public class DataBootstrap implements CommandLineRunner {
         resourceRepository.save(resource4);
         System.out.println("Created Resource 2 for Web Development");
 
-        System.out.println("Bootstrap data loaded successfully!");
+        ChatRoom chat1 = new ChatRoom("Chat Geral - Cibersegurança");
+        chat1.setCourse(savedCourse1);
+        ChatRoom savedChat1 = chatRoomRepository.save(chat1);
+        System.out.println("Created Chat Room for Cibersegurança");
+
+        ChatRoom chat2 = new ChatRoom("Chat Geral - Web Development");
+        chat2.setCourse(savedCourse2);
+        ChatRoom savedChat2 = chatRoomRepository.save(chat2);
+        System.out.println("Created Chat Room for Web Development");
+
+        ChatMessage msg1 = new ChatMessage(
+                savedChat1,
+                "Welcome to the Cybersecurity course!",
+                new java.util.Date()
+        );
+        chatMessageRepository.save(msg1);
+        System.out.println("Created message in Cybersecurity chat");
+
+        ChatMessage msg2 = new ChatMessage(
+                savedChat1,
+                "Thank you, professor!",
+                new java.util.Date()
+        );
+        chatMessageRepository.save(msg2);
+        System.out.println("Created message in Cybersecurity chat");
+
+        ChatMessage msg3 = new ChatMessage(
+                savedChat2,
+                "Let's start with HTML and CSS!",
+                new java.util.Date()
+        );
+        chatMessageRepository.save(msg3);
+        System.out.println("Created message in Web Development chat");
     }
 }
