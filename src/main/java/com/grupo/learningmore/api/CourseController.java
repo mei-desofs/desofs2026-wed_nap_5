@@ -133,10 +133,8 @@ public class CourseController {
     ) {
         UUID userId = UUID.fromString(authentication.getName());
         
-        // Verify the course actually exists first via your courseService
-        courseService.findById(courseId); 
+        courseService.findById(courseId);
         
-        // Handle the enrollment logic
         if (enrollmentRepository.existsByUserIdAndCourseIdAndActiveTrue(userId, courseId)) {
             throw new IllegalArgumentException("You are already enrolled in this course.");
         }

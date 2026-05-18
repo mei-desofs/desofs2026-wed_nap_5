@@ -44,10 +44,9 @@ public class ResourceController {
             @PathVariable UUID courseId,
             Authentication authentication
     ) {
-        // Use the centralized security validation method
         ResponseEntity<List<ResourceResponse>> accessCheck = validateUserAccess(authentication, courseId);
         if (accessCheck != null) {
-            return accessCheck; // Returns 401 or 403 early if validation fails
+            return accessCheck;
         }
 
         List<Resource> resources = resourceService.findByCourseId(courseId);
@@ -65,15 +64,13 @@ public class ResourceController {
     ) {
         Resource resource = resourceService.findById(resourceId);
 
-        // Verify that the resource belongs to the course
         if (!resource.getCourseId().equals(courseId)) {
             return ResponseEntity.notFound().build();
         }
 
-        // Use the centralized security validation method
         ResponseEntity<ResourceResponse> accessCheck = validateUserAccess(authentication, courseId);
         if (accessCheck != null) {
-            return accessCheck; // Returns 401 or 403 early if validation fails
+            return accessCheck;
         }
 
         return ResponseEntity.ok(mapToResourceResponse(resource));
@@ -126,7 +123,6 @@ public class ResourceController {
 
         if (!hasAdminOrProfessorRole(authentication)) {
             try {
-                // FIXED: Changed from NumberFormatException to IllegalArgumentException
                 UUID userId = UUID.fromString(authentication.getName());
                 
                 if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
@@ -136,7 +132,7 @@ public class ResourceController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
         }
-        return null; // Access granted
+        return null;
     }
 
     private boolean hasAdminOrProfessorRole(Authentication authentication) {
