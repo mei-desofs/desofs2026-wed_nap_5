@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
-import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -117,21 +116,6 @@ public class AssignmentControllerIntegrationTest {
                 .andExpect(jsonPath("$.courseId").value(courseId.toString()))
                 .andExpect(jsonPath("$.id").isNotEmpty());
     }
-
-    // @Test
-    // public void testCreateAssignmentUnauthorizedStudent() throws Exception {
-    //     CreateAssignmentRequest request = new CreateAssignmentRequest(
-    //             "Secure API Implementation",
-    //             "Implement a REST API with proper authentication",
-    //             LocalDateTime.now().plusDays(7)
-    //     );
-    //
-    //     mockMvc.perform(post("/api/courses/" + courseId + "/assignments")
-    //                     .with(user(studentId.toString()).roles("STUDENT"))
-    //                     .contentType(MediaType.APPLICATION_JSON)
-    //                     .content(objectMapper.writeValueAsString(request)))
-    //             .andExpect(status().isForbidden());
-    // }
 
     @Test
     public void testCreateAssignmentInvalidDeadline() throws Exception {

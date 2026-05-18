@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Java setup + Maven cache
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -19,7 +18,9 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # Cache OWASP DB
+      - name: Create OWASP cache directory
+        run: mkdir -p ~/.dependency-check
+
       - name: Cache OWASP Dependency Check data
         uses: actions/cache@v4
         with:
@@ -28,13 +29,13 @@ jobs:
           restore-keys: |
             owasp-db-
 
-      # Run OWASP
       - name: Run OWASP Dependency Check (Maven)
         run: |
           mvn -B org.owasp:dependency-check-maven:check \
-            -DossindexAnalyzerEnabled=false
+            -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
+            -DossindexAnalyzerEnabled=false \
+            -DdataDirectory=~/.dependency-check
 
-      # Upload report
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
