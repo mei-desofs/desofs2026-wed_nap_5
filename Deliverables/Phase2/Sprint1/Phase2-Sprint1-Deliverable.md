@@ -10,8 +10,6 @@
     * [2.4 Branches](#24-branches)
   * [3. CI/CD Pipeline](#3-cicd-pipeline)
     * [3.1 Pipeline Overview](#31-pipeline-overview)
-  * [3. CI/CD Pipeline](#3-cicd-pipeline-1)
-    * [3.1 Pipeline Overview](#31-pipeline-overview-1)
     * [3.2 CI Pipeline (Build & Test)](#32-ci-pipeline-build--test)
       * [Workflow Implementation](#workflow-implementation)
     * [3.3 Code Quality Workflow](#33-code-quality-workflow)
@@ -144,31 +142,13 @@ simple and flexible branching strategy:
 
 ### 3.1 Pipeline Overview
 
-The CI/CD system is implemented using GitHub Actions workflows that are triggered across different stages of the
-development lifecycle. Instead of defining rigid pipeline environments, the system is organized into independent
-workflows that run based on events such as push, pull request, and manual dispatch.
-
-Most workflows are executed across all branches, while others are restricted to specific contexts (e.g., main or develop
-branches) to enforce security and release controls.
-
-The main workflow triggers include:
-
-- Push events (all branches)
-- Pull request events (pre-merge validation)
-- Workflow dispatch (manual execution)
-- Branch-specific triggers (main, develop)
-
----
-
-## 3. CI/CD Pipeline
-
-### 3.1 Pipeline Overview
-
 The CI/CD system is implemented using multiple GitHub Actions workflows, triggered by different events such as push,
 pull request, and manual execution.
 
 Instead of a single pipeline, the system is composed of independent workflows that handle build, quality, testing,
 security, and release operations.
+
+
 
 ### 3.2 CI Pipeline (Build & Test)
 
@@ -300,6 +280,7 @@ jobs:
 ```
 
 ![SAST](images/sast-workflow.png)
+![Code Scanning](images/code-scanning.png)
 
 
 ### 3.5 Software Composition Analysis (SCA)
@@ -357,7 +338,7 @@ jobs:
 
 * TO-DO: PUT PRINT OF THE CACHE HERE
 
----
+
 
 ### 3.6 Secret Detection
 
@@ -391,7 +372,7 @@ jobs:
 
 ![Secret Detection](images/secret-detection.png)
 
----
+
 
 ### 3.7 Dynamic Application Security Testing (DAST)
 
@@ -463,6 +444,8 @@ jobs:
 
 ![DAST - Zap Report](images/zap-html.png)
 
+
+
 ### 3.8 PIT Mutation Testing
 
 This workflow evaluates test quality using mutation testing.
@@ -506,6 +489,8 @@ jobs:
 
 ![PIT Mutation Tests](images/pit-mutation-coverage.png)
 
+
+
 ### 3.9 Release Workflow
 
 This workflow automates versioning and release creation using Release Please.
@@ -544,33 +529,68 @@ jobs:
 
 ### 4.1 Testing Strategy
 
-The testing approach is:
+The security testing strategy focused on validating both the correctness and robustness of the application throughout
+development and integration processes.
 
-- Threat-driven (based on STRIDE)
-- Abuse-case-driven
-- Aligned with OWASP ASVS
+Security validation was integrated into the CI/CD pipeline using automated workflows and security analysis tools.
 
----
+The following testing approaches were implemented:
+
+- Unit testing to validate isolated business logic and service behavior
+- Integration testing to validate communication between application components
+- Mutation testing using PIT to evaluate the effectiveness and quality of the implemented test suite
+- Static Application Security Testing (SAST) to identify insecure coding patterns and potential vulnerabilities
+- Dynamic Application Security Testing (DAST) using OWASP ZAP to analyze the application during execution
+- Secret detection using Gitleaks to identify exposed credentials or sensitive information in the repository
+
+Examples of implemented tests include:
+
+- Validation of unauthorized access attempts
+- Verification of invalid input handling
+- Service and controller integration validation
+- Mutation coverage analysis to ensure test robustness
+- Automated secret scanning during pull requests and pushes
+
+These practices contributed to improving application reliability, identifying potential security issues early, and
+reinforcing secure development practices.
+
 
 ### 4.2 Security Test Cases
 
-Derived from Phase 1 abuse cases:
+The following security-related test cases were validated during the sprint through automated testing and security
+analysis tools.
 
-| Test ID | Description           | Expected Result        | Status |
-|---------|-----------------------|------------------------|--------|
-| ST-01   | Unauthorized access   | Access denied          |        |
-| ST-02   | Brute force login     | Blocked / rate limited |        |
-| ST-03   | Malicious file upload | Rejected               |        |
-| ST-04   | Privilege escalation  | Prevented              |        |
+| Test ID | Description                  | Expected Result                       |
+|---------|------------------------------|---------------------------------------|
+| ST-01   | Unauthorized endpoint access | Access denied                         |
+| ST-02   | Invalid input handling       | Validation error returned             |
+| ST-03   | Secret leakage detection     | No secrets detected                   |
+| ST-04   | Mutation testing validation  | Sufficient mutation coverage achieved |
+
+The security test cases were validated through unit tests, integration tests, mutation testing, and automated security
+scans executed within the CI/CD pipeline.
+
+Additionally, DAST scans using OWASP ZAP were performed to analyze the running application and identify potential
+runtime security issues.
+
+---
 
 
 ## 5. Conclusion
 
-This sprint demonstrates the integration of security into the development phase through:
+This sprint demonstrated the integration of security practices into the software development lifecycle through a
+DevSecOps-oriented approach.
+
+Several security mechanisms were incorporated during development, including:
 
 - Secure coding practices
-- Code reviews
-- Static and dynamic analysis
-- Initial DevSecOps pipeline setup
+- Automated code reviews and validation
+- Unit, integration, and mutation testing
+- Static and dynamic security analysis
+- Secret detection in source code
+- CI/CD security workflows using GitHub Actions
+
+The implemented practices contributed to improving code quality, reducing security risks, and promoting continuous
+security validation throughout the development process.
 
 ---
