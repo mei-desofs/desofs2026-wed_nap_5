@@ -1024,4 +1024,16 @@ Threat key:
 * A# = Assignment threat number from dfds/dfd-level-2-assignement-management-threat-dragon.json
 * C# = Course threat number from dfds/dfd-level-2-course-management-threat-dragon.json
 
+### 18. Data Types
+
+| Nível            | Data Type                      |
+| ---------------- | ------------------------------ |
+| Public           | course name, description       |
+| Internal         | course code, enrollment status |
+| Sensitive        | user email, user ID            |
+| Highly sensitive | passwords, tokens, JWT payload |
+
+
+
+
 ---
