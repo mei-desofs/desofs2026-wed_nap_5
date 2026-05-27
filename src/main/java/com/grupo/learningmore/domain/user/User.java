@@ -62,4 +62,16 @@ public class User {
     public boolean isActive() {
         return active;
     }
+
+    public void changePassword(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void activate() {
+        this.active = true;
+    }
 }

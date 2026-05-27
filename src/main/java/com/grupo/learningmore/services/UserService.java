@@ -6,6 +6,8 @@ import com.grupo.learningmore.domain.user.UserRole;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -56,5 +58,25 @@ public class UserService {
         return repository.findByEmail(email)
                 .orElseThrow(() ->
                         new IllegalArgumentException("User not found"));
+    }
+
+    @Transactional
+    public void changePassword(
+            UUID userId,
+            String currentPassword,
+            String newPassword
+    ) {
+
+        User user = findById(userId);
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        user.changePassword(encodedPassword);
+
+        repository.save(user);
     }
 }

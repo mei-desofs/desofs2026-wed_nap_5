@@ -3,14 +3,14 @@ package com.grupo.learningmore.api;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.services.UserService;
-import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.Size;
+import org.springframework.security.core.Authentication;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,6 +22,19 @@ public class UserController {
         this.service = service;
     }
 
+    @PutMapping("/me/password")
+    public void changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+
+        service.changePassword(
+                UUID.fromString(authentication.getName()),
+                request.currentPassword(),
+                request.newPassword()
+        );
+    }
+
     @PostMapping
     public UserResponse create(@Valid @RequestBody CreateUserRequest request) {
 
@@ -29,7 +42,7 @@ public class UserController {
                 request.name(),
                 request.email(),
                 request.password(),
-                request.role()
+                UserRole.STUDENT
         );
 
         return new UserResponse(
@@ -66,9 +79,21 @@ public class UserController {
             String email,
 
             @NotBlank
-            String password,
+            @Size(min = 8, max = 64)
+            String password
 
-            UserRole role
+    ) {
+    }
+
+    public record ChangePasswordRequest(
+
+            @NotBlank
+            String currentPassword,
+
+            @NotBlank
+            @Size(min = 8, max = 64)
+            String newPassword
+
     ) {
     }
 
