@@ -2,6 +2,7 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.security.JwtService;
+import com.grupo.learningmore.services.LoginAttemptService;
 import com.grupo.learningmore.services.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -21,27 +22,44 @@ public class AuthController {
     private final UserService userService;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final LoginAttemptService loginAttemptService;
 
-    public AuthController(UserService userService, JwtService jwtService, PasswordEncoder passwordEncoder) {
+    public AuthController(
+            UserService userService,
+            JwtService jwtService,
+            PasswordEncoder passwordEncoder,
+            LoginAttemptService loginAttemptService
+    ) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+
+        if (loginAttemptService.isBlocked(request.email())) {
+            logger.warn("Blocked login attempt due to too many failures for email: {}", request.email());
+            return ResponseEntity.status(429).build();
+        }
+
         try {
             User user = userService.findByEmail(request.email());
 
             if (!user.isActive()) {
                 logger.warn("Login attempt for inactive user: {}", request.email());
+                loginAttemptService.recordFailedAttempt(request.email());
                 return ResponseEntity.status(403).build();
             }
 
             if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
                 logger.warn("Failed login attempt for email: {}", request.email());
+                loginAttemptService.recordFailedAttempt(request.email());
                 return ResponseEntity.status(401).build();
             }
+
+            loginAttemptService.resetAttempts(request.email());
 
             String token = jwtService.generateToken(user.getId().toString(), user.getRole().name());
 
@@ -56,6 +74,7 @@ public class AuthController {
             ));
         } catch (IllegalArgumentException e) {
             logger.warn("Failed login attempt for unknown email: {}", request.email());
+            loginAttemptService.recordFailedAttempt(request.email());
             return ResponseEntity.status(401).build();
         }
     }
