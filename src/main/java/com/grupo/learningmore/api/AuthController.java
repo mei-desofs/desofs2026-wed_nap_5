@@ -61,7 +61,11 @@ public class AuthController {
 
             loginAttemptService.resetAttempts(request.email());
 
-            String token = jwtService.generateToken(user.getId().toString(), user.getRole().name());
+            String token = jwtService.generateToken(
+                    user.getId().toString(),
+                    user.getRole().name(),
+                    user.getTokenVersion()
+            );
 
             logger.info("Successful login for user: {}", user.getEmail());
 

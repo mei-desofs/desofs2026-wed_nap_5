@@ -51,7 +51,7 @@ class AuthControllerTest {
 
         when(userService.findByEmail("bruno@test.com")).thenReturn(user);
         when(passwordEncoder.matches("password123", "hashed-password")).thenReturn(true);
-        when(jwtService.generateToken(user.getId().toString(), "STUDENT")).thenReturn("jwt-token");
+        when(jwtService.generateToken(user.getId().toString(), "STUDENT", 0L)).thenReturn("jwt-token");
 
         ResponseEntity<AuthController.LoginResponse> response = authController.login(
                 new AuthController.LoginRequest("bruno@test.com", "password123")
@@ -66,7 +66,7 @@ class AuthControllerTest {
         assertEquals("STUDENT", response.getBody().role());
 
         verify(loginAttemptService).resetAttempts("bruno@test.com");
-        verify(jwtService).generateToken(user.getId().toString(), "STUDENT");
+        verify(jwtService).generateToken(user.getId().toString(), "STUDENT", 0L);
     }
 
     @Test
@@ -84,7 +84,7 @@ class AuthControllerTest {
         assertNull(response.getBody());
 
         verify(loginAttemptService).recordFailedAttempt("bruno@test.com");
-        verify(jwtService, never()).generateToken(anyString(), anyString());
+        verify(jwtService, never()).generateToken(anyString(), anyString(), anyLong());
     }
 
     @Test
@@ -101,7 +101,7 @@ class AuthControllerTest {
 
         verify(loginAttemptService).recordFailedAttempt("missing@test.com");
         verify(passwordEncoder, never()).matches(anyString(), anyString());
-        verify(jwtService, never()).generateToken(anyString(), anyString());
+        verify(jwtService, never()).generateToken(anyString(), anyString(), anyLong());
     }
 
     @Test
@@ -117,6 +117,6 @@ class AuthControllerTest {
 
         verify(userService, never()).findByEmail(anyString());
         verify(passwordEncoder, never()).matches(anyString(), anyString());
-        verify(jwtService, never()).generateToken(anyString(), anyString());
+        verify(jwtService, never()).generateToken(anyString(), anyString(), anyLong());
     }
 }
