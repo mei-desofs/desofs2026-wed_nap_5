@@ -53,19 +53,40 @@ public class JwtFilter extends OncePerRequestFilter {
         Long tokenVersion = jwtService.extractTokenVersion(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User user = userService.findById(UUID.fromString(username));
+            try {
 
-            if (!user.isActive() || tokenVersion == null || tokenVersion != user.getTokenVersion()) {
+                User user = userService.findById(UUID.fromString(username));
+
+                boolean invalidUser =
+                        !user.isActive()
+                                || tokenVersion == null
+                                || tokenVersion != user.getTokenVersion();
+
+                if (invalidUser) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
+                var authority = new SimpleGrantedAuthority("ROLE_" + role);
+
+                var auth = new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        List.of(authority)
+                );
+
+                auth.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+
+            } catch (IllegalArgumentException e) {
+
                 filterChain.doFilter(request, response);
                 return;
             }
-
-            var authority = new SimpleGrantedAuthority("ROLE_" + role);
-            var auth = new UsernamePasswordAuthenticationToken(username, null, List.of(authority));
-            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
         filterChain.doFilter(request, response);
     }
 }
