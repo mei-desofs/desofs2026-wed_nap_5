@@ -28,6 +28,10 @@ public class UserService {
                            String password,
                            UserRole role) {
 
+        if (role == null) {
+            throw new IllegalArgumentException("Role is required");
+        }
+
         if (repository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email already exists");
         }
