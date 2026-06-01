@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import java.util.List;
 import java.util.UUID;
@@ -20,19 +21,6 @@ public class UserController {
 
     public UserController(UserService service) {
         this.service = service;
-    }
-
-    @PutMapping("/me/password")
-    public void changePassword(
-            Authentication authentication,
-            @Valid @RequestBody ChangePasswordRequest request
-    ) {
-
-        service.changePassword(
-                UUID.fromString(authentication.getName()),
-                request.currentPassword(),
-                request.newPassword()
-        );
     }
 
     @PostMapping
@@ -52,6 +40,38 @@ public class UserController {
                 user.getRole(),
                 user.isActive()
         );
+    }
+
+    @GetMapping("/me")
+    public UserResponse me(Authentication authentication) {
+        User user = service.findById(UUID.fromString(authentication.getName()));
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.isActive()
+        );
+    }
+
+    @PutMapping("/me/password")
+    public void changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+
+        service.changePassword(
+                UUID.fromString(authentication.getName()),
+                request.currentPassword(),
+                request.newPassword()
+        );
+    }
+
+    @PutMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deactivateUser(@PathVariable UUID id) {
+        service.deactivateUser(id);
     }
 
     @GetMapping

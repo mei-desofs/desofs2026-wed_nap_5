@@ -83,4 +83,11 @@ public class UserService {
 
         repository.save(user);
     }
+
+    @Transactional
+    public void deactivateUser(UUID userId) {
+        User user = findById(userId);
+        user.deactivate();
+        repository.save(user);
+    }
 }
