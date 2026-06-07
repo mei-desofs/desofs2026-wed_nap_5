@@ -2,6 +2,8 @@ package com.grupo.learningmore.services;
 
 import com.grupo.learningmore.domain.course.Resource;
 import com.grupo.learningmore.repositories.ResourceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import java.util.UUID;
 @Service
 public class ResourceService {
 
+    private static final Logger log = LoggerFactory.getLogger(ResourceService.class);
+
     private final ResourceRepository resourceRepository;
     private final CourseService courseService;
 
@@ -30,39 +34,62 @@ public class ResourceService {
 
     @Transactional
     public Resource uploadResource(UUID courseId, MultipartFile file, UUID uploadedBy) throws IOException {
+
+        log.info("Uploading resource to course {} by user {}", courseId, uploadedBy);
+
         // Verify course exists
         courseService.findById(courseId);
 
         // Validate file
         if (file.isEmpty()) {
+            log.warn("Empty file upload attempt by user {} in course {}", uploadedBy, courseId);
             throw new IllegalArgumentException("File cannot be empty");
         }
 
         String originalFilename = file.getOriginalFilename();
-        if (originalFilename == null || originalFilename.isBlank()) {
-            throw new IllegalArgumentException("Invalid file name");
-        }
-        if (originalFilename.contains("..") || originalFilename.contains("/") || originalFilename.contains("\\")) {
-            throw new IllegalArgumentException("Invalid file name");
-        }
-        String safeOriginalFilename = Paths.get(originalFilename).getFileName().toString();
 
+        if (originalFilename == null || originalFilename.isBlank()) {
+            log.warn("Invalid filename upload attempt by user {} in course {}", uploadedBy, courseId);
+            throw new IllegalArgumentException("Invalid file name");
+        }
+
+        if (originalFilename.contains("..") ||
+                originalFilename.contains("/") ||
+                originalFilename.contains("\\")) {
+
+            log.warn("Path traversal attempt detected in filename '{}' by user {}",
+                    originalFilename, uploadedBy);
+
+            throw new IllegalArgumentException("Invalid file name");
+        }
+
+        String safeOriginalFilename =
+                Paths.get(originalFilename).getFileName().toString();
 
         // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir, courseId.toString()).normalize().toAbsolutePath();
+        Path uploadPath = Paths.get(uploadDir, courseId.toString())
+                .normalize()
+                .toAbsolutePath();
+
         Files.createDirectories(uploadPath);
 
         // Generate unique filename
         String filename = UUID.randomUUID() + "_" + safeOriginalFilename;
-        Path filePath = uploadPath.resolve(filename).normalize().toAbsolutePath();
+
+        Path filePath = uploadPath.resolve(filename)
+                .normalize()
+                .toAbsolutePath();
+
         if (!filePath.startsWith(uploadPath)) {
+            log.warn("Invalid resolved file path detected for course {} by user {}",
+                    courseId, uploadedBy);
+
             throw new IllegalArgumentException("Invalid file path");
         }
 
         // Save file to disk
         Files.write(filePath, file.getBytes());
 
-        // Create and save resource entity
         Resource resource = new Resource(
                 courseId,
                 safeOriginalFilename,
@@ -72,36 +99,67 @@ public class ResourceService {
                 uploadedBy
         );
 
-        return resourceRepository.save(resource);
+        Resource saved = resourceRepository.save(resource);
+
+        log.info("Resource uploaded successfully: {} for course {} by user {}",
+                saved.getId(), courseId, uploadedBy);
+
+        return saved;
     }
 
     @Transactional(readOnly = true)
     public Resource findById(UUID id) {
+
+        log.info("Fetching resource {}", id);
+
         return resourceRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
+                .orElseThrow(() -> {
+                    log.warn("Resource not found: {}", id);
+                    return new IllegalArgumentException("Resource not found");
+                });
     }
 
     @Transactional(readOnly = true)
     public List<Resource> findByCourseId(UUID courseId) {
-        return resourceRepository.findByCourseId(courseId);
+
+        log.info("Fetching resources for course {}", courseId);
+
+        List<Resource> result = resourceRepository.findByCourseId(courseId);
+
+        log.info("Found {} resources for course {}", result.size(), courseId);
+
+        return result;
     }
 
     @Transactional
     public void deleteResource(UUID id) throws IOException {
+
+        log.warn("Deleting resource {}", id);
+
         Resource resource = findById(id);
 
-        // Delete file from disk
-        Path baseUploadPath = Paths.get(uploadDir).normalize().toAbsolutePath();
-        Path filePath = Paths.get(resource.getFilePath()).normalize().toAbsolutePath();
+        Path baseUploadPath = Paths.get(uploadDir)
+                .normalize()
+                .toAbsolutePath();
+
+        Path filePath = Paths.get(resource.getFilePath())
+                .normalize()
+                .toAbsolutePath();
+
         if (!filePath.startsWith(baseUploadPath)) {
+            log.error("Invalid file path detected during delete for resource {}", id);
             throw new IllegalArgumentException("Invalid file path");
         }
 
         if (Files.exists(filePath)) {
             Files.delete(filePath);
+            log.info("File deleted from disk for resource {}", id);
+        } else {
+            log.warn("File not found on disk for resource {}", id);
         }
 
-        // Delete entity
         resourceRepository.deleteById(id);
+
+        log.info("Resource {} deleted successfully", id);
     }
 }

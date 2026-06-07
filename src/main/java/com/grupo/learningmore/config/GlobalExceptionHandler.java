@@ -20,44 +20,60 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(
             AccessDeniedException ex
     ) {
-        logger.warn("Access denied: {}", ex.getMessage());
+        logger.warn("Access denied: {} | type={}",
+                ex.getMessage(),
+                ex.getClass().getSimpleName()
+        );
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
-                "Access Denied",
+                "ACCESS_DENIED",
                 LocalDateTime.now()
         );
+
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
-        @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
-        public ResponseEntity<ErrorResponse> handleSpringSecurityAccessDeniedException(
-                        org.springframework.security.access.AccessDeniedException ex
-        ) {
-                logger.warn("Access denied by security layer: {}", ex.getMessage());
-                ErrorResponse error = new ErrorResponse(
-                                HttpStatus.FORBIDDEN.value(),
-                                "Access Denied",
-                                LocalDateTime.now()
-                );
-                return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
-        }
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleSpringSecurityAccessDeniedException(
+            org.springframework.security.access.AccessDeniedException ex
+    ) {
+        logger.warn("Security access denied: {} | type={}",
+                ex.getMessage(),
+                ex.getClass().getSimpleName()
+        );
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                "ACCESS_DENIED",
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex
     ) {
-        logger.warn("Invalid argument: {}", ex.getMessage());
+        logger.warn("Invalid argument: {} | type={}",
+                ex.getMessage(),
+                ex.getClass().getSimpleName()
+        );
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage() != null ? ex.getMessage() : "Invalid request",
+                "BAD_REQUEST",
                 LocalDateTime.now()
         );
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -65,12 +81,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIllegalStateException(
             IllegalStateException ex
     ) {
-        logger.warn("Invalid state: {}", ex.getMessage());
+        logger.warn("Invalid state: {} | type={}",
+                ex.getMessage(),
+                ex.getClass().getSimpleName()
+        );
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                ex.getMessage() != null ? ex.getMessage() : "Invalid operation state",
+                "CONFLICT",
                 LocalDateTime.now()
         );
+
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
@@ -78,12 +99,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex
     ) {
-        logger.warn("Validation error: {}", ex.getBindingResult().getFieldError());
+        logger.warn("Validation failed: {}",
+                ex.getBindingResult().getFieldErrors()
+        );
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Validation failed",
+                "VALIDATION_ERROR",
                 LocalDateTime.now()
         );
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -91,12 +116,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGlobalException(
             Exception ex
     ) {
-        logger.error("Unexpected error", ex);
+        logger.error(
+                "Unexpected error | type={} | message={}",
+                ex.getClass().getSimpleName(),
+                ex.getMessage(),
+                ex
+        );
+
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An error occurred processing your request",
+                "INTERNAL_SERVER_ERROR",
                 LocalDateTime.now()
         );
+
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

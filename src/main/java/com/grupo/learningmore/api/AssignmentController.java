@@ -6,11 +6,14 @@ import com.grupo.learningmore.dto.request.UpdateAssignmentRequest;
 import com.grupo.learningmore.dto.response.AssignmentResponse;
 import com.grupo.learningmore.services.AssignmentService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +21,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class AssignmentController {
+
+    private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
 
     private final AssignmentService assignmentService;
 
@@ -34,6 +39,8 @@ public class AssignmentController {
     ) {
         UUID actorId = UUID.fromString(authentication.getName());
 
+        log.info("POST /courses/{}/assignments - Create assignment by user {}", courseId, actorId);
+
         Assignment assignment = assignmentService.createAssignment(
                 courseId,
                 request.title(),
@@ -43,22 +50,33 @@ public class AssignmentController {
                 isAdmin(authentication)
         );
 
+        log.info("Assignment created successfully with id {} in course {}", assignment.getId(), courseId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToResponse(assignment));
     }
 
     @GetMapping("/courses/{courseId}/assignments")
     public ResponseEntity<List<AssignmentResponse>> getAssignmentsByCourse(@PathVariable UUID courseId) {
+
+        log.info("GET /courses/{}/assignments - Fetch assignments", courseId);
+
         List<AssignmentResponse> responses = assignmentService.findByCourseId(courseId)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
+
+        log.info("Returned {} assignments for course {}", responses.size(), courseId);
 
         return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/assignments/{assignmentId}")
     public ResponseEntity<AssignmentResponse> getAssignmentById(@PathVariable UUID assignmentId) {
+
+        log.info("GET /assignments/{} - Fetch assignment", assignmentId);
+
         Assignment assignment = assignmentService.findById(assignmentId);
+
         return ResponseEntity.ok(mapToResponse(assignment));
     }
 
@@ -72,6 +90,8 @@ public class AssignmentController {
     ) {
         UUID actorId = UUID.fromString(authentication.getName());
 
+        log.info("PUT /courses/{}/assignments/{} - Update requested by user {}", courseId, assignmentId, actorId);
+
         Assignment assignment = assignmentService.updateAssignment(
                 courseId,
                 assignmentId,
@@ -81,6 +101,8 @@ public class AssignmentController {
                 actorId,
                 isAdmin(authentication)
         );
+
+        log.info("Assignment {} updated successfully", assignmentId);
 
         return ResponseEntity.ok(mapToResponse(assignment));
     }
@@ -94,12 +116,16 @@ public class AssignmentController {
     ) {
         UUID actorId = UUID.fromString(authentication.getName());
 
+        log.warn("DELETE /courses/{}/assignments/{} - Delete requested by user {}", courseId, assignmentId, actorId);
+
         assignmentService.deleteAssignment(
                 courseId,
                 assignmentId,
                 actorId,
                 isAdmin(authentication)
         );
+
+        log.info("Assignment {} deleted successfully", assignmentId);
 
         return ResponseEntity.noContent().build();
     }

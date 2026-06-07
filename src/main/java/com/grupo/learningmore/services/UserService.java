@@ -3,6 +3,8 @@ package com.grupo.learningmore.services;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.repositories.UserRepository;
 import com.grupo.learningmore.domain.user.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.UUID;
 
 @Service
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -28,11 +32,15 @@ public class UserService {
                            String password,
                            UserRole role) {
 
+        log.info("User creation attempt: email={} role={}", email, role);
+
         if (role == null) {
+            log.warn("User creation failed - role is null for email={}", email);
             throw new IllegalArgumentException("Role is required");
         }
 
         if (repository.existsByEmail(email)) {
+            log.warn("User creation failed - email already exists: {}", email);
             throw new IllegalArgumentException("Email already exists");
         }
 
@@ -45,23 +53,37 @@ public class UserService {
                 role
         );
 
-        return repository.save(user);
+        User saved = repository.save(user);
+
+        log.info("User created successfully: userId={} email={} role={}",
+                saved.getId(), email, role);
+
+        return saved;
     }
 
     public List<User> findAll() {
+
+        log.info("Fetching all users");
+
         return repository.findAll();
     }
 
     public User findById(UUID id) {
+
         return repository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> {
+                    log.warn("User not found: {}", id);
+                    return new IllegalArgumentException("User not found");
+                });
     }
 
     public User findByEmail(String email) {
+
         return repository.findByEmail(email)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> {
+                    log.warn("User not found by email: {}", email);
+                    return new IllegalArgumentException("User not found");
+                });
     }
 
     @Transactional
@@ -71,9 +93,12 @@ public class UserService {
             String newPassword
     ) {
 
+        log.info("Password change attempt: user={}", userId);
+
         User user = findById(userId);
 
         if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            log.warn("Password change failed - invalid current password: user={}", userId);
             throw new IllegalArgumentException("Current password is incorrect");
         }
 
@@ -82,12 +107,21 @@ public class UserService {
         user.changePassword(encodedPassword);
 
         repository.save(user);
+
+        log.info("Password changed successfully: user={}", userId);
     }
 
     @Transactional
     public void deactivateUser(UUID userId) {
+
+        log.warn("User deactivation requested: user={}", userId);
+
         User user = findById(userId);
+
         user.deactivate();
+
         repository.save(user);
+
+        log.info("User deactivated successfully: user={}", userId);
     }
 }

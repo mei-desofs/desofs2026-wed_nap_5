@@ -44,17 +44,24 @@ public class ChatService {
             SendMessageRequest request
     ) {
 
+        log.info("Sending message - user {} to chatRoom {}", userId, chatRoomId);
+
         if (!enrollmentService.isUserEnrolled(userId, chatRoomId)) {
-            throw new AccessDeniedException(
-                    "User not enrolled in this course"
-            );
+            log.warn("Access denied: user {} not enrolled in chatRoom {}", userId, chatRoomId);
+            throw new AccessDeniedException("User not enrolled in this course");
         }
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() ->
-                        new RuntimeException("Chat room not found"));
+                .orElseThrow(() -> {
+                    log.warn("Chat room not found: {}", chatRoomId);
+                    return new RuntimeException("Chat room not found");
+                });
 
         String sanitizedContent = sanitize(request.content());
+
+        if (!sanitizedContent.equals(request.content())) {
+            log.warn("Message from user {} was sanitized (possible XSS attempt)", userId);
+        }
 
         ChatMessage message = new ChatMessage();
         message.setChatRoom(chatRoom);
@@ -63,9 +70,8 @@ public class ChatService {
 
         ChatMessage saved = chatMessageRepository.save(message);
 
-        log.info("User {} sent message to room {}",
-                userId,
-                chatRoomId);
+        log.info("Message sent successfully - user {} in chatRoom {}, messageId {}",
+                userId, chatRoomId, saved.getId());
 
         return new ChatMessageResponse(
                 saved.getId(),
@@ -77,11 +83,14 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<ChatMessageResponse> getMessages(UUID chatRoomId) {
 
+        log.info("Fetching messages for chatRoom {}", chatRoomId);
+
         if (!chatRoomRepository.existsById(chatRoomId)) {
+            log.warn("Chat room not found: {}", chatRoomId);
             throw new RuntimeException("Chat room not found");
         }
 
-        return chatMessageRepository
+        List<ChatMessageResponse> result = chatMessageRepository
                 .findByChatRoomIdOrderBySentAtAsc(chatRoomId)
                 .stream()
                 .map(message -> new ChatMessageResponse(
@@ -90,6 +99,10 @@ public class ChatService {
                         message.getSentAt()
                 ))
                 .toList();
+
+        log.info("Returned {} messages for chatRoom {}", result.size(), chatRoomId);
+
+        return result;
     }
 
     private String sanitize(String content) {
