@@ -1,4 +1,4 @@
-package com.grupo.learningmore.dto.Request;
+package com.grupo.learningmore.dto.request;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;

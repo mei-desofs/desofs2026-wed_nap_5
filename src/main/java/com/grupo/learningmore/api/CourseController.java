@@ -2,9 +2,9 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.enrollment.Enrollment;
-import com.grupo.learningmore.dto.Request.CreateCourseRequest;
-import com.grupo.learningmore.dto.Request.UpdateCourseRequest;
-import com.grupo.learningmore.dto.Response.CourseResponse;
+import com.grupo.learningmore.dto.request.CreateCourseRequest;
+import com.grupo.learningmore.dto.request.UpdateCourseRequest;
+import com.grupo.learningmore.dto.response.CourseResponse;
 import com.grupo.learningmore.services.CourseService;
 import com.grupo.learningmore.repositories.EnrollmentRepository;
 import jakarta.validation.Valid;

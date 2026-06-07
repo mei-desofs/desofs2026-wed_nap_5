@@ -1,8 +1,8 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.assignment.Submission;
-import com.grupo.learningmore.dto.Request.GradeSubmissionRequest;
-import com.grupo.learningmore.dto.Response.SubmissionResponse;
+import com.grupo.learningmore.dto.request.GradeSubmissionRequest;
+import com.grupo.learningmore.dto.response.SubmissionResponse;
 import com.grupo.learningmore.services.SubmissionService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

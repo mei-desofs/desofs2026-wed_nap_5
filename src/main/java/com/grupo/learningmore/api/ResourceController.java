@@ -1,7 +1,7 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Resource;
-import com.grupo.learningmore.dto.Response.ResourceResponse;
+import com.grupo.learningmore.dto.response.ResourceResponse;
 import com.grupo.learningmore.services.ResourceService;
 import com.grupo.learningmore.services.EnrollmentService;
 import org.springframework.http.HttpStatus;

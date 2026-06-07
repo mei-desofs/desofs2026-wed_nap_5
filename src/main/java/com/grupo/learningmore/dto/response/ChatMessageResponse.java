@@ -1,4 +1,4 @@
-package com.grupo.learningmore.dto.Response;
+package com.grupo.learningmore.dto.response;
 
 import java.util.Date;
 import java.util.UUID;

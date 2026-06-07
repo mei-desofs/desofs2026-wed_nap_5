@@ -2,8 +2,8 @@ package com.grupo.learningmore.services;
 
 import com.grupo.learningmore.domain.chat.ChatMessage;
 import com.grupo.learningmore.domain.chat.ChatRoom;
-import com.grupo.learningmore.dto.Request.SendMessageRequest;
-import com.grupo.learningmore.dto.Response.ChatMessageResponse;
+import com.grupo.learningmore.dto.request.SendMessageRequest;
+import com.grupo.learningmore.dto.response.ChatMessageResponse;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
 import com.grupo.learningmore.repositories.ChatMessageRepository;
 import com.grupo.learningmore.repositories.ChatRoomRepository;

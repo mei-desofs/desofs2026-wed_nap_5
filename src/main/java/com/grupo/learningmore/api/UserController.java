@@ -2,9 +2,9 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
-import com.grupo.learningmore.dto.Request.ChangePasswordRequest;
-import com.grupo.learningmore.dto.Request.CreateUserRequest;
-import com.grupo.learningmore.dto.Response.UserResponse;
+import com.grupo.learningmore.dto.request.ChangePasswordRequest;
+import com.grupo.learningmore.dto.request.CreateUserRequest;
+import com.grupo.learningmore.dto.response.UserResponse;
 import com.grupo.learningmore.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;

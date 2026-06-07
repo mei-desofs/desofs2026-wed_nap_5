@@ -1,4 +1,4 @@
-package com.grupo.learningmore.dto.Response;
+package com.grupo.learningmore.dto.response;
 
 public record LoginResponse(
         String token,

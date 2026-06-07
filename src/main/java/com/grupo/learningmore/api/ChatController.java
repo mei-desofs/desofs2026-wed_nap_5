@@ -1,7 +1,7 @@
 package com.grupo.learningmore.api;
 
-import com.grupo.learningmore.dto.Request.SendMessageRequest;
-import com.grupo.learningmore.dto.Response.ChatMessageResponse;
+import com.grupo.learningmore.dto.request.SendMessageRequest;
+import com.grupo.learningmore.dto.response.ChatMessageResponse;
 import com.grupo.learningmore.services.ChatService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

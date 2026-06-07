@@ -1,6 +1,6 @@
 package com.grupo.learningmore.config;
 
-import com.grupo.learningmore.dto.Response.ErrorResponse;
+import com.grupo.learningmore.dto.response.ErrorResponse;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

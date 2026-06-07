@@ -1,4 +1,4 @@
-package com.grupo.learningmore.dto.Request;
+package com.grupo.learningmore.dto.request;
 
 public record UpdateCourseRequest(
         String name,
