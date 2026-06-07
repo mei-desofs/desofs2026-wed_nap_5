@@ -120,7 +120,6 @@ public class ChatControllerIntegrationTest {
 
         Course savedCourse = courseRepository.save(course);
 
-        // chat room linked to course
         ChatRoom room = new ChatRoom();
         room.setName("General Chat");
         room.setCourse(savedCourse);
@@ -128,7 +127,6 @@ public class ChatControllerIntegrationTest {
         ChatRoom savedRoom = chatRoomRepository.save(room);
         chatRoomId = savedRoom.getId();
 
-        // enrollment MUST be course-based
         Enrollment enrollment = new Enrollment();
         enrollment.setUserId(studentId);
         enrollment.setCourseId(savedCourse.getId());
@@ -147,8 +145,8 @@ public class ChatControllerIntegrationTest {
     @Test
     void shouldSendMessageSuccessfully() throws Exception {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Hello professor");
+        SendMessageRequest request =
+                new SendMessageRequest("Hello professor");
 
         mockMvc.perform(post("/api/chat/" + chatRoomId + "/messages")
                         .with(user(studentId.toString()).roles("STUDENT"))
@@ -162,8 +160,7 @@ public class ChatControllerIntegrationTest {
 
     @Test
     void shouldRejectWhenUserNotEnrolled() throws Exception {
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Trying to access chat");
+        SendMessageRequest request = new SendMessageRequest("Trying to access chat");
 
         mockMvc.perform(post("/api/chat/" + chatRoomId + "/messages")
                         .with(auth(professorId, "PROFESSOR"))
@@ -198,8 +195,7 @@ public class ChatControllerIntegrationTest {
     void shouldReturnErrorWhenChatRoomDoesNotExist() throws Exception {
         UUID randomId = UUID.randomUUID();
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Hello");
+        SendMessageRequest request = new SendMessageRequest("Hello");
 
         mockMvc.perform(post("/api/chat/" + randomId + "/messages")
                         .with(auth(studentId, "STUDENT"))

@@ -2,6 +2,8 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
+import com.grupo.learningmore.dto.Request.LoginRequest;
+import com.grupo.learningmore.dto.Response.LoginResponse;
 import com.grupo.learningmore.security.JwtService;
 import com.grupo.learningmore.services.LoginAttemptService;
 import com.grupo.learningmore.services.UserService;
@@ -53,8 +55,8 @@ class AuthControllerTest {
         when(passwordEncoder.matches("password123", "hashed-password")).thenReturn(true);
         when(jwtService.generateToken(user.getId().toString(), "STUDENT", 0L)).thenReturn("jwt-token");
 
-        ResponseEntity<AuthController.LoginResponse> response = authController.login(
-                new AuthController.LoginRequest("bruno@test.com", "password123")
+        ResponseEntity<LoginResponse> response = authController.login(
+                new LoginRequest("bruno@test.com", "password123")
         );
 
         assertEquals(200, response.getStatusCode().value());
@@ -76,8 +78,8 @@ class AuthControllerTest {
         when(userService.findByEmail("bruno@test.com")).thenReturn(user);
         when(passwordEncoder.matches("wrong-password", "hashed-password")).thenReturn(false);
 
-        ResponseEntity<AuthController.LoginResponse> response = authController.login(
-                new AuthController.LoginRequest("bruno@test.com", "wrong-password")
+        ResponseEntity<LoginResponse> response = authController.login(
+                new LoginRequest("bruno@test.com", "wrong-password")
         );
 
         assertEquals(401, response.getStatusCode().value());
@@ -92,8 +94,8 @@ class AuthControllerTest {
         when(userService.findByEmail("missing@test.com"))
                 .thenThrow(new IllegalArgumentException("User not found"));
 
-        ResponseEntity<AuthController.LoginResponse> response = authController.login(
-                new AuthController.LoginRequest("missing@test.com", "password123")
+        ResponseEntity<LoginResponse> response = authController.login(
+                new LoginRequest("missing@test.com", "password123")
         );
 
         assertEquals(401, response.getStatusCode().value());
@@ -108,8 +110,8 @@ class AuthControllerTest {
     void blockedLoginReturnsTooManyRequests() {
         when(loginAttemptService.isBlocked("blocked@test.com")).thenReturn(true);
 
-        ResponseEntity<AuthController.LoginResponse> response = authController.login(
-                new AuthController.LoginRequest("blocked@test.com", "password123")
+        ResponseEntity<LoginResponse> response = authController.login(
+                new LoginRequest("blocked@test.com", "password123")
         );
 
         assertEquals(429, response.getStatusCode().value());

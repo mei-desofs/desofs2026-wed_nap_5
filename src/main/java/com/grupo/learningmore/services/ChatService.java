@@ -54,7 +54,7 @@ public class ChatService {
                 .orElseThrow(() ->
                         new RuntimeException("Chat room not found"));
 
-        String sanitizedContent = sanitize(request.getContent());
+        String sanitizedContent = sanitize(request.content());
 
         ChatMessage message = new ChatMessage();
         message.setChatRoom(chatRoom);

@@ -2,11 +2,11 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
+import com.grupo.learningmore.dto.Request.ChangePasswordRequest;
+import com.grupo.learningmore.dto.Request.CreateUserRequest;
+import com.grupo.learningmore.dto.Response.UserResponse;
 import com.grupo.learningmore.services.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import java.util.List;
@@ -89,40 +89,4 @@ public class UserController {
                 .toList();
     }
 
-    public record CreateUserRequest(
-
-            @NotBlank
-            String name,
-
-            @Email
-            @NotBlank
-            String email,
-
-            @NotBlank
-            @Size(min = 8, max = 64)
-            String password
-
-    ) {
-    }
-
-    public record ChangePasswordRequest(
-
-            @NotBlank
-            String currentPassword,
-
-            @NotBlank
-            @Size(min = 8, max = 64)
-            String newPassword
-
-    ) {
-    }
-
-    public record UserResponse(
-            UUID id,
-            String name,
-            String email,
-            UserRole role,
-            boolean active
-    ) {
-    }
 }

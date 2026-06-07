@@ -1,12 +1,12 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
+import com.grupo.learningmore.dto.Request.LoginRequest;
+import com.grupo.learningmore.dto.Response.LoginResponse;
 import com.grupo.learningmore.security.JwtService;
 import com.grupo.learningmore.services.LoginAttemptService;
 import com.grupo.learningmore.services.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -81,24 +81,5 @@ public class AuthController {
             loginAttemptService.recordFailedAttempt(request.email());
             return ResponseEntity.status(401).build();
         }
-    }
-
-    public record LoginRequest(
-            @Email
-            @NotBlank
-            String email,
-
-            @NotBlank
-            String password
-    ) {
-    }
-
-    public record LoginResponse(
-            String token,
-            String userId,
-            String name,
-            String email,
-            String role
-    ) {
     }
 }
