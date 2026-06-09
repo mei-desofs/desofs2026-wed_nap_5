@@ -100,6 +100,11 @@ class ChatServiceTest {
                 "Trying to access restricted course chat"
         );
 
+        ChatRoom room = new ChatRoom();
+
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.of(room));
+
         when(enrollmentService.isUserEnrolled(userId, chatRoomId))
                 .thenReturn(false);
 
@@ -355,9 +360,6 @@ class ChatServiceTest {
 
         SendMessageRequest request = new SendMessageRequest();
         request.setContent("test");
-
-        when(enrollmentService.isUserEnrolled(userId, chatRoomId))
-                .thenReturn(true);
 
         when(chatRoomRepository.findById(chatRoomId))
                 .thenReturn(Optional.empty());

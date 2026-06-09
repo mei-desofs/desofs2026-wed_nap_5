@@ -65,15 +65,15 @@ public class ChatControllerIntegrationTest {
     private UUID professorId;
 
     @BeforeEach
-    public void clean() {     
+    public void clean() {
         chatMessageRepository.deleteAll();
         enrollmentRepository.deleteAll();
         chatRoomRepository.deleteAll();
         userRepository.deleteAll();
         courseRepository.deleteAll();
         }
-    
-    
+
+
     @BeforeEach
     void setUp() {
 
@@ -205,7 +205,7 @@ public class ChatControllerIntegrationTest {
                         .with(auth(studentId, "STUDENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 
 }

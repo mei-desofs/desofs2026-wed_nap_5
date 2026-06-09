@@ -44,15 +44,12 @@ public class ChatService {
             SendMessageRequest request
     ) {
 
-        if (!enrollmentService.isUserEnrolled(userId, chatRoomId)) {
-            throw new AccessDeniedException(
-                    "User not enrolled in this course"
-            );
-        }
-
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() ->
-                        new RuntimeException("Chat room not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
+
+        if (!enrollmentService.isUserEnrolled(userId, chatRoomId)) {
+            throw new AccessDeniedException("User not enrolled in this course");
+        }
 
         String sanitizedContent = sanitize(request.getContent());
 
