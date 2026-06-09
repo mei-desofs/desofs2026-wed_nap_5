@@ -119,7 +119,7 @@ Deliverables/
 ### Test endpoint
 
 ```
-GET http://localhost:8080/api/health
+GET http://localhost:9393/api/health
 ```
 
 Response:
