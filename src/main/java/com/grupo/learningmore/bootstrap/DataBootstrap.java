@@ -15,6 +15,7 @@ import com.grupo.learningmore.repositories.ChatRoomRepository;
 import com.grupo.learningmore.repositories.ChatMessageRepository;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +27,7 @@ public class DataBootstrap implements CommandLineRunner {
     private final ResourceRepository resourceRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DataBootstrap(
             UserRepository userRepository,
@@ -33,15 +35,16 @@ public class DataBootstrap implements CommandLineRunner {
             EnrollmentRepository enrollmentRepository,
             ResourceRepository resourceRepository,
             ChatRoomRepository chatRoomRepository,
-            ChatMessageRepository chatMessageRepository
+            ChatMessageRepository chatMessageRepository,
+            PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.resourceRepository = resourceRepository;
-
         this.chatRoomRepository = chatRoomRepository;
         this.chatMessageRepository = chatMessageRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -55,21 +58,21 @@ public class DataBootstrap implements CommandLineRunner {
         System.out.println("Loading bootstrap data...");
 
         // Create a professor
-        User professor = new User("Dr. João Silva", "professor@learningmore.com", "password123", UserRole.PROFESSOR);
+        User professor = new User("Dr. João Silva", "professor@learningmore.com", passwordEncoder.encode("password123"), UserRole.PROFESSOR);
         User savedProfessor = userRepository.save(professor);
         System.out.println("Created Professor: " + savedProfessor.getEmail());
 
         // Create students
-        User student1 = new User("Maria Santos", "student1@learningmore.com", "password123", UserRole.STUDENT);
+        User student1 = new User("Maria Santos", "student1@learningmore.com", passwordEncoder.encode("password123"), UserRole.STUDENT);
         User savedStudent1 = userRepository.save(student1);
         System.out.println("Created Student 1: " + savedStudent1.getEmail());
 
-        User student2 = new User("Pedro Oliveira", "student2@learningmore.com", "password123", UserRole.STUDENT);
+        User student2 = new User("Pedro Oliveira", "student2@learningmore.com", passwordEncoder.encode("password123"), UserRole.STUDENT);
         User savedStudent2 = userRepository.save(student2);
         System.out.println("Created Student 2: " + savedStudent2.getEmail());
 
         // Create an admin
-        User admin = new User("Admin User", "admin@learningmore.com", "password123", UserRole.ADMIN);
+        User admin = new User("Admin User", "admin@learningmore.com", passwordEncoder.encode("password123"), UserRole.ADMIN);
         User savedAdmin = userRepository.save(admin);
         System.out.println("Created Admin: " + savedAdmin.getEmail());
 
