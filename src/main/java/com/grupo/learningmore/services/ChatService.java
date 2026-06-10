@@ -2,11 +2,15 @@ package com.grupo.learningmore.services;
 
 import com.grupo.learningmore.domain.chat.ChatMessage;
 import com.grupo.learningmore.domain.chat.ChatRoom;
+import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.dto.request.SendMessageRequest;
 import com.grupo.learningmore.dto.response.ChatMessageResponse;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
 import com.grupo.learningmore.repositories.ChatMessageRepository;
 import com.grupo.learningmore.repositories.ChatRoomRepository;
+import com.grupo.learningmore.repositories.CourseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,7 @@ public class ChatService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final CourseRepository courseRepository;
     private final EnrollmentService enrollmentService;
 
     private static final Logger log =
@@ -30,10 +35,12 @@ public class ChatService {
     public ChatService(
             ChatMessageRepository chatMessageRepository,
             ChatRoomRepository chatRoomRepository,
+            CourseRepository courseRepository,
             EnrollmentService enrollmentService
     ) {
         this.chatMessageRepository = chatMessageRepository;
         this.chatRoomRepository = chatRoomRepository;
+        this.courseRepository =  courseRepository;
         this.enrollmentService = enrollmentService;
     }
 
@@ -44,19 +51,29 @@ public class ChatService {
             SendMessageRequest request
     ) {
 
-        log.info("Sending message - user {} to chatRoom {}", userId, chatRoomId);
+        log.debug("Message submission requested - user={}, chatRoom={}",
+                userId, chatRoomId);
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
+                .orElseThrow(() -> {
+                    log.warn("Message submission failed - chat room not found: {}",
+                            chatRoomId);
+                    return new IllegalArgumentException("Chat room not found");
+                });
 
         if (!enrollmentService.isUserEnrolled(userId, chatRoomId)) {
-            throw new AccessDeniedException("User not enrolled in this course");
+
+            log.warn("Unauthorized message submission attempt - user={}, chatRoom={}", userId, chatRoomId);
+
+            throw new AccessDeniedException(
+                    "User not enrolled in this course"
+            );
         }
 
         String sanitizedContent = sanitize(request.content());
 
         if (!sanitizedContent.equals(request.content())) {
-            log.warn("Message from user {} was sanitized (possible XSS attempt)", userId);
+            log.warn("Message content sanitized - user={}, chatRoom={}", userId, chatRoomId);
         }
 
         ChatMessage message = new ChatMessage();
@@ -66,8 +83,12 @@ public class ChatService {
 
         ChatMessage saved = chatMessageRepository.save(message);
 
-        log.info("Message sent successfully - user {} in chatRoom {}, messageId {}",
-                userId, chatRoomId, saved.getId());
+        log.info(
+                "Message sent successfully - messageId={}, user={}, chatRoom={}",
+                saved.getId(),
+                userId,
+                chatRoomId
+        );
 
         return new ChatMessageResponse(
                 saved.getId(),
@@ -77,28 +98,63 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMessageResponse> getMessages(UUID chatRoomId) {
+    public Page<ChatMessageResponse> getMessages(UUID chatRoomId, Pageable pageable) {
 
-        log.info("Fetching messages for chatRoom {}", chatRoomId);
+        log.info("Fetching paginated messages for chatRoom {}", chatRoomId);
 
         if (!chatRoomRepository.existsById(chatRoomId)) {
             log.warn("Chat room not found: {}", chatRoomId);
             throw new RuntimeException("Chat room not found");
         }
 
-        List<ChatMessageResponse> result = chatMessageRepository
-                .findByChatRoomIdOrderBySentAtAsc(chatRoomId)
-                .stream()
+        return chatMessageRepository
+                .findByChatRoomIdOrderBySentAtAsc(chatRoomId, pageable)
                 .map(message -> new ChatMessageResponse(
                         message.getId(),
                         message.getContent(),
                         message.getSentAt()
-                ))
-                .toList();
+                ));
+    }
 
-        log.info("Returned {} messages for chatRoom {}", result.size(), chatRoomId);
+    @Transactional(readOnly = true)
+    public List<ChatRoom> getChatsForUser(UUID userId) {
 
-        return result;
+        log.info("Fetching chats for user {}", userId);
+
+        return chatRoomRepository.findChatsByUserId(userId);
+    }
+
+    @Transactional
+    public ChatRoom createChatRoom(String name, UUID courseId) {
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setName(name);
+        chatRoom.setCourse(course);
+
+        return chatRoomRepository.save(chatRoom);
+    }
+
+    @Transactional(readOnly = true)
+    public ChatRoom getChatRoomById(UUID chatRoomId) {
+
+        return chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatRoom> getChatRoomsByCourse(UUID courseId) {
+        return chatRoomRepository.findByCourseId(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatRoom> findAllChatRooms() {
+
+        log.info("Fetching all chat rooms");
+
+        return chatRoomRepository.findAll();
     }
 
     private String sanitize(String content) {

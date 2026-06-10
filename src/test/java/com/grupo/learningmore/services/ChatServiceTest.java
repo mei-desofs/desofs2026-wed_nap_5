@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.List;
@@ -155,45 +158,38 @@ class ChatServiceTest {
     void shouldReturnOrderedDiscussionMessages() {
 
         ChatMessage msg1 = new ChatMessage();
-
         msg1.setId(UUID.randomUUID());
-
-        msg1.setContent(
-                "Does anyone understand exercise 3?"
-        );
-
-        msg1.setSentAt(new Date());
+        msg1.setContent("Does anyone understand exercise 3?");
+        msg1.setSentAt(new Date(System.currentTimeMillis() - 1000));
 
         ChatMessage msg2 = new ChatMessage();
-
         msg2.setId(UUID.randomUUID());
-
-        msg2.setContent(
-                "Yes, the professor explained it in class yesterday."
-        );
-
+        msg2.setContent("Yes, the professor explained it in class yesterday.");
         msg2.setSentAt(new Date());
 
         when(chatRoomRepository.existsById(chatRoomId))
                 .thenReturn(true);
 
-        when(chatMessageRepository
-                .findByChatRoomIdOrderBySentAtAsc(chatRoomId))
-                .thenReturn(List.of(msg1, msg2));
+        Page<ChatMessage> page = new PageImpl<>(List.of(msg1, msg2));
 
-        List<ChatMessageResponse> responses =
-                chatService.getMessages(chatRoomId);
+        when(chatMessageRepository.findByChatRoomIdOrderBySentAtAsc(
+                eq(chatRoomId),
+                any(Pageable.class)
+        )).thenReturn(page);
 
-        assertEquals(2, responses.size());
+        Page<ChatMessageResponse> responses =
+                chatService.getMessages(chatRoomId, Pageable.unpaged());
+
+        assertEquals(2, responses.getContent().size());
 
         assertEquals(
                 "Does anyone understand exercise 3?",
-                responses.get(0).content()
+                responses.getContent().get(0).content()
         );
 
         assertEquals(
                 "Yes, the professor explained it in class yesterday.",
-                responses.get(1).content()
+                responses.getContent().get(1).content()
         );
     }
 
@@ -205,13 +201,13 @@ class ChatServiceTest {
 
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
-                () -> chatService.getMessages(chatRoomId)
+                () -> chatService.getMessages(chatRoomId, Pageable.unpaged())
         );
 
-        assertEquals(
-                "Chat room not found",
-                exception.getMessage()
-        );
+        assertEquals("Chat room not found", exception.getMessage());
+
+        verify(chatRoomRepository).existsById(chatRoomId);
+        verifyNoInteractions(chatMessageRepository);
     }
 
     @Test

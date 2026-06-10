@@ -28,7 +28,8 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponse create(@Valid @RequestBody CreateUserRequest request) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
 
         log.info("POST /api/users - Creating user with email {}", request.email());
 
@@ -36,7 +37,7 @@ public class UserController {
                 request.name(),
                 request.email(),
                 request.password(),
-                UserRole.STUDENT
+                request.role()
         );
 
         log.info("User created successfully with id {}", user.getId());
@@ -52,6 +53,8 @@ public class UserController {
 
     @GetMapping("/me")
     public UserResponse me(Authentication authentication) {
+
+        log.info("Authentication name: {}", authentication.getName());
 
         UUID userId = UUID.fromString(authentication.getName());
 

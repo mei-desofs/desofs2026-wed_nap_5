@@ -186,9 +186,9 @@ public class ChatControllerIntegrationTest {
         mockMvc.perform(get("/api/chat/" + chatRoomId + "/messages")
                         .with(auth(studentId, "STUDENT")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].content").value("First message"))
-                .andExpect(jsonPath("$[1].content").value("Second message"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].content").value("First message"))
+                .andExpect(jsonPath("$.content[1].content").value("Second message"));
     }
 
     @Test
