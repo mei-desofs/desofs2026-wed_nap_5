@@ -92,6 +92,11 @@ class ChatServiceTest {
 
         SendMessageRequest request = new SendMessageRequest("Trying to access restricted course chat");
 
+        ChatRoom room = new ChatRoom();
+
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.of(room));
+
         when(enrollmentService.isUserEnrolled(userId, chatRoomId))
                 .thenReturn(false);
 
@@ -338,9 +343,6 @@ class ChatServiceTest {
     void shouldThrowWhenChatRoomNotFound_realPath() {
 
         SendMessageRequest request = new SendMessageRequest("test");
-
-        when(enrollmentService.isUserEnrolled(userId, chatRoomId))
-                .thenReturn(true);
 
         when(chatRoomRepository.findById(chatRoomId))
                 .thenReturn(Optional.empty());

@@ -46,16 +46,12 @@ public class ChatService {
 
         log.info("Sending message - user {} to chatRoom {}", userId, chatRoomId);
 
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
+
         if (!enrollmentService.isUserEnrolled(userId, chatRoomId)) {
-            log.warn("Access denied: user {} not enrolled in chatRoom {}", userId, chatRoomId);
             throw new AccessDeniedException("User not enrolled in this course");
         }
-
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> {
-                    log.warn("Chat room not found: {}", chatRoomId);
-                    return new RuntimeException("Chat room not found");
-                });
 
         String sanitizedContent = sanitize(request.content());
 
