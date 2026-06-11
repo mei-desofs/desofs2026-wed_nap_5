@@ -28,7 +28,6 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
 
         log.info("POST /api/users - Creating user with email {}", request.email());
@@ -37,7 +36,7 @@ public class UserController {
                 request.name(),
                 request.email(),
                 request.password(),
-                request.role()
+                UserRole.STUDENT
         );
 
         log.info("User created successfully with id {}", user.getId());
