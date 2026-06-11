@@ -1,22 +1,27 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.assignment.Assignment;
-import com.grupo.learningmore.dto.Request.CreateAssignmentRequest;
-import com.grupo.learningmore.dto.Request.UpdateAssignmentRequest;
-import com.grupo.learningmore.dto.Response.AssignmentResponse;
+import com.grupo.learningmore.dto.request.CreateAssignmentRequest;
+import com.grupo.learningmore.dto.request.UpdateAssignmentRequest;
+import com.grupo.learningmore.dto.response.AssignmentResponse;
 import com.grupo.learningmore.services.AssignmentService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class AssignmentController {
+
+    private static final Logger log = LoggerFactory.getLogger(AssignmentController.class);
 
     private final AssignmentService assignmentService;
 
@@ -44,6 +49,8 @@ public class AssignmentController {
                 isAdmin(authentication)
         );
 
+        log.info("Assignment created successfully with id {} in course {}", assignment.getId(), courseId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToResponse(assignment));
     }
 
@@ -57,6 +64,8 @@ public class AssignmentController {
                 .map(this::mapToResponse)
                 .toList();
 
+        log.info("Returned {} assignments for course {}", responses.size(), courseId);
+
         return ResponseEntity.ok(responses);
     }
 
@@ -66,6 +75,7 @@ public class AssignmentController {
         log.info("GET /assignments/{} - Fetch assignment", assignmentId);
 
         Assignment assignment = assignmentService.findById(assignmentId);
+
         return ResponseEntity.ok(mapToResponse(assignment));
     }
 
@@ -91,6 +101,8 @@ public class AssignmentController {
                 isAdmin(authentication)
         );
 
+        log.info("Assignment {} updated successfully", assignmentId);
+
         return ResponseEntity.ok(mapToResponse(assignment));
     }
 
@@ -111,6 +123,8 @@ public class AssignmentController {
                 actorId,
                 isAdmin(authentication)
         );
+
+        log.info("Assignment {} deleted successfully", assignmentId);
 
         return ResponseEntity.noContent().build();
     }

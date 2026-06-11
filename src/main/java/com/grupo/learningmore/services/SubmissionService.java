@@ -7,6 +7,8 @@ import com.grupo.learningmore.exceptions.AccessDeniedException;
 import com.grupo.learningmore.repositories.AssignmentRepository;
 import com.grupo.learningmore.repositories.SubmissionAuditLogRepository;
 import com.grupo.learningmore.repositories.SubmissionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +27,10 @@ import java.util.*;
 @Service
 public class SubmissionService {
 
+    private static final Logger log = LoggerFactory.getLogger(SubmissionService.class);
+
     private static final long MAX_FILE_SIZE_BYTES = 50L * 1024L * 1024L;
 
-    // Whitelist of allowed MIME types for submissions (R11, AC4 - prevent malicious uploads)
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of(
             "application/pdf",
             "application/msword",
@@ -42,7 +45,6 @@ public class SubmissionService {
             "application/x-zip-compressed"
     );
 
-    // Whitelist of allowed file extensions (secondary validation)
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
             "pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx",
             "txt", "csv", "jpg", "jpeg", "png", "zip"
@@ -74,21 +76,30 @@ public class SubmissionService {
         log.info("Submission attempt: user={} assignment={}", userId, assignmentId);
 
         var assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+                .orElseThrow(() -> {
+                    log.warn("Submission failed - assignment not found: {}", assignmentId);
+                    return new IllegalArgumentException("Assignment not found");
+                });
 
         if (!assignment.canBeSubmitted()) {
+            log.warn("Submission rejected - deadline expired: assignment={} user={}",
+                    assignmentId, userId);
             throw new IllegalStateException("Assignment deadline has expired");
         }
 
         if (submissionRepository.existsByAssignmentIdAndUserId(assignmentId, userId)) {
+            log.warn("Duplicate submission attempt: user={} assignment={}",
+                    userId, assignmentId);
             throw new IllegalArgumentException("User already submitted this assignment");
         }
 
         if (!enrollmentService.isUserEnrolledInCourse(userId, assignment.getCourseId())) {
+            log.warn("Unauthorized submission attempt: user={} course={}",
+                    userId, assignment.getCourseId());
             throw new AccessDeniedException("User is not enrolled in the course for this assignment");
         }
 
-        validateSubmissionFile(file);
+        validateSubmissionFile(file, userId, assignmentId);
 
         Path assignmentUploadPath = Paths.get(uploadDir, "assignments", assignmentId);
         Files.createDirectories(assignmentUploadPath);
@@ -97,10 +108,13 @@ public class SubmissionService {
         String generatedName = UUID.randomUUID() + "_" + safeOriginalName;
         Path storedPath = assignmentUploadPath.resolve(generatedName);
 
-        // Prevent path traversal (AC5, R12): ensure resolved path is within assignment directory
         Path normalizedPath = storedPath.normalize();
         Path uploadBase = assignmentUploadPath.normalize();
+
         if (!normalizedPath.startsWith(uploadBase)) {
+            log.error("Path traversal detected during submission: user={} assignment={}",
+                    userId, assignmentId);
+
             throw new IllegalArgumentException("Invalid file path: potential path traversal detected");
         }
 
@@ -125,6 +139,9 @@ public class SubmissionService {
                 LocalDateTime.now()
         ));
 
+        log.info("Submission successful: submissionId={} user={} assignment={}",
+                saved.getId(), userId, assignmentId);
+
         return saved;
     }
 
@@ -140,9 +157,15 @@ public class SubmissionService {
                 assignmentId, actorId, isAdmin);
 
         var assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
+                .orElseThrow(() -> {
+                    log.warn("Assignment not found when fetching submissions: {}", assignmentId);
+                    return new IllegalArgumentException("Assignment not found");
+                });
 
         if (!isAdmin && !assignment.getCreatedBy().equals(actorId)) {
+            log.warn("Unauthorized submission listing attempt: actor={} assignment={}",
+                    actorId, assignmentId);
+
             throw new AccessDeniedException("Only the assignment owner can view all submissions");
         }
 
@@ -155,7 +178,10 @@ public class SubmissionService {
         log.info("Fetching personal submission: user={} assignment={}", userId, assignmentId);
 
         return submissionRepository.findByAssignmentIdAndUserId(assignmentId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
+                .orElseThrow(() -> {
+                    log.warn("Submission not found: user={} assignment={}", userId, assignmentId);
+                    return new IllegalArgumentException("Submission not found");
+                });
     }
 
     @Transactional
@@ -171,19 +197,27 @@ public class SubmissionService {
                 submissionId, actorId, isAdmin);
 
         if (grade == null || grade.compareTo(BigDecimal.ZERO) < 0 || grade.compareTo(new BigDecimal("100")) > 0) {
+            log.warn("Invalid grade value: {} by actor {}", grade, actorId);
             throw new IllegalArgumentException("Grade must be between 0 and 100");
         }
 
         Submission submission = submissionRepository.findById(submissionId)
-                .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
+                .orElseThrow(() -> {
+                    log.warn("Submission not found for grading: {}", submissionId);
+                    return new IllegalArgumentException("Submission not found");
+                });
 
         var assignment = submission.getAssignment();
 
         if (assignment == null) {
+            log.error("Corrupted submission (missing assignment): {}", submissionId);
             throw new IllegalArgumentException("Assignment not found");
         }
 
         if (!isAdmin && !assignment.getCreatedBy().equals(actorId)) {
+            log.warn("Unauthorized grading attempt: actor={} submission={}",
+                    actorId, submissionId);
+
             throw new AccessDeniedException("Only the assignment owner can grade submissions");
         }
 
@@ -201,34 +235,46 @@ public class SubmissionService {
                 LocalDateTime.now()
         ));
 
+        log.info("Submission graded successfully: submission={} grade={} actor={}",
+                submissionId, grade, actorId);
+
         return saved;
     }
 
     private void validateSubmissionFile(MultipartFile file, String userId, String assignmentId) {
 
         if (file == null || file.isEmpty()) {
+            log.warn("Empty submission file: user={} assignment={}", userId, assignmentId);
             throw new IllegalArgumentException("Submission file cannot be empty");
         }
 
         if (file.getSize() > MAX_FILE_SIZE_BYTES) {
+            log.warn("File too large: user={} assignment={} size={}",
+                    userId, assignmentId, file.getSize());
+
             throw new IllegalArgumentException("Submission file exceeds maximum size of 50MB");
         }
 
-        // Validate MIME type (R11, AC4 - prevent malicious uploads)
         String mimeType = file.getContentType();
         if (mimeType == null || !ALLOWED_MIME_TYPES.contains(mimeType.toLowerCase())) {
-            throw new IllegalArgumentException("File type not allowed. Allowed types: PDF, Word, PowerPoint, Excel, Text, CSV, Images, ZIP");
+            log.warn("Invalid MIME type: user={} assignment={} type={}",
+                    userId, assignmentId, mimeType);
+
+            throw new IllegalArgumentException("File type not allowed");
         }
 
-        // Validate file extension as secondary check
         String filename = file.getOriginalFilename();
         if (filename == null || filename.isBlank()) {
+            log.warn("Invalid filename: user={} assignment={}", userId, assignmentId);
             throw new IllegalArgumentException("Invalid filename");
         }
 
         String extension = getFileExtension(filename).toLowerCase();
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
-            throw new IllegalArgumentException("File extension not allowed. Allowed extensions: " + String.join(", ", ALLOWED_EXTENSIONS));
+            log.warn("Invalid file extension: user={} assignment={} ext={}",
+                    userId, assignmentId, extension);
+
+            throw new IllegalArgumentException("File extension not allowed");
         }
     }
 
@@ -237,18 +283,12 @@ public class SubmissionService {
             return "submission.bin";
         }
 
-        // Extract just the filename without path (prevents path traversal - R12, AC5)
         String cleanName = Paths.get(filename).getFileName().toString();
-
-        // Remove potentially dangerous characters
         cleanName = cleanName.replaceAll("[^a-zA-Z0-9._-]", "_");
-
-        // Remove path traversal attempts
         cleanName = cleanName.replace("..", "_");
         cleanName = cleanName.replace("/", "_");
         cleanName = cleanName.replace("\\", "_");
 
-        // Limit filename length
         if (cleanName.length() > 100) {
             cleanName = cleanName.substring(0, 100);
         }

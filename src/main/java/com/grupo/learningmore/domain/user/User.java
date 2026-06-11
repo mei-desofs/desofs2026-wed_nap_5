@@ -1,7 +1,6 @@
 package com.grupo.learningmore.domain.user;
 
 import jakarta.persistence.*;
-
 import java.util.UUID;
 import java.util.HexFormat;
 import java.security.SecureRandom;
@@ -32,6 +31,9 @@ public class User {
     @Column(nullable = false)
     private boolean active;
 
+    @Column(nullable = false)
+    private long tokenVersion;
+
     protected User() {
     }
 
@@ -42,6 +44,7 @@ public class User {
         this.passwordHash = passwordHash;
         this.role = role;
         this.active = true;
+        this.tokenVersion = 0;
     }
 
     private String generateSecureId() {
@@ -72,5 +75,24 @@ public class User {
 
     public boolean isActive() {
         return active;
+    }
+
+    public long getTokenVersion() {
+        return tokenVersion;
+    }
+
+    public void changePassword(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+        this.tokenVersion++;
+    }
+
+    public void deactivate() {
+        this.active = false;
+        this.tokenVersion++;
+    }
+
+    public void activate() {
+        this.active = true;
+        this.tokenVersion++;
     }
 }
