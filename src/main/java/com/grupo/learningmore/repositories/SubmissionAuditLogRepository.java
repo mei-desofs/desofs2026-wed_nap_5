@@ -6,9 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.UUID;
 
-public interface SubmissionAuditLogRepository extends JpaRepository<SubmissionAuditLog, UUID> {
+public interface SubmissionAuditLogRepository extends JpaRepository<SubmissionAuditLog, String> {
 
     /**
      * Find all audit logs for a specific submission.
@@ -16,7 +15,7 @@ public interface SubmissionAuditLogRepository extends JpaRepository<SubmissionAu
      * @param submissionId the submission ID
      * @return list of audit logs
      */
-    List<SubmissionAuditLog> findBySubmissionId(UUID submissionId);
+    List<SubmissionAuditLog> findBySubmissionId(String submissionId);
 
     /**
      * Find audit logs for a specific submission with pagination.
@@ -25,7 +24,7 @@ public interface SubmissionAuditLogRepository extends JpaRepository<SubmissionAu
      * @param pageable     pagination info
      * @return paginated list of audit logs
      */
-    Page<SubmissionAuditLog> findBySubmissionId(UUID submissionId, Pageable pageable);
+    Page<SubmissionAuditLog> findBySubmissionId(String submissionId, Pageable pageable);
 
     /**
      * Find all audit logs by a specific actor (user).
@@ -33,5 +32,5 @@ public interface SubmissionAuditLogRepository extends JpaRepository<SubmissionAu
      * @param actorId the user ID
      * @return list of audit logs
      */
-    List<SubmissionAuditLog> findByActorId(UUID actorId);
+    List<SubmissionAuditLog> findByActorId(String actorId);
 }

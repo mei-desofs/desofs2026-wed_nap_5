@@ -11,8 +11,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
+import java.util.HexFormat;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ResourceService {
@@ -20,8 +21,11 @@ public class ResourceService {
     private final ResourceRepository resourceRepository;
     private final CourseService courseService;
 
+
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
+
+    private static final SecureRandom secureRandom = new SecureRandom();
 
     public ResourceService(ResourceRepository resourceRepository, CourseService courseService) {
         this.resourceRepository = resourceRepository;
@@ -29,7 +33,10 @@ public class ResourceService {
     }
 
     @Transactional
-    public Resource uploadResource(UUID courseId, MultipartFile file, UUID uploadedBy) throws IOException {
+    public Resource uploadResource(String courseId, MultipartFile file, String uploadedBy) throws IOException {
+
+        log.info("Uploading resource to course {} by user {}", courseId, uploadedBy);
+
         // Verify course exists
         courseService.findById(courseId);
 
@@ -49,12 +56,22 @@ public class ResourceService {
 
 
         // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir, courseId.toString()).normalize().toAbsolutePath();
+        Path uploadPath = Paths.get(uploadDir, courseId)
+                .normalize()
+                .toAbsolutePath();
+
         Files.createDirectories(uploadPath);
 
-        // Generate unique filename
-        String filename = UUID.randomUUID() + "_" + safeOriginalFilename;
-        Path filePath = uploadPath.resolve(filename).normalize().toAbsolutePath();
+        byte[] randomBytes = new byte[16];
+        secureRandom.nextBytes(randomBytes);
+        String randomPrefix = HexFormat.of().formatHex(randomBytes);
+
+        String filename = randomPrefix + "_" + safeOriginalFilename;
+
+        Path filePath = uploadPath.resolve(filename)
+                .normalize()
+                .toAbsolutePath();
+
         if (!filePath.startsWith(uploadPath)) {
             throw new IllegalArgumentException("Invalid file path");
         }
@@ -76,18 +93,31 @@ public class ResourceService {
     }
 
     @Transactional(readOnly = true)
-    public Resource findById(UUID id) {
+    public Resource findById(String id) {
+
+        log.info("Fetching resource {}", id);
+
         return resourceRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
     }
 
     @Transactional(readOnly = true)
-    public List<Resource> findByCourseId(UUID courseId) {
-        return resourceRepository.findByCourseId(courseId);
+    public List<Resource> findByCourseId(String courseId) {
+
+        log.info("Fetching resources for course {}", courseId);
+
+        List<Resource> result = resourceRepository.findByCourseId(courseId);
+
+        log.info("Found {} resources for course {}", result.size(), courseId);
+
+        return result;
     }
 
     @Transactional
-    public void deleteResource(UUID id) throws IOException {
+    public void deleteResource(String id) throws IOException {
+
+        log.warn("Deleting resource {}", id);
+
         Resource resource = findById(id);
 
         // Delete file from disk

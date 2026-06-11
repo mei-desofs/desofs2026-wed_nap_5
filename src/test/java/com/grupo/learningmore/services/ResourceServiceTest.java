@@ -12,13 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,13 +35,13 @@ public class ResourceServiceTest {
     @InjectMocks
     private ResourceService resourceService;
 
-    private UUID courseId;
-    private UUID userId;
+    private String courseId;
+    private String userId;
 
     @BeforeEach
     public void setUp() {
-        courseId = UUID.randomUUID();
-        userId = UUID.randomUUID();
+        courseId = "ID-5a8c3b1f2e4d6a9c8b7f5e3d2c1a0b9f";
+        userId = "USR-a1b2c3d4e5f6789012345678901a2b3c";
 
         ReflectionTestUtils.setField(resourceService, "uploadDir", "uploads");
         new File("uploads").mkdirs();
@@ -60,12 +58,13 @@ public class ResourceServiceTest {
                 "PDF content".getBytes()
         );
 
-        Course course = new Course("CS101", "CS", "Intro", userId);
+        Course course = new Course("CS101", "CS", "Intro");
         course.setId(courseId);
+        course.setCreatedBy(userId);
         when(courseService.findById(courseId)).thenReturn(course);
 
         Resource savedResource = new Resource(courseId, "lecture.pdf", "/uploads/uuid_lecture.pdf", 11L, "application/pdf", userId);
-        savedResource.setId(UUID.randomUUID());
+        savedResource.setId("RES-1a2b3c4d5e6f789012345678901a2b3c");
         when(resourceRepository.save(any(Resource.class))).thenReturn(savedResource);
 
         // Act
@@ -89,8 +88,9 @@ public class ResourceServiceTest {
                 new byte[0]
         );
 
-        Course course = new Course("CS101", "CS", "Intro", userId);
+        Course course = new Course("CS101", "CS", "Intro");
         course.setId(courseId);
+        course.setCreatedBy(userId);
         when(courseService.findById(courseId)).thenReturn(course);
 
         // Act & Assert
@@ -111,6 +111,9 @@ public class ResourceServiceTest {
                 "content".getBytes()
         );
 
+        Course course = new Course("CS101", "CS", "Intro");
+        course.setId(courseId);
+        course.setCreatedBy(userId);
         when(courseService.findById(courseId)).thenThrow(new IllegalArgumentException("Course not found"));
 
         // Act & Assert
@@ -124,7 +127,7 @@ public class ResourceServiceTest {
     @Test
     public void testFindByIdSuccess() {
         // Arrange
-        UUID resourceId = UUID.randomUUID();
+        String resourceId = "RES-2b3c4d5e6f789012345678901a2b3c4d";
         Resource expectedResource = new Resource(courseId, "file.txt", "/path", 100L, "text/plain", userId);
         expectedResource.setId(resourceId);
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.of(expectedResource));
@@ -141,7 +144,7 @@ public class ResourceServiceTest {
     @Test
     public void testFindByIdNotFoundThrowsException() {
         // Arrange
-        UUID resourceId = UUID.randomUUID();
+        String resourceId = "RES-3c4d5e6f789012345678901a2b3c4d5e";
         when(resourceRepository.findById(resourceId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -170,7 +173,7 @@ public class ResourceServiceTest {
     @Test
     public void testDeleteResourceSuccess() throws IOException {
         // Arrange
-        UUID resourceId = UUID.randomUUID();
+        String resourceId = "RES-4d5e6f789012345678901a2b3c4d5e6f";
         
         // Criamos um ficheiro físico temporário real para o Files.delete conseguir apagar
         String filename = "temp_to_delete.txt";
@@ -197,7 +200,7 @@ public class ResourceServiceTest {
     @Test
     public void testDeleteResourceNotFoundThrowsException() {
         // Arrange
-        UUID invalidResourceId = UUID.randomUUID();
+        String invalidResourceId = "RES-5e6f789012345678901a2b3c4d5e6f78";
         when(resourceRepository.findById(invalidResourceId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -212,8 +215,9 @@ public class ResourceServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", "", "text/plain", "content".getBytes());
         
         // Mock necessário se o método validar o curso antes do nome (ou vice-versa)
-        Course course = new Course("CS101", "CS", "Intro", userId);
+        Course course = new Course("CS101", "CS", "Intro");
         course.setId(courseId);
+        course.setCreatedBy(userId);
         lenient().when(courseService.findById(courseId)).thenReturn(course);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -226,8 +230,9 @@ public class ResourceServiceTest {
     public void testUploadResourceFilenameMaliciousThrowsException() {
         MockMultipartFile file = new MockMultipartFile("file", "../../../etc/passwd", "text/plain", "content".getBytes());
         
-        Course course = new Course("CS101", "CS", "Intro", userId);
+        Course course = new Course("CS101", "CS", "Intro");
         course.setId(courseId);
+        course.setCreatedBy(userId);
         lenient().when(courseService.findById(courseId)).thenReturn(course);
 
         assertThrows(IllegalArgumentException.class, () ->
@@ -261,10 +266,7 @@ public class ResourceServiceTest {
      
     @Test
     public void testDeleteResourcePathTraversalThrowsException() {
-        UUID resourceId = UUID.randomUUID();
-         
-         
-         
+        String resourceId = "RES-6f789012345678901a2b3c4d5e6f7890";
          
         String maliciousPath = java.nio.file.Paths.get("/", "absolute-outside-path", "evil.txt")
                 .toAbsolutePath().toString();

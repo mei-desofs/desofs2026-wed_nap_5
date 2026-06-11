@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/courses/{courseId}/resources")
@@ -31,17 +30,21 @@ public class ResourceController {
     @PostMapping
     public ResponseEntity<ResourceResponse> uploadResource(
             Authentication authentication,
-            @PathVariable UUID courseId,
+            @PathVariable String courseId,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
-        UUID userId = UUID.fromString(authentication.getName());
+
+        String userId = authentication.getName();
+
+        log.info("POST /courses/{}/resources - Upload resource by user {}", courseId, userId);
+
         Resource resource = resourceService.uploadResource(courseId, file, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToResourceResponse(resource));
     }
 
     @GetMapping
     public ResponseEntity<List<ResourceResponse>> getResourcesByCourse(
-            @PathVariable UUID courseId,
+            @PathVariable String courseId,
             Authentication authentication
     ) {
         ResponseEntity<List<ResourceResponse>> accessCheck = validateUserAccess(authentication, courseId);
@@ -58,8 +61,8 @@ public class ResourceController {
 
     @GetMapping("/{resourceId}")
     public ResponseEntity<ResourceResponse> getResourceById(
-            @PathVariable UUID courseId,
-            @PathVariable UUID resourceId,
+            @PathVariable String courseId,
+            @PathVariable String resourceId,
             Authentication authentication
     ) {
         Resource resource = resourceService.findById(resourceId);
@@ -79,8 +82,8 @@ public class ResourceController {
     @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
     @DeleteMapping("/{resourceId}")
     public ResponseEntity<Void> deleteResource(
-            @PathVariable UUID courseId,
-            @PathVariable UUID resourceId
+            @PathVariable String courseId,
+            @PathVariable String resourceId
     ) throws IOException {
         Resource resource = resourceService.findById(resourceId);
 
@@ -123,8 +126,8 @@ public class ResourceController {
 
         if (!hasAdminOrProfessorRole(authentication)) {
             try {
-                UUID userId = UUID.fromString(authentication.getName());
-                
+                String userId = authentication.getName();
+
                 if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }

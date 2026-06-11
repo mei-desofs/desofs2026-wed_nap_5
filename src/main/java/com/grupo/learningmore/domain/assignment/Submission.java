@@ -6,6 +6,8 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.HexFormat;
+import java.security.SecureRandom;
 
 /**
  * Submission entity within the Assignment aggregate.
@@ -16,19 +18,21 @@ import java.util.UUID;
 @Table(name = "submissions")
 public class Submission {
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
 
     @Column(name = "assignment_id", insertable = false, updatable = false)
-    private UUID assignmentId;
+    private String assignmentId;
 
     @Column(nullable = false)
-    private UUID userId;
+    private String userId;
 
     @Column(nullable = false)
     private LocalDateTime submittedAt;
@@ -57,17 +61,18 @@ public class Submission {
     private LocalDateTime updatedAt;
 
     @Column(name = "last_modified_by")
-    private UUID lastModifiedBy;
+    private String lastModifiedBy;
 
     public Submission() {
     }
 
     public Submission(Assignment assignment,
-                      UUID userId,
+                      String userId,
                       LocalDateTime submittedAt,
                       SubmissionStatus status,
                       String filePath) {
 
+        this.id = generateSecureId();
         this.assignment = assignment;
         this.userId = userId;
         this.submittedAt = submittedAt;
@@ -78,9 +83,15 @@ public class Submission {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Submission(UUID id,
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura
+        secureRandom.nextBytes(bytes); // CSPRNG preenche o array com bytes seguros
+        return "SUB-" + HexFormat.of().formatHex(bytes).toUpperCase(); // Transforma em String Hexadecimal
+    }
+
+    public Submission(String id,
                       Assignment assignment,
-                      UUID userId,
+                      String userId,
                       LocalDateTime submittedAt,
                       SubmissionStatus status,
                       String filePath,
@@ -100,7 +111,7 @@ public class Submission {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -108,7 +119,7 @@ public class Submission {
         this.assignment = assignment;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -147,13 +158,13 @@ public class Submission {
         this.updatedAt = updatedAt;
     }
 
-    public void setLastModifiedBy(UUID lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
     public void grade(BigDecimal grade,
                       String feedback,
-                      UUID graderId) {
+                      String graderId) {
 
         if (this.status == SubmissionStatus.GRADED) {
             throw new IllegalStateException("Submission already graded");

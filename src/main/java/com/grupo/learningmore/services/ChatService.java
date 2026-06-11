@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,8 +38,8 @@ public class ChatService {
 
     @Transactional
     public ChatMessageResponse sendMessage(
-            UUID userId,
-            UUID chatRoomId,
+            String userId,
+            String chatRoomId,
             SendMessageRequest request
     ) {
 
@@ -75,7 +74,7 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMessageResponse> getMessages(UUID chatRoomId) {
+    public List<ChatMessageResponse> getMessages(String chatRoomId) {
 
         if (!chatRoomRepository.existsById(chatRoomId)) {
             throw new RuntimeException("Chat room not found");

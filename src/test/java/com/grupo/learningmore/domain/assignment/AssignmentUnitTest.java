@@ -11,8 +11,8 @@ public class AssignmentUnitTest {
 
     @Test
     public void testCanBeSubmittedAndAddSubmission() {
-        UUID courseId = UUID.randomUUID();
-        UUID creator = UUID.randomUUID();
+        String courseId = UUID.randomUUID();
+        String creator = UUID.randomUUID();
 
         Assignment assignment = new Assignment(
                 "Title",

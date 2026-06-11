@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class AssignmentService {
@@ -30,7 +29,10 @@ public class AssignmentService {
     }
 
     @Transactional
-    public Assignment createAssignment(UUID courseId, String title, String description, LocalDateTime deadline, UUID actorId, boolean isAdmin) {
+    public Assignment createAssignment(String courseId, String title, String description, LocalDateTime deadline, String actorId, boolean isAdmin) {
+
+        log.info("Creating assignment for course {} by user {}", courseId, actorId);
+
         if (deadline == null || !deadline.isAfter(LocalDateTime.now())) {
             throw new IllegalArgumentException("Deadline must be in the future");
         }
@@ -56,25 +58,31 @@ public class AssignmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<Assignment> findByCourseId(UUID courseId) {
+    public List<Assignment> findByCourseId(String courseId) {
+
+        log.info("Fetching assignments for course {}", courseId);
+
         courseService.findById(courseId);
         return assignmentRepository.findByCourseId(courseId);
     }
 
     @Transactional(readOnly = true)
-    public Assignment findById(UUID assignmentId) {
+    public Assignment findById(String assignmentId) {
+
+        log.info("Fetching assignment {}", assignmentId);
+
         return assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
     }
 
     @Transactional
     public Assignment updateAssignment(
-            UUID courseId,
-            UUID assignmentId,
+            String courseId,
+            String assignmentId,
             String title,
             String description,
             LocalDateTime deadline,
-            UUID actorId,
+            String actorId,
             boolean isAdmin
     ) {
         Assignment assignment = assignmentRepository.findByIdAndCourseId(assignmentId, courseId)
@@ -116,7 +124,10 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void deleteAssignment(UUID courseId, UUID assignmentId, UUID actorId, boolean isAdmin) {
+    public void deleteAssignment(String courseId, String assignmentId, String actorId, boolean isAdmin) {
+
+        log.warn("Deleting assignment {} from course {} by user {}", assignmentId, courseId, actorId);
+
         Assignment assignment = assignmentRepository.findByIdAndCourseId(assignmentId, courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Assignment not found in course"));
 

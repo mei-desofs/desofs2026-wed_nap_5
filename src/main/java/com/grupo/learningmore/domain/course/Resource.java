@@ -5,18 +5,24 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.HexFormat;
+import java.security.SecureRandom;
 
 @Entity
 @Table(name = "resources")
 @Getter
 public class Resource {
 
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @Column(nullable = false)
-    private UUID courseId;
+    private String courseId;
 
     @Column(nullable = false)
     private String filename;
@@ -34,12 +40,13 @@ public class Resource {
     private LocalDateTime uploadedAt;
 
     @Column(nullable = false)
-    private UUID uploadedBy;
+    private String uploadedBy;
 
     public Resource() {
     }
 
-    public Resource(UUID courseId, String filename, String filePath, Long fileSize, String contentType, UUID uploadedBy) {
+    public Resource(String courseId, String filename, String filePath, Long fileSize, String contentType, String uploadedBy) {
+        this.id = generateSecureId();
         this.courseId = courseId;
         this.filename = filename;
         this.filePath = filePath;
@@ -49,11 +56,17 @@ public class Resource {
         this.uploadedAt = LocalDateTime.now();
     }
 
-    public void setId(UUID id) {
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura
+        secureRandom.nextBytes(bytes); // CSPRNG preenche o array com bytes seguros
+        return "RES-" + HexFormat.of().formatHex(bytes).toUpperCase(); // Transforma em String Hexadecimal
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setCourseId(UUID courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
@@ -77,7 +90,7 @@ public class Resource {
         this.uploadedAt = uploadedAt;
     }
 
-    public void setUploadedBy(UUID uploadedBy) {
+    public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
 }

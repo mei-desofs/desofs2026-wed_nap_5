@@ -30,10 +30,13 @@ public class SubmissionController {
     @PostMapping("/assignments/{assignmentId}/submissions")
     public ResponseEntity<SubmissionResponse> submitAssignment(
             Authentication authentication,
-            @PathVariable UUID assignmentId,
+            @PathVariable String assignmentId,
             @RequestParam("file") MultipartFile file
     ) throws Exception {
-        UUID userId = UUID.fromString(authentication.getName());
+
+        String userId = authentication.getName();
+
+        log.info("POST /assignments/{}/submissions - Submission attempt by user {}", assignmentId, userId);
 
         Submission submission = submissionService.submit(assignmentId, userId, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToResponse(submission));
@@ -43,10 +46,13 @@ public class SubmissionController {
     @GetMapping("/assignments/{assignmentId}/submissions")
     public ResponseEntity<Page<SubmissionResponse>> getSubmissionsByAssignment(
             Authentication authentication,
-            @PathVariable UUID assignmentId,
+            @PathVariable String assignmentId,
             Pageable pageable
     ) {
-        UUID actorId = UUID.fromString(authentication.getName());
+
+        String actorId = authentication.getName();
+
+        log.info("GET /assignments/{}/submissions - Requested by user {}", assignmentId, actorId);
 
         Page<SubmissionResponse> responses = submissionService
                 .getSubmissionsForAssignment(assignmentId, actorId, isAdmin(authentication), pageable)
@@ -59,9 +65,13 @@ public class SubmissionController {
     @GetMapping("/assignments/{assignmentId}/submissions/me")
     public ResponseEntity<SubmissionResponse> getMySubmission(
             Authentication authentication,
-            @PathVariable UUID assignmentId
+            @PathVariable String assignmentId
     ) {
-        UUID userId = UUID.fromString(authentication.getName());
+
+        String userId = authentication.getName();
+
+        log.info("GET /assignments/{}/submissions/me - User {}", assignmentId, userId);
+
         Submission submission = submissionService.getMySubmission(assignmentId, userId);
         return ResponseEntity.ok(mapToResponse(submission));
     }
@@ -70,10 +80,13 @@ public class SubmissionController {
     @PutMapping("/submissions/{submissionId}/grade")
     public ResponseEntity<SubmissionResponse> gradeSubmission(
             Authentication authentication,
-            @PathVariable UUID submissionId,
+            @PathVariable String submissionId,
             @Valid @RequestBody GradeSubmissionRequest request
     ) {
-        UUID actorId = UUID.fromString(authentication.getName());
+
+        String actorId = authentication.getName();
+
+        log.info("PUT /submissions/{}/grade - Grading attempt by user {}", submissionId, actorId);
 
         Submission submission = submissionService.gradeSubmission(
                 submissionId,

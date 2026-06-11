@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -46,7 +45,8 @@ public class UserService {
         return repository.findAll();
     }
 
-    public User findById(UUID id) {
+    public User findById(String id) {
+
         return repository.findById(id)
                 .orElseThrow(() ->
                         new IllegalArgumentException("User not found"));
@@ -56,5 +56,44 @@ public class UserService {
         return repository.findByEmail(email)
                 .orElseThrow(() ->
                         new IllegalArgumentException("User not found"));
+    }
+
+    @Transactional
+    public void changePassword(
+            String userId,
+            String currentPassword,
+            String newPassword
+    ) {
+
+        log.info("Password change attempt: user={}", userId);
+
+        User user = findById(userId);
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            log.warn("Password change failed - invalid current password: user={}", userId);
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        user.changePassword(encodedPassword);
+
+        repository.save(user);
+
+        log.info("Password changed successfully: user={}", userId);
+    }
+
+    @Transactional
+    public void deactivateUser(String userId) {
+
+        log.warn("User deactivation requested: user={}", userId);
+
+        User user = findById(userId);
+
+        user.deactivate();
+
+        repository.save(user);
+
+        log.info("User deactivated successfully: user={}", userId);
     }
 }

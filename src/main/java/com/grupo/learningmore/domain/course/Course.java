@@ -5,15 +5,20 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.HexFormat;
+import java.security.SecureRandom;
+
 
 @Entity
 @Table(name = "courses")
 @Getter
 public class Course {
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @Column(unique = true, nullable = false)
     private String code;
@@ -31,13 +36,14 @@ public class Course {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private UUID createdBy;
+    private String createdBy;
 
     public Course() {
     }
 
-    public Course(String code, String name, String description, UUID createdBy) {
-        this.code = code;
+    public Course(String name, String description, String createdBy) {
+        this.id = generateSecureId();
+        this.code = generateSecureCourseCode();        
         this.name = name;
         this.description = description;
         this.createdBy = createdBy;
@@ -45,7 +51,21 @@ public class Course {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void setId(UUID id) {
+     
+
+    private String generateSecureCourseCode() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura
+        secureRandom.nextBytes(bytes); // CSPRNG preenche o array com bytes seguros
+        return "CRS-" + HexFormat.of().formatHex(bytes).toUpperCase(); // Transforma em String Hexadecimal
+    }
+
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura
+        secureRandom.nextBytes(bytes); // CSPRNG preenche o array com bytes seguros
+        return "ID-" + HexFormat.of().formatHex(bytes).toUpperCase(); // Transforma em String Hexadecimal
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -69,7 +89,7 @@ public class Course {
         this.updatedAt = updatedAt;
     }
 
-    public void setCreatedBy(UUID createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 }

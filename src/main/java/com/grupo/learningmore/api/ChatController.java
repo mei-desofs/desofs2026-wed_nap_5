@@ -29,12 +29,12 @@ public class ChatController {
     @PostMapping("/{chatRoomId}/messages")
     public ResponseEntity<ChatMessageResponse> sendMessage(
             Authentication authentication,
-            @PathVariable UUID chatRoomId,
+            @PathVariable String chatRoomId,
             @Valid @RequestBody SendMessageRequest request
     ) {
 
         try {
-            UUID userId = UUID.fromString(authentication.getName());
+            String userId = authentication.getName();
 
             ChatMessageResponse response =
                     chatService.sendMessage(
@@ -56,7 +56,7 @@ public class ChatController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('STUDENT') or hasRole('PROFESSOR')")
     @GetMapping("/{chatRoomId}/messages")
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
-            @PathVariable UUID chatRoomId
+            @PathVariable String chatRoomId
     ) {
 
         return ResponseEntity.ok(

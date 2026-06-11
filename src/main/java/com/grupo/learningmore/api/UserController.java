@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")

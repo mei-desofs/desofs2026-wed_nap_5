@@ -5,8 +5,6 @@ import com.grupo.learningmore.repositories.ChatRoomRepository;
 import com.grupo.learningmore.repositories.EnrollmentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class EnrollmentService {
 
@@ -21,7 +19,7 @@ public class EnrollmentService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    public boolean isUserEnrolled(UUID userId, UUID chatRoomId) {
+    public boolean isUserEnrolled(String userId, String chatRoomId) {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() ->
@@ -37,7 +35,13 @@ public class EnrollmentService {
     /**
      * Check if a user is enrolled in a specific course
      */
-    public boolean isUserEnrolledInCourse(UUID userId, UUID courseId) {
-        return enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
+    public boolean isUserEnrolledInCourse(String userId, String courseId) {
+
+        boolean enrolled = enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
+
+        log.debug("Enrollment check (course): user {} in course {} = {}",
+                userId, courseId, enrolled);
+
+        return enrolled;
     }
 }

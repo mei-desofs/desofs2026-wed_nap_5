@@ -6,9 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.UUID;
 
-public interface AssignmentAuditLogRepository extends JpaRepository<AssignmentAuditLog, UUID> {
+public interface AssignmentAuditLogRepository extends JpaRepository<AssignmentAuditLog, String> {
 
     /**
      * Find all audit logs for a specific assignment.
@@ -16,7 +15,7 @@ public interface AssignmentAuditLogRepository extends JpaRepository<AssignmentAu
      * @param assignmentId the assignment ID
      * @return list of audit logs
      */
-    List<AssignmentAuditLog> findByAssignmentId(UUID assignmentId);
+    List<AssignmentAuditLog> findByAssignmentId(String assignmentId);
 
     /**
      * Find audit logs for a specific assignment with pagination.
@@ -25,7 +24,7 @@ public interface AssignmentAuditLogRepository extends JpaRepository<AssignmentAu
      * @param pageable     pagination info
      * @return paginated list of audit logs
      */
-    Page<AssignmentAuditLog> findByAssignmentId(UUID assignmentId, Pageable pageable);
+    Page<AssignmentAuditLog> findByAssignmentId(String assignmentId, Pageable pageable);
 
     /**
      * Find all audit logs by a specific actor (user).
@@ -33,5 +32,5 @@ public interface AssignmentAuditLogRepository extends JpaRepository<AssignmentAu
      * @param actorId the user ID
      * @return list of audit logs
      */
-    List<AssignmentAuditLog> findByActorId(UUID actorId);
+    List<AssignmentAuditLog> findByActorId(String actorId);
 }

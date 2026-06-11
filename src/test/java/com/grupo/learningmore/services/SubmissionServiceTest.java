@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,15 +52,15 @@ public class SubmissionServiceTest {
     @TempDir
     Path tempDir;
 
-    private UUID assignmentId;
-    private UUID studentId;
-    private UUID professorId;
+    private String assignmentId;
+    private String studentId;
+    private String professorId;
 
     @BeforeEach
     public void setUp() {
-        assignmentId = UUID.randomUUID();
-        studentId = UUID.randomUUID();
-        professorId = UUID.randomUUID();
+        assignmentId = "ASN-5a8c3b1f2e4d6a9c8b7f5e3d2c1a0b9f";
+        studentId = "USR-a1b2c3d4e5f6789012345678901a2b3c";
+        professorId = "USR-b2c3d4e5f6789012345678901a2b3c4d5";
         ReflectionTestUtils.setField(submissionService, "uploadDir", tempDir.toString());
     }
 
@@ -72,7 +71,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "USR-c3d4e5f6789012345678901a2b3c4d5e",
                 professorId
         );
 
@@ -83,7 +82,7 @@ public class SubmissionServiceTest {
         when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            s.setId("SUB-1a2b3c4d5e6f789012345678901a2b3c");
             return s;
         });
 
@@ -101,7 +100,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "USR-d4e5f6789012345678901a2b3c4d5e6f",
                 professorId
         );
 
@@ -122,7 +121,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "USR-e5f6789012345678901a2b3c4d5e6f70",
                 professorId
         );
 
@@ -142,7 +141,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "USR-f6f6789012345678901a2b3c4d5e6f701",
                 professorId
         );
 
@@ -164,7 +163,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "CRS-c3d4e5f6789012345678901a2b3c4d5e",
                 professorId
         );
 
@@ -186,7 +185,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "CRS-d4e5f6789012345678901a2b3c4d5e6f",
                 professorId
         );
 
@@ -210,7 +209,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "CRS-e5f6789012345678901a2b3c4d5e6f701",
                 professorId
         );
 
@@ -221,7 +220,7 @@ public class SubmissionServiceTest {
         when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            s.setId("SUB-2b3c4d5e6f789012345678901a2b3c4d");
             return s;
         });
 
@@ -239,7 +238,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "CRS-f6f6789012345678901a2b3c4d5e6f702",
                 professorId
         );
 
@@ -255,7 +254,7 @@ public class SubmissionServiceTest {
         when(maxSizeFile.getBytes()).thenReturn("content".getBytes());
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            s.setId("SUB-3c4d5e6f789012345678901a2b3c4d5e");
             return s;
         });
 
@@ -272,7 +271,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "CRS-a6789012345678901a2b3c4d5e6f7012",
                 professorId
         );
 
@@ -284,7 +283,7 @@ public class SubmissionServiceTest {
         when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            s.setId("SUB-4d5e6f789012345678901a2b3c4d5e6f");
             return s;
         });
 
@@ -301,7 +300,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().minusDays(1),
-                UUID.randomUUID(),
+                "CRS-b789012345678901a2b3c4d5e6f70123",
                 professorId
         );
 
@@ -320,7 +319,7 @@ public class SubmissionServiceTest {
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "CRS-c89012345678901a2b3c4d5e6f701234",
                 professorId
         );
 
@@ -336,14 +335,14 @@ public class SubmissionServiceTest {
 
     @Test
     public void testGradeFailsWhenNotOwner() {
-        UUID otherProfessor = UUID.randomUUID();
+        String otherProfessor = "USR-d9012345678901a2b3c4d5e6f7012345";
 
         Assignment assignment = new Assignment(
-                UUID.randomUUID(),
+                "ASN-e012345678901a2b3c4d5e6f70123456",
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(2),
-                UUID.randomUUID(),
+                "CRS-d01234567890a1b2c3d4e5f678901234",
                 professorId
         );
 
@@ -354,7 +353,7 @@ public class SubmissionServiceTest {
                 SubmissionStatus.PENDING,
                 "uploads/test.pdf"
         );
-        submission.setId(UUID.randomUUID());
+        submission.setId("SUB-5e6f789012345678901a2b3c4d5e6f78");
 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
 
@@ -372,11 +371,11 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionSuccess() {
     Assignment assignment = new Assignment(
-        UUID.randomUUID(),
+        "ASN-f123456789012345678901a2b3c4d5e67",
         "Project",
         "Desc",
         LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
+        "CRS-e12345678901a2b3c4d5e6f7890123456",
         professorId
     );
 
@@ -387,7 +386,7 @@ public class SubmissionServiceTest {
         SubmissionStatus.PENDING,
         "uploads/test.pdf"
     );
-    submission.setId(UUID.randomUUID());
+    submission.setId("SUB-6f789012345678901a2b3c4d5e6f7890");
 
     when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
     when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -410,7 +409,7 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionRejectsInvalidLowGrade() {
     assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        UUID.randomUUID(),
+        "SUB-7890123456789a01b2c3d4e5f678901ab",
         new BigDecimal("-1"),
         "Bad grade",
         professorId,
@@ -421,7 +420,7 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionRejectsNullGrade() {
         assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-                UUID.randomUUID(),
+                "SUB-8901234567890ab1c2d3e4f5678901abc",
                 null,
                 "Bad grade",
                 professorId,
@@ -432,7 +431,7 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionRejectsInvalidHighGrade() {
     assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        UUID.randomUUID(),
+        "SUB-9012345678901bc2d3e4f567890abc1bcd",
         new BigDecimal("101"),
         "Bad grade",
         professorId,
@@ -443,11 +442,11 @@ public class SubmissionServiceTest {
         @Test
         public void testGradeSubmissionAcceptsZeroGrade() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            "ASN-a123456789012bc3d4e5f6789012bc3de",
             "Project",
             "Desc",
             LocalDateTime.now().plusDays(2),
-            UUID.randomUUID(),
+            "CRS-f234567890123cd4e5f67890123cd45ef",
             professorId
         );
 
@@ -458,7 +457,7 @@ public class SubmissionServiceTest {
             SubmissionStatus.PENDING,
             "uploads/test.pdf"
         );
-        submission.setId(UUID.randomUUID());
+        submission.setId("SUB-a123456789012cd4e5f67890123cd45efg");
 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -478,11 +477,11 @@ public class SubmissionServiceTest {
         @Test
         public void testGradeSubmissionAcceptsHundredGrade() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            "ASN-b234567890123cd4e5f678901234de4ef",
             "Project",
             "Desc",
             LocalDateTime.now().plusDays(2),
-            UUID.randomUUID(),
+            "CRS-g345678901234de5f6789012345ef56fgh",
             professorId
         );
 
@@ -493,7 +492,7 @@ public class SubmissionServiceTest {
             SubmissionStatus.PENDING,
             "uploads/test.pdf"
         );
-        submission.setId(UUID.randomUUID());
+        submission.setId("SUB-b234567890123de5f6789012345ef56fh");
 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -513,11 +512,11 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionRejectsAlreadyGradedSubmission() {
     Assignment assignment = new Assignment(
-        UUID.randomUUID(),
+        "ASN-c345678901234de5f6789012345ef56fghi",
         "Project",
         "Desc",
         LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
+        "CRS-h456789012345ef6789012345f6g67ghij",
         professorId
     );
 
@@ -528,7 +527,7 @@ public class SubmissionServiceTest {
         SubmissionStatus.PENDING,
         "uploads/test.pdf"
     );
-    submission.setId(UUID.randomUUID());
+    submission.setId("SUB-d456789012345ef6789012345ef67ghijk");
     submission.grade(new BigDecimal("10.00"), "Initial grade", professorId);
 
     when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));

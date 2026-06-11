@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class CourseService {
@@ -19,17 +18,27 @@ public class CourseService {
     }
 
     @Transactional
-    public Course createCourse(String code, String name, String description, UUID createdBy) {
+    public Course createCourse(String code, String name, String description, String createdBy) {
+
+        log.info("Creating course with code {} by user {}", code, createdBy);
+
         if (courseRepository.existsByCode(code)) {
             throw new IllegalArgumentException("Course with code " + code + " already exists");
         }
 
-        Course course = new Course(code, name, description, createdBy);
-        return courseRepository.save(course);
+        Course course = new Course(name, description, createdBy);        
+        Course saved = courseRepository.save(course);
+
+        log.info("Course created successfully with id {} and code {}", saved.getId(), code);
+
+        return saved;
     }
 
     @Transactional(readOnly = true)
-    public Course findById(UUID id) {
+    public Course findById(String id) {
+
+        log.info("Fetching course by id {}", id);
+
         return courseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
     }
@@ -46,7 +55,10 @@ public class CourseService {
     }
 
     @Transactional
-    public Course updateCourse(UUID id, String name, String description) {
+    public Course updateCourse(String id, String name, String description) {
+
+        log.info("Updating course {}", id);
+
         Course course = findById(id);
         course.setName(name);
         course.setDescription(description);
@@ -55,7 +67,10 @@ public class CourseService {
     }
 
     @Transactional
-    public void deleteCourse(UUID id) {
+    public void deleteCourse(String id) {
+
+        log.warn("Deleting course by id {}", id);
+
         courseRepository.deleteById(id);
     }
 

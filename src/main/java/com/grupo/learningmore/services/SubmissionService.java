@@ -69,7 +69,10 @@ public class SubmissionService {
     }
 
     @Transactional
-    public Submission submit(UUID assignmentId, UUID userId, MultipartFile file) throws IOException {
+    public Submission submit(String assignmentId, String userId, MultipartFile file) throws IOException {
+
+        log.info("Submission attempt: user={} assignment={}", userId, assignmentId);
+
         var assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
 
@@ -87,7 +90,7 @@ public class SubmissionService {
 
         validateSubmissionFile(file);
 
-        Path assignmentUploadPath = Paths.get(uploadDir, "assignments", assignmentId.toString());
+        Path assignmentUploadPath = Paths.get(uploadDir, "assignments", assignmentId);
         Files.createDirectories(assignmentUploadPath);
 
         String safeOriginalName = sanitizeFilename(file.getOriginalFilename());
@@ -126,7 +129,16 @@ public class SubmissionService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Submission> getSubmissionsForAssignment(UUID assignmentId, UUID actorId, boolean isAdmin, Pageable pageable) {
+    public Page<Submission> getSubmissionsForAssignment(
+            String assignmentId,
+            String actorId,
+            boolean isAdmin,
+            Pageable pageable
+    ) {
+
+        log.info("Fetching submissions: assignment={} actor={} admin={}",
+                assignmentId, actorId, isAdmin);
+
         var assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
 
@@ -138,13 +150,26 @@ public class SubmissionService {
     }
 
     @Transactional(readOnly = true)
-    public Submission getMySubmission(UUID assignmentId, UUID userId) {
+    public Submission getMySubmission(String assignmentId, String userId) {
+
+        log.info("Fetching personal submission: user={} assignment={}", userId, assignmentId);
+
         return submissionRepository.findByAssignmentIdAndUserId(assignmentId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Submission not found"));
     }
 
     @Transactional
-    public Submission gradeSubmission(UUID submissionId, BigDecimal grade, String feedback, UUID actorId, boolean isAdmin) {
+    public Submission gradeSubmission(
+            String submissionId,
+            BigDecimal grade,
+            String feedback,
+            String actorId,
+            boolean isAdmin
+    ) {
+
+        log.info("Grading submission: submission={} actor={} admin={}",
+                submissionId, actorId, isAdmin);
+
         if (grade == null || grade.compareTo(BigDecimal.ZERO) < 0 || grade.compareTo(new BigDecimal("100")) > 0) {
             throw new IllegalArgumentException("Grade must be between 0 and 100");
         }
@@ -179,7 +204,8 @@ public class SubmissionService {
         return saved;
     }
 
-    private void validateSubmissionFile(MultipartFile file) {
+    private void validateSubmissionFile(MultipartFile file, String userId, String assignmentId) {
+
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Submission file cannot be empty");
         }

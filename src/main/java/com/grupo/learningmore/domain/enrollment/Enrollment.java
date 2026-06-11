@@ -5,21 +5,25 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.HexFormat;
+import java.security.SecureRandom;
 
 @Entity
 @Table(name = "enrollments")
 @Getter
 public class Enrollment {
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @Column(nullable = false)
-    private UUID userId;
+    private String userId;
 
     @Column(nullable = false)
-    private UUID courseId;
+    private String courseId;
 
     @Column(nullable = false)
     private LocalDateTime enrolledAt;
@@ -30,22 +34,29 @@ public class Enrollment {
     public Enrollment() {
     }
 
-    public Enrollment(UUID userId, UUID courseId) {
+    public Enrollment(String userId, String courseId) {
+        this.id = generateSecureId();
         this.userId = userId;
         this.courseId = courseId;
         this.enrolledAt = LocalDateTime.now();
         this.active = true;
     }
 
-    public void setId(UUID id) {
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura
+        secureRandom.nextBytes(bytes); // CSPRNG preenche o array com bytes seguros
+        return "ENR-" + HexFormat.of().formatHex(bytes).toUpperCase(); // Transforma em String Hexadecimal
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public void setCourseId(UUID courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
