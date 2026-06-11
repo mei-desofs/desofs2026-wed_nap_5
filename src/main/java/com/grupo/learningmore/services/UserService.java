@@ -52,13 +52,16 @@ public class UserService {
                 encodedPassword,
                 role
         );
+        User savedUser = repository.save(user);
 
-        User saved = repository.save(user);
+        log.info(
+                "User created with email {} and role {}",
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
 
-        log.info("User created successfully: userId={} email={} role={}",
-                saved.getId(), email, role);
+        return savedUser;
 
-        return saved;
     }
 
     public List<User> findAll() {
@@ -106,6 +109,7 @@ public class UserService {
 
         user.changePassword(encodedPassword);
 
+        log.info("Password changed for user {}", user.getEmail());
         repository.save(user);
 
         log.info("Password changed successfully: user={}", userId);
