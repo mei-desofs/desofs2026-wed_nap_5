@@ -343,6 +343,198 @@
           "response": []
         },
         {
+          "name": "Get Messages Page 0",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/chat/{{chatRoomId}}/messages?page=0&size=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "{{chatRoomId}}",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Messages Page 1",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/chat/{{chatRoomId}}/messages?page=1&size=2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "{{chatRoomId}}",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Chats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/chat/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Chat Room",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"chatRoomId\", pm.response.json().id);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Chat Geral - Another Test2\",\n  \"courseId\": \"{{courseId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/chat/chatrooms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "chatrooms"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat Room By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/chat/chatrooms/{{chatRoomId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "chatrooms",
+                "{{chatRoomId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat Rooms By Course",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/chat/courses/{{courseId}}/chatrooms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "chat",
+                "courses",
+                "{{courseId}}",
+                "chatrooms"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get All Chat Rooms",
           "request": {
             "method": "GET",
@@ -373,6 +565,22 @@
       "item": [
         {
           "name": "Create Course (ADMIN)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"courseId\", pm.response.json().id);\r",
+                  "pm.collectionVariables.set(\"courseCode\", pm.response.json().code);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -387,7 +595,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"code\": \"CS101\",\n  \"name\": \"Software Engineering\",\n  \"description\": \"Intro course\"\n}"
+              "raw": "{\n  \"code\": \"CS202\",\n  \"name\": \"Engineering\",\n  \"description\": \"Intro course 2\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/courses",
@@ -404,6 +612,19 @@
         },
         {
           "name": "Get Course By Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -427,7 +648,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/courses/code/CS101",
+              "raw": "{{baseUrl}}/api/courses/code/{{courseCode}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -435,7 +656,7 @@
                 "api",
                 "courses",
                 "code",
-                "CS101"
+                "{{courseCode}}"
               ]
             }
           },
@@ -748,30 +969,34 @@
     },
     {
       "key": "userId",
-      "value": "PUT_USER_UUID_HERE"
+      "value": ""
     },
     {
       "key": "courseId",
-      "value": "PUT_COURSE_UUID_HERE"
+      "value": ""
     },
     {
       "key": "chatRoomId",
-      "value": "PUT_CHATROOM_UUID_HERE"
+      "value": ""
     },
     {
       "key": "resourceId",
-      "value": "PUT_RESOURCE_UUID_HERE"
+      "value": ""
     },
     {
       "key": "assignmentId",
-      "value": "PUT_ASSIGNMENT_UUID_HERE"
+      "value": ""
     },
     {
       "key": "submissionId",
-      "value": "PUT_SUBMISSION_UUID_HERE"
+      "value": ""
     },
     {
       "key": "token",
+      "value": ""
+    },
+    {
+      "key": "courseCode",
       "value": ""
     }
   ]
