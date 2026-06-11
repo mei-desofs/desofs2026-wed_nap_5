@@ -5,7 +5,7 @@ import com.grupo.learningmore.domain.assignment.Assignment;
 import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
-import com.grupo.learningmore.dto.Request.CreateAssignmentRequest;
+import com.grupo.learningmore.dto.request.CreateAssignmentRequest;
 import com.grupo.learningmore.repositories.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -186,7 +186,7 @@ public class AssignmentControllerIntegrationTest {
         );
         assignment = assignmentRepository.save(assignment);
 
-        var updateRequest = new com.grupo.learningmore.dto.Request.UpdateAssignmentRequest(
+        var updateRequest = new com.grupo.learningmore.dto.request.UpdateAssignmentRequest(
                 "Updated title",
                 "Updated desc",
                 LocalDateTime.now().plusDays(10)

@@ -1,10 +1,12 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.assignment.Submission;
-import com.grupo.learningmore.dto.Request.GradeSubmissionRequest;
-import com.grupo.learningmore.dto.Response.SubmissionResponse;
+import com.grupo.learningmore.dto.request.GradeSubmissionRequest;
+import com.grupo.learningmore.dto.response.SubmissionResponse;
 import com.grupo.learningmore.services.SubmissionService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class SubmissionController {
 
+    private static final Logger log = LoggerFactory.getLogger(SubmissionController.class);
+
     private final SubmissionService submissionService;
 
     public SubmissionController(SubmissionService submissionService) {
@@ -33,10 +37,17 @@ public class SubmissionController {
             @PathVariable UUID assignmentId,
             @RequestParam("file") MultipartFile file
     ) throws Exception {
+
         UUID userId = UUID.fromString(authentication.getName());
 
+        log.info("POST /assignments/{}/submissions - Submission attempt by user {}", assignmentId, userId);
+
         Submission submission = submissionService.submit(assignmentId, userId, file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapToResponse(submission));
+
+        log.info("Submission created successfully: {} (assignment {})", submission.getId(), assignmentId);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapToResponse(submission));
     }
 
     @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
@@ -46,11 +57,21 @@ public class SubmissionController {
             @PathVariable UUID assignmentId,
             Pageable pageable
     ) {
+
         UUID actorId = UUID.fromString(authentication.getName());
 
+        log.info("GET /assignments/{}/submissions - Requested by user {}", assignmentId, actorId);
+
         Page<SubmissionResponse> responses = submissionService
-                .getSubmissionsForAssignment(assignmentId, actorId, isAdmin(authentication), pageable)
+                .getSubmissionsForAssignment(
+                        assignmentId,
+                        actorId,
+                        isAdmin(authentication),
+                        pageable
+                )
                 .map(this::mapToResponse);
+
+        log.info("Returned {} submissions for assignment {}", responses.getTotalElements(), assignmentId);
 
         return ResponseEntity.ok(responses);
     }
@@ -61,8 +82,13 @@ public class SubmissionController {
             Authentication authentication,
             @PathVariable UUID assignmentId
     ) {
+
         UUID userId = UUID.fromString(authentication.getName());
+
+        log.info("GET /assignments/{}/submissions/me - User {}", assignmentId, userId);
+
         Submission submission = submissionService.getMySubmission(assignmentId, userId);
+
         return ResponseEntity.ok(mapToResponse(submission));
     }
 
@@ -73,7 +99,10 @@ public class SubmissionController {
             @PathVariable UUID submissionId,
             @Valid @RequestBody GradeSubmissionRequest request
     ) {
+
         UUID actorId = UUID.fromString(authentication.getName());
+
+        log.info("PUT /submissions/{}/grade - Grading attempt by user {}", submissionId, actorId);
 
         Submission submission = submissionService.gradeSubmission(
                 submissionId,
@@ -82,6 +111,8 @@ public class SubmissionController {
                 actorId,
                 isAdmin(authentication)
         );
+
+        log.info("Submission {} graded successfully by {}", submissionId, actorId);
 
         return ResponseEntity.ok(mapToResponse(submission));
     }

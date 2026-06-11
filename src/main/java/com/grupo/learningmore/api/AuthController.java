@@ -1,12 +1,12 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
+import com.grupo.learningmore.dto.request.LoginRequest;
+import com.grupo.learningmore.dto.response.LoginResponse;
 import com.grupo.learningmore.security.JwtService;
 import com.grupo.learningmore.services.LoginAttemptService;
 import com.grupo.learningmore.services.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +39,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
 
+        logger.info("POST /api/auth/login - Login attempt for email {}", request.email());
+
         if (loginAttemptService.isBlocked(request.email())) {
-            logger.warn("Blocked login attempt due to too many failures for email: {}", request.email());
+            logger.warn("Login blocked due to too many failed attempts for email {}", request.email());
             return ResponseEntity.status(429).build();
         }
 
@@ -48,13 +50,13 @@ public class AuthController {
             User user = userService.findByEmail(request.email());
 
             if (!user.isActive()) {
-                logger.warn("Login attempt for inactive user: {}", request.email());
+                logger.warn("Login attempt for inactive user {}", request.email());
                 loginAttemptService.recordFailedAttempt(request.email());
                 return ResponseEntity.status(403).build();
             }
 
             if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
-                logger.warn("Failed login attempt for email: {}", request.email());
+                logger.warn("Invalid credentials for email {}", request.email());
                 loginAttemptService.recordFailedAttempt(request.email());
                 return ResponseEntity.status(401).build();
             }
@@ -67,7 +69,7 @@ public class AuthController {
                     user.getTokenVersion()
             );
 
-            logger.info("Successful login for user: {}", user.getEmail());
+            logger.info("Successful login for user {}", user.getEmail());
 
             return ResponseEntity.ok(new LoginResponse(
                     token,
@@ -76,29 +78,11 @@ public class AuthController {
                     user.getEmail(),
                     user.getRole().name()
             ));
+
         } catch (IllegalArgumentException e) {
-            logger.warn("Failed login attempt for unknown email: {}", request.email());
+            logger.warn("Login attempt with unknown email {}", request.email());
             loginAttemptService.recordFailedAttempt(request.email());
             return ResponseEntity.status(401).build();
         }
-    }
-
-    public record LoginRequest(
-            @Email
-            @NotBlank
-            String email,
-
-            @NotBlank
-            String password
-    ) {
-    }
-
-    public record LoginResponse(
-            String token,
-            String userId,
-            String name,
-            String email,
-            String role
-    ) {
     }
 }

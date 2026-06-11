@@ -6,7 +6,7 @@ import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.enrollment.Enrollment;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
-import com.grupo.learningmore.dto.Request.GradeSubmissionRequest;
+import com.grupo.learningmore.dto.request.GradeSubmissionRequest;
 import com.grupo.learningmore.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
