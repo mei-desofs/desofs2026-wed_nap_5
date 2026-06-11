@@ -1,5 +1,7 @@
 package com.grupo.learningmore.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.repositories.UserRepository;
 import com.grupo.learningmore.domain.user.UserRole;
@@ -16,6 +18,8 @@ public class UserService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger logger =
+            LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository repository,
                        PasswordEncoder passwordEncoder) {
@@ -44,8 +48,16 @@ public class UserService {
                 encodedPassword,
                 role
         );
+        User savedUser = repository.save(user);
 
-        return repository.save(user);
+        logger.info(
+                "User created with email {} and role {}",
+                savedUser.getEmail(),
+                savedUser.getRole()
+        );
+
+        return savedUser;
+
     }
 
     public List<User> findAll() {
@@ -81,6 +93,7 @@ public class UserService {
 
         user.changePassword(encodedPassword);
 
+        logger.info("Password changed for user {}", user.getEmail());
         repository.save(user);
     }
 
@@ -88,6 +101,7 @@ public class UserService {
     public void deactivateUser(UUID userId) {
         User user = findById(userId);
         user.deactivate();
+        logger.warn("User account deactivated: {}", user.getEmail());
         repository.save(user);
     }
 }
