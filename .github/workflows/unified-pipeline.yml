@@ -141,6 +141,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Populate Maven Cache
+        run: mvn dependency:resolve
       - name: Run Trivy FS scan
         uses: aquasecurity/trivy-action@master
         with:
@@ -148,6 +156,8 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
+          scanners: 'vuln,config'
+          trivy-config: '' 
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v3
         with:
@@ -174,50 +184,59 @@ jobs:
           name: pitest-report
           path: target/pit-reports
 
-  dast:
-    name: DAST (OWASP ZAP)
+  runtime-testing:
+    name: Runtime API & Security Tests
     runs-on: ubuntu-latest
     needs: build-and-test
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
           cache: maven
+      - name: Install Newman
+        run: npm install -g newman
       - name: Build JAR
         run: mvn package -DskipTests
-      - name: Run App
+      - name: Run Application
         run: |
           nohup java -jar target/*.jar > app.log 2>&1 &
         env:
           SPRING_PROFILES_ACTIVE: test
-      - name: Wait for Health Check
+      - name: Wait for App Readiness
         run: |
-          for i in {1..10}; do
-            curl -s http://localhost:9393/actuator/health && break || sleep 10
+          for i in {1..20}; do
+            curl -s http://localhost:9393/api/health && echo "App is ready!" && break || (echo "Waiting..." && sleep 5)
           done
-      - name: ZAP Baseline Scan
+      - name: Run Postman Collection (Newman)
+        run: |
+          newman run Deliverables/Sprint2-Phase2.postman_collection.json \
+            --reporters cli,junit \
+            --reporter-junit-export newman-report.xml
+      - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
         with:
           target: 'http://localhost:9393'
-          fail_action: false
-      - name: Upload ZAP Report
+          fail_action: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: zap-report
+          name: runtime-test-reports
           path: |
+            newman-report.xml
             report_html.html
-            report_md.md
+            app.log
 
   release:
     name: Release
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [code-quality, sast, sca, trivy, mutation-testing, dast]
+    needs: [code-quality, sast, sca, trivy, mutation-testing, runtime-testing]
     steps:
       - uses: googleapis/release-please-action@v4
         with:
