@@ -6,8 +6,10 @@ import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.dto.request.CreateAssignmentRequest;
+import com.grupo.learningmore.dto.request.UpdateAssignmentRequest;
 import com.grupo.learningmore.repositories.*;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -30,6 +32,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional // Garante isolamento perfeito por transação em cada execução de teste
 public class AssignmentControllerIntegrationTest {
 
     @Autowired
@@ -56,35 +59,37 @@ public class AssignmentControllerIntegrationTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EntityManager entityManager;
+
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private UUID professorId;
-    private UUID studentId;
-    private UUID courseId;
+    private String professorId;
+    private String studentId;
+    private String courseId;
 
-    @BeforeEach
-    public void clean() {     
-        chatMessageRepository.deleteAll();
-        enrollmentRepository.deleteAll();
-        chatRoomRepository.deleteAll();
-        userRepository.deleteAll();
-        courseRepository.deleteAll();
-        }
-    
-    
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
                 .build();
+        
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
 
+        // Limpeza rigorosa respeitando chaves estrangeiras
+        chatMessageRepository.deleteAll();
+        enrollmentRepository.deleteAll();
+        chatRoomRepository.deleteAll();
         assignmentRepository.deleteAll();
         courseRepository.deleteAll();
         userRepository.deleteAll();
+        
+        // Sincroniza o estado atual com a BD imediatamente
+        entityManager.flush();
 
+        // Massa de dados limpa
         User professor = new User("Dr. Professor", "prof@test.com", passwordEncoder.encode("password123"), UserRole.PROFESSOR);
         User savedProfessor = userRepository.save(professor);
         professorId = savedProfessor.getId();
@@ -93,9 +98,12 @@ public class AssignmentControllerIntegrationTest {
         User savedStudent = userRepository.save(student);
         studentId = savedStudent.getId();
 
-        Course course = new Course("CS-001", "Cybersecurity", "Advanced security course", professorId);
+        Course course = new Course("Cybersecurity", "CRS-001", "Advanced security course", professorId);
         Course savedCourse = courseRepository.save(course);
         courseId = savedCourse.getId();
+        
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
@@ -107,13 +115,13 @@ public class AssignmentControllerIntegrationTest {
         );
 
         mockMvc.perform(post("/api/courses/" + courseId + "/assignments")
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
-                        .with(csrf())                 
+                        .with(user("prof@test.com").roles("PROFESSOR"))
+                        .with(csrf())                
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("Secure API Implementation"))
-                .andExpect(jsonPath("$.courseId").value(courseId.toString()))
+                .andExpect(jsonPath("$.courseId").value(courseId))
                 .andExpect(jsonPath("$.id").isNotEmpty());
     }
 
@@ -126,7 +134,7 @@ public class AssignmentControllerIntegrationTest {
         );
 
         mockMvc.perform(post("/api/courses/" + courseId + "/assignments")
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(user("prof@test.com").roles("PROFESSOR"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -142,10 +150,12 @@ public class AssignmentControllerIntegrationTest {
                 courseId,
                 professorId
         );
-        assignmentRepository.save(assignment);
+        // Deixamos o ID seguro gerado pelo próprio construtor da Entidade
+        assignmentRepository.saveAndFlush(assignment);
+        entityManager.clear();
 
         mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(user("prof@test.com").roles("PROFESSOR"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -162,10 +172,11 @@ public class AssignmentControllerIntegrationTest {
                 courseId,
                 professorId
         );
-        assignmentRepository.save(assignment);
+        assignmentRepository.saveAndFlush(assignment);
+        entityManager.clear();
 
         mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
-                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(user("student@test.com").roles("STUDENT"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -175,7 +186,7 @@ public class AssignmentControllerIntegrationTest {
     @Test
     public void testUpdateAssignmentForbiddenOtherProfessor() throws Exception {
         User otherProf = new User("Other Prof", "other@test.com", passwordEncoder.encode("pass"), UserRole.PROFESSOR);
-        otherProf = userRepository.save(otherProf);
+        otherProf = userRepository.saveAndFlush(otherProf);
 
         Assignment assignment = new Assignment(
                 "Project 1",
@@ -184,16 +195,17 @@ public class AssignmentControllerIntegrationTest {
                 courseId,
                 otherProf.getId()
         );
-        assignment = assignmentRepository.save(assignment);
+        Assignment savedAssignment = assignmentRepository.saveAndFlush(assignment);
+        entityManager.clear();
 
-        var updateRequest = new com.grupo.learningmore.dto.request.UpdateAssignmentRequest(
+        UpdateAssignmentRequest updateRequest = new UpdateAssignmentRequest(
                 "Updated title",
                 "Updated desc",
                 LocalDateTime.now().plusDays(10)
         );
 
-        mockMvc.perform(put("/api/courses/" + courseId + "/assignments/" + assignment.getId())
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+        mockMvc.perform(put("/api/courses/" + courseId + "/assignments/" + savedAssignment.getId())
+                        .with(user("prof@test.com").roles("PROFESSOR"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
@@ -209,10 +221,11 @@ public class AssignmentControllerIntegrationTest {
                 courseId,
                 professorId
         );
-        assignment = assignmentRepository.save(assignment);
+        Assignment savedAssignment = assignmentRepository.saveAndFlush(assignment);
+        entityManager.clear();
 
-        mockMvc.perform(delete("/api/courses/" + courseId + "/assignments/" + assignment.getId())
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+        mockMvc.perform(delete("/api/courses/" + courseId + "/assignments/" + savedAssignment.getId())
+                        .with(user("prof@test.com").roles("PROFESSOR"))
                         .with(csrf()))
                 .andExpect(status().isNoContent());
     }

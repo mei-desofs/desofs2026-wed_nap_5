@@ -1,10 +1,10 @@
-package com.grupo.learningmore.dto.response;
+package com.grupo.learningmore.dto.Response;
 
 import java.util.UUID;
 
 public record ChatRoomResponse(
-        UUID id,
+        String id,
         String name,
-        UUID courseId
+        String courseId
 ) {
 }

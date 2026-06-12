@@ -16,8 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
-import java.util.UUID;
-
+ 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
@@ -50,8 +49,8 @@ public class CourseControllerIntegrationTest {
     
 
     private MockMvc mockMvc;
-    private UUID adminId;
-    private UUID professorId;
+    private String  adminId;
+    private String  professorId;
 
     @BeforeEach
     public void clean() {     
@@ -97,7 +96,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testCreateCourseDuplicateCodeFails() throws Exception {
-        courseRepository.save(new Course("MATH101", "Calculus", "Advanced math") {{ setCreatedBy(adminId); }});
+        courseRepository.save(new Course("MATH101", "MATH101", "Calculus", "Advanced math") {{ setCreatedBy(adminId); }});
 
         String requestBody = """
                 {
@@ -117,7 +116,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testGetCourseById() throws Exception {
-        Course course = courseRepository.save(new Course("PHYS101", "Physics", "Mechanics") {{ setCreatedBy(professorId); }});
+        Course course = courseRepository.save(new Course("PHYS101", "PHYS101", "Physics", "Mechanics") {{ setCreatedBy(professorId); }});
 
         mockMvc.perform(get("/api/courses/" + course.getId())
                         .with(user(professorId.toString()).roles("PROFESSOR"))
@@ -128,7 +127,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testGetCourseByCode() throws Exception {
-        courseRepository.save(new Course("BIO101", "Biology", "Life sciences") {{ setCreatedBy(professorId); }});
+        courseRepository.save(new Course("BIO101", "BIO101", "Biology", "Life sciences") {{ setCreatedBy(professorId); }});
 
         mockMvc.perform(get("/api/courses/code/BIO101")
                         .with(user("testUser").roles("STUDENT"))
@@ -139,8 +138,8 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testGetAllCourses() throws Exception {
-        courseRepository.save(new Course("ENG101", "English", "Literature") {{ setCreatedBy(professorId); }});
-        courseRepository.save(new Course("HIST101", "History", "World history") {{ setCreatedBy(professorId); }});
+        courseRepository.save(new Course("ENG101", "ENG101", "English", "Literature") {{ setCreatedBy(professorId); }});
+        courseRepository.save(new Course("HIST101", "HIST101", "History", "World history") {{ setCreatedBy(professorId); }});
 
         mockMvc.perform(get("/api/courses")
                         .with(user("testUser").roles("STUDENT"))
@@ -151,7 +150,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testUpdateCourse() throws Exception {
-        Course course = courseRepository.save(new Course("ART101", "Art History", "Renaissance") {{ setCreatedBy(adminId); }});
+        Course course = courseRepository.save(new Course("ART101", "ART101", "Art History", "Renaissance") {{ setCreatedBy(adminId); }});
 
         String updateBody = """
                 {
@@ -171,7 +170,7 @@ public class CourseControllerIntegrationTest {
 
     @Test
     public void testDeleteCourse() throws Exception {
-        Course course = courseRepository.save(new Course("MUSIC101", "Music", "Theory basics") {{ setCreatedBy(adminId); }});
+        Course course = courseRepository.save(new Course("MUSIC101", "MUSIC101", "Music", "Theory basics") {{ setCreatedBy(adminId); }});
 
          mockMvc.perform(delete("/api/courses/" + course.getId())
                         .with(user(adminId.toString()).roles("ADMIN"))
@@ -182,7 +181,7 @@ public class CourseControllerIntegrationTest {
     @Test
     public void testDeleteCourseByCode() throws Exception {
         // 1. Save a fresh course with a unique code to use for this test
-        Course course = courseRepository.save(new Course("MUSIC202", "Advanced Music", "Theory advanced") {{ setCreatedBy(adminId); }});
+        Course course = courseRepository.save(new Course("MUSIC202", "MUSIC202", "Advanced Music", "Theory advanced") {{ setCreatedBy(adminId); }});
 
         // 2. Perform the delete using the course code path and the dynamic adminId
         mockMvc.perform(delete("/api/courses/code/" + course.getCode())

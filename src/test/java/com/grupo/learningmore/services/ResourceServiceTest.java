@@ -58,7 +58,7 @@ public class ResourceServiceTest {
                 "PDF content".getBytes()
         );
 
-        Course course = new Course("CS101", "CS", "Intro");
+        Course course = new Course("CS101", "CS101", "CS", "Intro");
         course.setId(courseId);
         course.setCreatedBy(userId);
         when(courseService.findById(courseId)).thenReturn(course);
@@ -88,7 +88,7 @@ public class ResourceServiceTest {
                 new byte[0]
         );
 
-        Course course = new Course("CS101", "CS", "Intro");
+        Course course = new Course("CS101", "CS101", "CS", "Intro");
         course.setId(courseId);
         course.setCreatedBy(userId);
         when(courseService.findById(courseId)).thenReturn(course);
@@ -111,7 +111,7 @@ public class ResourceServiceTest {
                 "content".getBytes()
         );
 
-        Course course = new Course("CS101", "CS", "Intro");
+        Course course = new Course("CS101", "CS101", "CS", "Intro");
         course.setId(courseId);
         course.setCreatedBy(userId);
         when(courseService.findById(courseId)).thenThrow(new IllegalArgumentException("Course not found"));
@@ -215,7 +215,7 @@ public class ResourceServiceTest {
         MockMultipartFile file = new MockMultipartFile("file", "", "text/plain", "content".getBytes());
         
         // Mock necessário se o método validar o curso antes do nome (ou vice-versa)
-        Course course = new Course("CS101", "CS", "Intro");
+        Course course = new Course("CS101", "CS101", "CS", "Intro");
         course.setId(courseId);
         course.setCreatedBy(userId);
         lenient().when(courseService.findById(courseId)).thenReturn(course);
@@ -230,7 +230,7 @@ public class ResourceServiceTest {
     public void testUploadResourceFilenameMaliciousThrowsException() {
         MockMultipartFile file = new MockMultipartFile("file", "../../../etc/passwd", "text/plain", "content".getBytes());
         
-        Course course = new Course("CS101", "CS", "Intro");
+        Course course = new Course("CS101", "CS101", "CS", "Intro");
         course.setId(courseId);
         course.setCreatedBy(userId);
         lenient().when(courseService.findById(courseId)).thenReturn(course);

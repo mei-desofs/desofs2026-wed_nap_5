@@ -25,7 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+ 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,9 +60,9 @@ public class ChatControllerIntegrationTest {
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
-    private UUID chatRoomId;
-    private UUID studentId;
-    private UUID professorId;
+    private String  chatRoomId;
+    private String  studentId;
+    private String  professorId;
 
     @BeforeEach
     public void clean() {
@@ -108,12 +108,12 @@ public class ChatControllerIntegrationTest {
         studentId = userRepository.save(student).getId();
         professorId = userRepository.save(professor).getId();
 
-        // course
-        String courseCode = "CS-" + UUID.randomUUID();
+        
 
         Course course = new Course(
-                courseCode,
+                
                 "Cybersecurity",
+                 "CRS-001",
                 "Advanced security course",
                 professorId
         );
@@ -136,7 +136,7 @@ public class ChatControllerIntegrationTest {
         enrollmentRepository.save(enrollment);
     }
 
-    private RequestPostProcessor auth(UUID userId, String role) {
+    private RequestPostProcessor auth(String  userId, String role) {
         return user(userId.toString())
                 .roles(role)
                 .authorities(new SimpleGrantedAuthority("ROLE_" + role));
@@ -193,7 +193,8 @@ public class ChatControllerIntegrationTest {
 
     @Test
     void shouldReturnErrorWhenChatRoomDoesNotExist() throws Exception {
-        UUID randomId = UUID.randomUUID();
+
+       String randomId = "chat-room-inexistente-" + System.nanoTime();
 
         SendMessageRequest request = new SendMessageRequest("Hello");
 

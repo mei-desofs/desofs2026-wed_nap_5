@@ -29,10 +29,7 @@ public class ChatRoom {
     public ChatRoom() {
     }
 
-    public ChatRoom(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+     
 
     public ChatRoom(String name) {
         this.id = generateSecureId();

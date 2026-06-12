@@ -4,7 +4,7 @@ import com.grupo.learningmore.domain.chat.ChatMessage;
 import com.grupo.learningmore.domain.chat.ChatRoom;
 import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.dto.request.SendMessageRequest;
-import com.grupo.learningmore.dto.response.ChatMessageResponse;
+import com.grupo.learningmore.dto.Response.ChatMessageResponse;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
 import com.grupo.learningmore.repositories.ChatMessageRepository;
 import com.grupo.learningmore.repositories.ChatRoomRepository;
@@ -116,7 +116,7 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatRoom> getChatsForUser(UUID userId) {
+    public List<ChatRoom> getChatsForUser(String userId) {
 
         log.info("Fetching chats for user {}", userId);
 

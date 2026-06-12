@@ -35,24 +35,25 @@ public class AssignmentServiceTest {
     @InjectMocks
     private AssignmentService assignmentService;
 
-    private UUID courseId;
-    private UUID professorId;
+    private String courseId;
+    private String professorId;
 
     @BeforeEach
     public void setUp() {
-        courseId = UUID.randomUUID();
-        professorId = UUID.randomUUID();
+        courseId = "course-" + System.nanoTime();
+        professorId = "professor-" + System.nanoTime();
     }
 
     @Test
     public void testCreateAssignmentSuccess() {
-        Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course" );
         course.setId(courseId);
+        course.setCreatedBy(professorId);
 
         when(courseService.findById(courseId)).thenReturn(course);
         when(assignmentRepository.save(any(Assignment.class))).thenAnswer(invocation -> {
             Assignment a = invocation.getArgument(0);
-            a.setId(UUID.randomUUID());
+            a.setId("assignment-" + System.nanoTime());
             return a;
         });
 
@@ -73,13 +74,14 @@ public class AssignmentServiceTest {
 
     @Test
     public void testCreateAssignmentAsAdminBypassesOwnershipCheck() {
-        Course course = new Course("CS-001", "Cybersecurity", "Course", UUID.randomUUID());
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course" );
         course.setId(courseId);
+        course.setCreatedBy("some-other-professor");
 
         when(courseService.findById(courseId)).thenReturn(course);
         when(assignmentRepository.save(any(Assignment.class))).thenAnswer(invocation -> {
             Assignment a = invocation.getArgument(0);
-            a.setId(UUID.randomUUID());
+            a.setId("assignment-" + System.nanoTime());
             return a;
         });
 
@@ -100,8 +102,11 @@ public class AssignmentServiceTest {
 
     @Test
     public void testCreateAssignmentRejectsNullDeadline() {
-        Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course" );
         course.setId(courseId);
+        course.setCreatedBy(professorId);
+
+        when(courseService.findById(courseId)).thenReturn(course);
 
         assertThrows(IllegalArgumentException.class, () -> assignmentService.createAssignment(
                 courseId,
@@ -117,11 +122,11 @@ public class AssignmentServiceTest {
 
     @Test
     public void testCreateAssignmentDeniedWhenNotCourseOwner() {
-        UUID otherProfessor = UUID.randomUUID();
+        String otherProfessor = "professor-" + System.nanoTime();
 
-        Course course = new Course("CS-001", "Cybersecurity", "Course", otherProfessor);
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course" );
         course.setId(courseId);
-
+        course.setCreatedBy(otherProfessor);
         when(courseService.findById(courseId)).thenReturn(course);
 
         assertThrows(AccessDeniedException.class, () -> assignmentService.createAssignment(
@@ -138,8 +143,8 @@ public class AssignmentServiceTest {
 
     @Test
     public void testUpdateAssignmentSuccess() {
+         
         Assignment assignment = new Assignment(
-                UUID.randomUUID(),
                 "Old title",
                 "Old desc",
                 LocalDateTime.now().plusDays(2),
@@ -168,15 +173,16 @@ public class AssignmentServiceTest {
         @Test
         public void testFindByCourseIdReturnsAssignments() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+             
             "Title",
             "Desc",
             LocalDateTime.now().plusDays(3),
             courseId,
             professorId
         );
-        Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course" );
         course.setId(courseId);
+        course.setCreatedBy(professorId);
 
         when(courseService.findById(courseId)).thenReturn(course);
         when(assignmentRepository.findByCourseId(courseId)).thenReturn(java.util.List.of(assignment));
@@ -191,7 +197,7 @@ public class AssignmentServiceTest {
 
         @Test
         public void testFindByIdNotFoundThrowsException() {
-        UUID assignmentId = UUID.randomUUID();
+        String assignmentId = "assignment-id-" + System.nanoTime();
 
         when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.empty());
 
@@ -202,7 +208,7 @@ public class AssignmentServiceTest {
         @Test
         public void testUpdateAssignmentPreservesUnprovidedFieldsAndUpdatesDeadline() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            
             "Old title",
             "Old desc",
             LocalDateTime.now().plusDays(2),
@@ -235,33 +241,39 @@ public class AssignmentServiceTest {
         @Test
         public void testUpdateAssignmentRejectsUnauthorizedActor() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
-            "Old title",
-            "Old desc",
-            LocalDateTime.now().plusDays(2),
-            courseId,
-            professorId
+                "Old title",
+                "Old desc",
+                LocalDateTime.now().plusDays(2),
+                courseId,
+                professorId
         );
 
+        String wrongProfessorId = "professor-unauthorized-" + System.nanoTime();
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course");
+        course.setId(courseId);
+        course.setCreatedBy(professorId);
+
         when(assignmentRepository.findByIdAndCourseId(assignment.getId(), courseId)).thenReturn(Optional.of(assignment));
+         
+        when(courseService.findById(courseId)).thenReturn(course);
 
         assertThrows(AccessDeniedException.class, () -> assignmentService.updateAssignment(
-            courseId,
-            assignment.getId(),
-            "New title",
-            "New desc",
-            LocalDateTime.now().plusDays(5),
-            UUID.randomUUID(),
-            false
+                courseId,
+                assignment.getId(),
+                "New title",
+                "New desc",
+                LocalDateTime.now().plusDays(5),
+                wrongProfessorId,  
+                false
         ));
 
         verify(assignmentRepository, never()).save(any());
-        }
+    }
 
         @Test
         public void testUpdateAssignmentRejectsExpiredDeadline() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+             
             "Old title",
             "Old desc",
             LocalDateTime.now().plusDays(2),
@@ -287,7 +299,7 @@ public class AssignmentServiceTest {
         @Test
         public void testDeleteAssignmentSuccess() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+           
             "Title",
             "Desc",
             LocalDateTime.now().plusDays(2),
@@ -306,24 +318,30 @@ public class AssignmentServiceTest {
         @Test
         public void testDeleteAssignmentRejectsUnauthorizedActor() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
-            "Title",
-            "Desc",
-            LocalDateTime.now().plusDays(2),
-            courseId,
-            professorId
+                "Title",
+                "Desc",
+                LocalDateTime.now().plusDays(2),
+                courseId,
+                professorId
         );
 
+        String wrongProfessorId = "professor-unauthorized-" + System.nanoTime();
+        Course course = new Course("CS-001", "CS-001", "Cybersecurity", "Course");
+        course.setId(courseId);
+        course.setCreatedBy(wrongProfessorId);
+
         when(assignmentRepository.findByIdAndCourseId(assignment.getId(), courseId)).thenReturn(Optional.of(assignment));
+         
+        lenient().when(courseService.findById(courseId)).thenReturn(course);
 
         assertThrows(AccessDeniedException.class, () -> assignmentService.deleteAssignment(
-            courseId,
-            assignment.getId(),
-            UUID.randomUUID(),
-            false
+                courseId,
+                assignment.getId(),
+                wrongProfessorId,  
+                false
         ));
 
         verify(assignmentRepository, never()).delete(any());
         verify(assignmentAuditLogRepository, never()).save(any());
-        }
+    }
 }

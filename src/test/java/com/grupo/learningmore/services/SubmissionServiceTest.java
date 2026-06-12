@@ -4,7 +4,6 @@ import com.grupo.learningmore.domain.assignment.Assignment;
 import com.grupo.learningmore.domain.assignment.Submission;
 import com.grupo.learningmore.domain.assignment.SubmissionStatus;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
-import com.grupo.learningmore.services.EnrollmentService;
 import com.grupo.learningmore.repositories.AssignmentRepository;
 import com.grupo.learningmore.repositories.SubmissionAuditLogRepository;
 import com.grupo.learningmore.repositories.SubmissionRepository;
@@ -16,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -25,10 +25,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,13 +68,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitSuccess() throws IOException {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "USR-c3d4e5f6789012345678901a2b3c4d5e",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/pdf", "content".getBytes());
@@ -95,13 +94,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitFailsWhenAlreadySubmitted() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "USR-d4e5f6789012345678901a2b3c4d5e6f",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/pdf", "content".getBytes());
@@ -116,13 +112,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitFailsWhenFileIsNull() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "USR-e5f6789012345678901a2b3c4d5e6f70",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
@@ -136,13 +129,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitFailsWhenMimeTypeIsNotAllowed() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "USR-f6f6789012345678901a2b3c4d5e6f701",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/x-msdownload", "content".getBytes());
@@ -158,13 +148,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitFailsWhenExtensionIsNotAllowed() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "CRS-c3d4e5f6789012345678901a2b3c4d5e",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "work.exe", "application/pdf", "content".getBytes());
@@ -180,13 +167,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitFailsWhenFileIsTooLarge() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "CRS-d4e5f6789012345678901a2b3c4d5e6f",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MultipartFile oversizedFile = mock(MultipartFile.class);
@@ -204,13 +188,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitSanitizesFilenameAndStoresWithinAssignmentDirectory() throws IOException {
-        Assignment assignment = new Assignment(
-                assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
-                "CRS-e5f6789012345678901a2b3c4d5e6f701",
-                professorId
+        Assignment assignment = createTestAssignment(
+                assignmentId, 
+                "CRS-c3d4e5f6789012345678901a2b3c4d5e", 
+                LocalDateTime.now().plusDays(3)
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "../evil name.pdf", "application/pdf", "content".getBytes());
@@ -227,19 +208,16 @@ public class SubmissionServiceTest {
         Submission result = submissionService.submit(assignmentId, studentId, file);
 
         assertNotNull(result.getFilePath());
-        assertTrue(result.getFilePath().contains(tempDir.resolve("assignments").resolve(assignmentId.toString()).toString()));
-        assertTrue(java.nio.file.Path.of(result.getFilePath()).getFileName().toString().contains("evil_name.pdf"));
+        assertTrue(result.getFilePath().contains(tempDir.resolve("assignments").resolve(assignmentId).toString()));
+        assertTrue(Path.of(result.getFilePath()).getFileName().toString().contains("evil_name.pdf"));
     }
 
     @Test
     public void testSubmitAcceptsFileAtMaximumSize() throws IOException {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "CRS-f6f6789012345678901a2b3c4d5e6f702",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MultipartFile maxSizeFile = mock(MultipartFile.class);
@@ -266,13 +244,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitPreservesOneHundredCharacterFilename() throws IOException {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "CRS-a6789012345678901a2b3c4d5e6f7012",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         String originalFilename = "a".repeat(96) + ".pdf";
@@ -289,19 +264,16 @@ public class SubmissionServiceTest {
 
         Submission result = submissionService.submit(assignmentId, studentId, file);
 
-        String storedName = java.nio.file.Path.of(result.getFilePath()).getFileName().toString();
+        String storedName = Path.of(result.getFilePath()).getFileName().toString();
         assertTrue(storedName.endsWith(originalFilename));
     }
 
     @Test
     public void testSubmitFailsWhenDeadlineExpired() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().minusDays(1),
                 "CRS-b789012345678901a2b3c4d5e6f70123",
-                professorId
+                LocalDateTime.now().minusDays(1) // Cenário de expiração
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/pdf", "content".getBytes());
@@ -314,13 +286,10 @@ public class SubmissionServiceTest {
 
     @Test
     public void testSubmitFailsWhenStudentNotEnrolled() {
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 assignmentId,
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(3),
                 "CRS-c89012345678901a2b3c4d5e6f701234",
-                professorId
+                LocalDateTime.now().plusDays(3)
         );
 
         MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/pdf", "content".getBytes());
@@ -337,13 +306,10 @@ public class SubmissionServiceTest {
     public void testGradeFailsWhenNotOwner() {
         String otherProfessor = "USR-d9012345678901a2b3c4d5e6f7012345";
 
-        Assignment assignment = new Assignment(
+        Assignment assignment = createTestAssignment(
                 "ASN-e012345678901a2b3c4d5e6f70123456",
-                "Project",
-                "Desc",
-                LocalDateTime.now().plusDays(2),
                 "CRS-d01234567890a1b2c3d4e5f678901234",
-                professorId
+                LocalDateTime.now().plusDays(2)
         );
 
         Submission submission = new Submission(
@@ -370,51 +336,48 @@ public class SubmissionServiceTest {
 
     @Test
     public void testGradeSubmissionSuccess() {
-    Assignment assignment = new Assignment(
-        "ASN-f123456789012345678901a2b3c4d5e67",
-        "Project",
-        "Desc",
-        LocalDateTime.now().plusDays(2),
-        "CRS-e12345678901a2b3c4d5e6f7890123456",
-        professorId
-    );
+        Assignment assignment = createTestAssignment(
+                "ASN-f123456789012345678901a2b3c4d5e67",
+                "CRS-e12345678901a2b3c4d5e6f7890123456",
+                LocalDateTime.now().plusDays(2)
+        );
 
-    Submission submission = new Submission(
-        assignment,
-        studentId,
-        LocalDateTime.now(),
-        SubmissionStatus.PENDING,
-        "uploads/test.pdf"
-    );
-    submission.setId("SUB-6f789012345678901a2b3c4d5e6f7890");
+        Submission submission = new Submission(
+                assignment,
+                studentId,
+                LocalDateTime.now(),
+                SubmissionStatus.PENDING,
+                "uploads/test.pdf"
+        );
+        submission.setId("SUB-6f789012345678901a2b3c4d5e6f7890");
 
-    when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
-    when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
+        when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-    Submission graded = submissionService.gradeSubmission(
-        submission.getId(),
-        new BigDecimal("18.50"),
-        "Good work",
-        professorId,
-        false
-    );
+        Submission graded = submissionService.gradeSubmission(
+                submission.getId(),
+                new BigDecimal("18.50"),
+                "Good work",
+                professorId,
+                false
+        );
 
-    assertEquals(SubmissionStatus.GRADED, graded.getStatus());
-    assertEquals(new BigDecimal("18.50"), graded.getGrade());
-    assertEquals("Good work", graded.getFeedback());
-    assertEquals(professorId, graded.getLastModifiedBy());
-    verify(submissionAuditLogRepository).save(any());
+        assertEquals(SubmissionStatus.GRADED, graded.getStatus());
+        assertEquals(new BigDecimal("18.50"), graded.getGrade());
+        assertEquals("Good work", graded.getFeedback());
+        assertEquals(professorId, graded.getLastModifiedBy());
+        verify(submissionAuditLogRepository).save(any());
     }
 
     @Test
     public void testGradeSubmissionRejectsInvalidLowGrade() {
-    assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        "SUB-7890123456789a01b2c3d4e5f678901ab",
-        new BigDecimal("-1"),
-        "Bad grade",
-        professorId,
-        false
-    ));
+        assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
+                "SUB-7890123456789a01b2c3d4e5f678901ab",
+                new BigDecimal("-1"),
+                "Bad grade",
+                professorId,
+                false
+        ));
     }
 
     @Test
@@ -430,32 +393,29 @@ public class SubmissionServiceTest {
 
     @Test
     public void testGradeSubmissionRejectsInvalidHighGrade() {
-    assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        "SUB-9012345678901bc2d3e4f567890abc1bcd",
-        new BigDecimal("101"),
-        "Bad grade",
-        professorId,
-        false
-    ));
+        assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
+                "SUB-9012345678901bc2d3e4f567890abc1bcd",
+                new BigDecimal("101"),
+                "Bad grade",
+                professorId,
+                false
+        ));
     }
 
-        @Test
-        public void testGradeSubmissionAcceptsZeroGrade() {
-        Assignment assignment = new Assignment(
-            "ASN-a123456789012bc3d4e5f6789012bc3de",
-            "Project",
-            "Desc",
-            LocalDateTime.now().plusDays(2),
-            "CRS-f234567890123cd4e5f67890123cd45ef",
-            professorId
+    @Test
+    public void testGradeSubmissionAcceptsZeroGrade() {
+        Assignment assignment = createTestAssignment(
+                "ASN-a123456789012bc3d4e5f6789012bc3de",
+                "CRS-f234567890123cd4e5f67890123cd45ef",
+                LocalDateTime.now().plusDays(2)
         );
 
         Submission submission = new Submission(
-            assignment,
-            studentId,
-            LocalDateTime.now(),
-            SubmissionStatus.PENDING,
-            "uploads/test.pdf"
+                assignment,
+                studentId,
+                LocalDateTime.now(),
+                SubmissionStatus.PENDING,
+                "uploads/test.pdf"
         );
         submission.setId("SUB-a123456789012cd4e5f67890123cd45efg");
 
@@ -463,34 +423,31 @@ public class SubmissionServiceTest {
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Submission graded = submissionService.gradeSubmission(
-            submission.getId(),
-            BigDecimal.ZERO,
-            "Minimum passing grade",
-            professorId,
-            false
+                submission.getId(),
+                BigDecimal.ZERO,
+                "Minimum passing grade",
+                professorId,
+                false
         );
 
         assertEquals(BigDecimal.ZERO, graded.getGrade());
         assertEquals(SubmissionStatus.GRADED, graded.getStatus());
-        }
+    }
 
-        @Test
-        public void testGradeSubmissionAcceptsHundredGrade() {
-        Assignment assignment = new Assignment(
-            "ASN-b234567890123cd4e5f678901234de4ef",
-            "Project",
-            "Desc",
-            LocalDateTime.now().plusDays(2),
-            "CRS-g345678901234de5f6789012345ef56fgh",
-            professorId
+    @Test
+    public void testGradeSubmissionAcceptsHundredGrade() {
+        Assignment assignment = createTestAssignment(
+                "ASN-b234567890123cd4e5f678901234de4ef",
+                "CRS-g345678901234de5f6789012345ef56fgh",
+                LocalDateTime.now().plusDays(2)
         );
 
         Submission submission = new Submission(
-            assignment,
-            studentId,
-            LocalDateTime.now(),
-            SubmissionStatus.PENDING,
-            "uploads/test.pdf"
+                assignment,
+                studentId,
+                LocalDateTime.now(),
+                SubmissionStatus.PENDING,
+                "uploads/test.pdf"
         );
         submission.setId("SUB-b234567890123de5f6789012345ef56fh");
 
@@ -498,134 +455,141 @@ public class SubmissionServiceTest {
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Submission graded = submissionService.gradeSubmission(
-            submission.getId(),
-            new BigDecimal("100"),
-            "Perfect work",
-            professorId,
-            false
+                submission.getId(),
+                new BigDecimal("100"),
+                "Perfect work",
+                professorId,
+                false
         );
 
         assertEquals(new BigDecimal("100"), graded.getGrade());
         assertEquals(SubmissionStatus.GRADED, graded.getStatus());
-        }
+    }
 
     @Test
     public void testGradeSubmissionRejectsAlreadyGradedSubmission() {
-    Assignment assignment = new Assignment(
-        "ASN-c345678901234de5f6789012345ef56fghi",
-        "Project",
-        "Desc",
-        LocalDateTime.now().plusDays(2),
-        "CRS-h456789012345ef6789012345f6g67ghij",
-        professorId
-    );
+        Assignment assignment = createTestAssignment(
+                "ASN-c345678901234de5f6789012345ef56fghi",
+                "CRS-h456789012345ef6789012345f6g67ghij",
+                LocalDateTime.now().plusDays(2)
+        );
 
-    Submission submission = new Submission(
-        assignment,
-        studentId,
-        LocalDateTime.now(),
-        SubmissionStatus.PENDING,
-        "uploads/test.pdf"
-    );
-    submission.setId("SUB-d456789012345ef6789012345ef67ghijk");
-    submission.grade(new BigDecimal("10.00"), "Initial grade", professorId);
+        Submission submission = new Submission(
+                assignment,
+                studentId,
+                LocalDateTime.now(),
+                SubmissionStatus.PENDING,
+                "uploads/test.pdf"
+        );
+        submission.setId("SUB-d456789012345ef6789012345ef67ghijk");
+        submission.grade(new BigDecimal("10.00"), "Initial grade", professorId);
 
-    when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
+        when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
 
-    assertThrows(IllegalStateException.class, () -> submissionService.gradeSubmission(
-        submission.getId(),
-        new BigDecimal("15.00"),
-        "Regrade",
-        professorId,
-        false
-    ));
+        assertThrows(IllegalStateException.class, () -> submissionService.gradeSubmission(
+                submission.getId(),
+                new BigDecimal("15.00"),
+                "Regrade",
+                professorId,
+                false
+        ));
     }
 
     @Test
     public void testGradeSubmissionRejectsWhenAssignmentIsMissing() {
-    Submission submission = new Submission(
-        new Assignment(
-            UUID.randomUUID(),
-            "Project",
-            "Desc",
-            LocalDateTime.now().plusDays(2),
-            UUID.randomUUID(),
-            professorId
-        ),
-        studentId,
-        LocalDateTime.now(),
-        SubmissionStatus.PENDING,
-        "uploads/test.pdf"
-    );
-    submission.setId(UUID.randomUUID());
-    submission.setAssignment(null);
+        Assignment assignment = createTestAssignment(
+                "ASN-x1y2z3a4b5c6d7e8f901a2b3c4d5e6f7",
+                "CRS-z1y2x3w4v5u6t7s8r9q0p1o2n3m4l5k6",
+                LocalDateTime.now().plusDays(2)
+        );
 
-    when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
+        Submission submission = new Submission(
+                assignment,
+                studentId,
+                LocalDateTime.now(),
+                SubmissionStatus.PENDING,
+                "uploads/test.pdf"
+        );
+        submission.setId("SUB-m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6");
+        submission.setAssignment(null);
 
-    assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        submission.getId(),
-        new BigDecimal("15.00"),
-        "Regrade",
-        professorId,
-        false
-    ));
+        when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
+
+        assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
+                submission.getId(),
+                new BigDecimal("15.00"),
+                "Regrade",
+                professorId,
+                false
+                ));
     }
 
     @Test
     public void testGetMySubmissionNotFoundThrowsException() {
-    when(submissionRepository.findByAssignmentIdAndUserId(assignmentId, studentId)).thenReturn(Optional.empty());
+        when(submissionRepository.findByAssignmentIdAndUserId(assignmentId, studentId)).thenReturn(Optional.empty());
 
-    assertThrows(IllegalArgumentException.class, () -> submissionService.getMySubmission(assignmentId, studentId));
-    verify(submissionRepository).findByAssignmentIdAndUserId(assignmentId, studentId);
+        assertThrows(IllegalArgumentException.class, () -> submissionService.getMySubmission(assignmentId, studentId));
+        verify(submissionRepository).findByAssignmentIdAndUserId(assignmentId, studentId);
     }
 
     @Test
     public void testGetSubmissionsForAssignmentSuccess() {
-    Assignment assignment = new Assignment(
-        assignmentId,
-        "Project",
-        "Desc",
-        LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
-        professorId
-    );
-    Submission submission = new Submission(
-        assignment,
-        studentId,
-        LocalDateTime.now(),
-        SubmissionStatus.PENDING,
-        "uploads/test.pdf"
-    );
-    submission.setId(UUID.randomUUID());
+        Assignment assignment = createTestAssignment(
+                assignmentId,
+                "CRS-a1b2c3d4e5f6789012345678901a2b3c",
+                LocalDateTime.now().plusDays(2)
+        );
+        Submission submission = new Submission(
+                assignment,
+                studentId,
+                LocalDateTime.now(),
+                SubmissionStatus.PENDING,
+                "uploads/test.pdf"
+        );
+        submission.setId("SUB-z1y2x3w4v5u6t7s8r9q0p1o2n3m4l5k6");
 
-    when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
-    when(submissionRepository.findByAssignmentId(eq(assignmentId), any(Pageable.class))).thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.List.of(submission)));
+        when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
+        when(submissionRepository.findByAssignmentId(eq(assignmentId), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(submission)));
 
-    Page<Submission> result = submissionService.getSubmissionsForAssignment(assignmentId, professorId, false, Pageable.unpaged());
+        Page<Submission> result = submissionService.getSubmissionsForAssignment(assignmentId, professorId, false, Pageable.unpaged());
 
-    assertEquals(1, result.getTotalElements());
-    verify(submissionRepository).findByAssignmentId(eq(assignmentId), any(Pageable.class));
+        assertEquals(1, result.getTotalElements());
+        verify(submissionRepository).findByAssignmentId(eq(assignmentId), any(Pageable.class));
     }
 
     @Test
     public void testGetSubmissionsForAssignmentRejectsUnauthorizedActor() {
-    Assignment assignment = new Assignment(
-        assignmentId,
-        "Project",
-        "Desc",
-        LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
-        professorId
-    );
+        Assignment assignment = createTestAssignment(
+                assignmentId,
+                "CRS-b2c3d4e5f6789012345678901a2b3c4d",
+                LocalDateTime.now().plusDays(2)
+        );
 
-    when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
+        when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
 
-    assertThrows(AccessDeniedException.class, () -> submissionService.getSubmissionsForAssignment(
-        assignmentId,
-        UUID.randomUUID(),
-        false,
-        Pageable.unpaged()
-    ));
+        String unauthorizedActorId = "USR-hacker123456789012345678901a2b3c";
+
+        assertThrows(AccessDeniedException.class, () -> submissionService.getSubmissionsForAssignment(
+                assignmentId,
+                unauthorizedActorId,
+                false,
+                Pageable.unpaged()
+        ));
     }
 
+     
+    private Assignment createTestAssignment(String id, String courseId, LocalDateTime deadline) {
+        Assignment assignment = new Assignment();
+        assignment.setId(id);
+        assignment.setTitle("Project");
+        assignment.setDescription("Desc");
+        assignment.setDeadline(deadline);
+        assignment.setCourseId(courseId);
+        assignment.setCreatedBy(professorId);
+        assignment.setCreatedAt(LocalDateTime.now());
+        assignment.setUpdatedAt(LocalDateTime.now());
+        assignment.setVersion(0);
+        return assignment;
+    }
 }

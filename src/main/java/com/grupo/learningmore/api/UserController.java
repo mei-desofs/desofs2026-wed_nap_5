@@ -4,7 +4,7 @@ import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.dto.request.ChangePasswordRequest;
 import com.grupo.learningmore.dto.request.CreateUserRequest;
-import com.grupo.learningmore.dto.response.UserResponse;
+import com.grupo.learningmore.dto.Response.UserResponse;
 import com.grupo.learningmore.services.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class UserController {
 
         log.info("Authentication name: {}", authentication.getName());
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId =  authentication.getName();
 
         log.info("GET /api/users/me - Fetching user profile for {}", userId);
 
@@ -76,7 +76,7 @@ public class UserController {
             @Valid @RequestBody ChangePasswordRequest request
     ) {
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("PUT /api/users/me/password - Password change request for user {}", userId);
 
@@ -91,7 +91,7 @@ public class UserController {
 
     @PutMapping("/{id}/deactivate")
     @PreAuthorize("hasRole('ADMIN')")
-    public void deactivateUser(@PathVariable UUID id) {
+    public void deactivateUser(@PathVariable String id) {
 
         log.warn("PUT /api/users/{}/deactivate - User deactivation requested", id);
 

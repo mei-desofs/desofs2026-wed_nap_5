@@ -1,4 +1,4 @@
-package com.grupo.learningmore.dto.response;
+package com.grupo.learningmore.dto.Response;
 
 import java.time.LocalDateTime;
 

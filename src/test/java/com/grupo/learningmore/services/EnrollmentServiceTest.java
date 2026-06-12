@@ -13,7 +13,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,16 +29,16 @@ public class EnrollmentServiceTest {
     @InjectMocks
     private EnrollmentService enrollmentService;
 
-    private UUID userId;
-    private UUID courseId;
-    private UUID chatRoomId;
+    private String userId;
+    private String courseId;
+    private String chatRoomId;
     private ChatRoom mockChatRoom;
 
     @BeforeEach
     public void setUp() {
-        userId = UUID.randomUUID();
-        courseId = UUID.randomUUID();
-        chatRoomId = UUID.randomUUID();
+        userId = "user-" + System.nanoTime();
+        courseId = "course-" + System.nanoTime();
+        chatRoomId = "chatroom-" + System.nanoTime();
 
         mockChatRoom = mock(ChatRoom.class);
         Course mockCourse = mock(Course.class);
@@ -48,7 +47,6 @@ public class EnrollmentServiceTest {
         Mockito.lenient().when(mockCourse.getId()).thenReturn(courseId);
     }
 
-     
     @Test
     public void testIsUserEnrolledInCourseTrue() {
         when(enrollmentRepository.existsByUserIdAndCourseId(userId, courseId)).thenReturn(true);
@@ -68,8 +66,6 @@ public class EnrollmentServiceTest {
         assertFalse(result);
         verify(enrollmentRepository).existsByUserIdAndCourseId(userId, courseId);
     }
-
-     
 
     @Test
     public void testIsUserEnrolledInChatRoomTrue() {
@@ -108,4 +104,3 @@ public class EnrollmentServiceTest {
         verifyNoInteractions(enrollmentRepository);
     }
 }
-

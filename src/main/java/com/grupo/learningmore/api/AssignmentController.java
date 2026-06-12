@@ -3,7 +3,7 @@ package com.grupo.learningmore.api;
 import com.grupo.learningmore.domain.assignment.Assignment;
 import com.grupo.learningmore.dto.request.CreateAssignmentRequest;
 import com.grupo.learningmore.dto.request.UpdateAssignmentRequest;
-import com.grupo.learningmore.dto.response.AssignmentResponse;
+import com.grupo.learningmore.dto.Response.AssignmentResponse;
 import com.grupo.learningmore.services.AssignmentService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;

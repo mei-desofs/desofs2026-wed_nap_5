@@ -3,7 +3,7 @@ package com.grupo.learningmore.domain.assignment;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+ 
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,8 +11,8 @@ public class AssignmentUnitTest {
 
     @Test
     public void testCanBeSubmittedAndAddSubmission() {
-        String courseId = UUID.randomUUID();
-        String creator = UUID.randomUUID();
+        String courseId = "course-" + System.nanoTime();
+        String creator = "professor-" + System.nanoTime();
 
         Assignment assignment = new Assignment(
                 "Title",
@@ -24,7 +24,7 @@ public class AssignmentUnitTest {
 
         assertTrue(assignment.canBeSubmitted());
 
-        UUID studentId = UUID.randomUUID();
+        String studentId = "student-" + System.nanoTime();
         Submission submission = new Submission(
                 assignment,
                 studentId,
@@ -32,7 +32,7 @@ public class AssignmentUnitTest {
                 SubmissionStatus.PENDING,
                 "uploads/test.pdf"
         );
-        UUID subId = UUID.randomUUID();
+        String subId = "sub-" + System.nanoTime();;
         submission.setId(subId);
 
         assignment.addSubmission(submission);
@@ -51,8 +51,8 @@ public class AssignmentUnitTest {
                 "Old",
                 "Desc",
                 LocalDateTime.now().minusDays(1),
-                UUID.randomUUID(),
-                UUID.randomUUID()
+                "course-" + System.nanoTime(),
+                "professor-" + System.nanoTime()
         );
 
         assertFalse(past.canBeSubmitted());

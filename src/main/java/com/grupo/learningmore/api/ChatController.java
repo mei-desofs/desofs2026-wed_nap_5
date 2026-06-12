@@ -3,8 +3,8 @@ package com.grupo.learningmore.api;
 import com.grupo.learningmore.domain.chat.ChatRoom;
 import com.grupo.learningmore.dto.request.CreateChatRoomRequest;
 import com.grupo.learningmore.dto.request.SendMessageRequest;
-import com.grupo.learningmore.dto.response.ChatMessageResponse;
-import com.grupo.learningmore.dto.response.ChatRoomResponse;
+import com.grupo.learningmore.dto.Response.ChatMessageResponse;
+import com.grupo.learningmore.dto.Response.ChatRoomResponse;
 import com.grupo.learningmore.services.ChatService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -74,7 +74,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{chatRoomId}/messages")
     public ResponseEntity<Page<ChatMessageResponse>> getMessages(
-            @PathVariable UUID chatRoomId,
+            @PathVariable String chatRoomId,
             Pageable pageable
     ) {
 
@@ -92,7 +92,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ChatRoomResponse>> getMyChats(Authentication authentication) {
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId =  authentication.getName();
 
         log.info("GET /chat/me - user {}", userId);
 
@@ -150,7 +150,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/courses/{courseId}/chatrooms")
     public ResponseEntity<List<ChatRoomResponse>> getChatRoomsByCourse(
-            @PathVariable UUID courseId
+            @PathVariable String courseId
     ) {
 
         log.info("GET /chat/courses/{}/chatrooms", courseId);

@@ -1,7 +1,7 @@
 package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Resource;
-import com.grupo.learningmore.dto.response.ResourceResponse;
+import com.grupo.learningmore.dto.Response.ResourceResponse;
 import com.grupo.learningmore.services.ResourceService;
 import com.grupo.learningmore.services.EnrollmentService;
 import org.slf4j.Logger;
@@ -137,7 +137,7 @@ public class ResourceController {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    private <T> ResponseEntity<T> validateUserAccess(Authentication authentication, UUID courseId) {
+    private <T> ResponseEntity<T> validateUserAccess(Authentication authentication, String courseId) {
         if (authentication == null) {
             log.warn("Unauthorized access attempt to course resources {}", courseId);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

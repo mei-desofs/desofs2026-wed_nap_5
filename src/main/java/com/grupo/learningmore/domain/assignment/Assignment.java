@@ -57,6 +57,8 @@ public class Assignment {
     @JoinColumn(name = "assignment_id")
     private List<Submission> submissions = new ArrayList<>();
 
+    
+
     public Assignment() {
     }
 
@@ -73,7 +75,7 @@ public class Assignment {
         this.submissions = new ArrayList<>();
     }
 
-    public Assignment(String id, String title, String description, LocalDateTime deadline, String courseId, String createdBy) {
+    /*public Assignment(String id, String title, String description, LocalDateTime deadline, String courseId, String createdBy) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -84,7 +86,7 @@ public class Assignment {
         this.updatedAt = LocalDateTime.now();
         this.version = 0;
         this.submissions = new ArrayList<>();
-    }
+    }*/
 
     public void setId(String id) {
         this.id = id;
@@ -181,7 +183,7 @@ public class Assignment {
      * @param submissionId the submission ID
      * @return the submission or null if not found
      */
-    public Submission findSubmissionById(UUID submissionId) {
+    public Submission findSubmissionById(String submissionId) {
         return this.submissions.stream()
                 .filter(submission -> submission.getId().equals(submissionId))
                 .findFirst()
@@ -195,7 +197,7 @@ public class Assignment {
      * @param userId the user ID
      * @return the submission or null if not found
      */
-    public Submission findSubmissionByUserId(UUID userId) {
+    public Submission findSubmissionByUserId(String userId) {
         return this.submissions.stream()
                 .filter(submission -> submission.getUserId().equals(userId))
                 .findFirst()

@@ -31,7 +31,7 @@ public class CourseService {
             throw new IllegalArgumentException("Course with code " + code + " already exists");
         }
 
-        Course course = new Course(name, description, createdBy);        
+        Course course = new Course(name,code, description, createdBy);        
         Course saved = courseRepository.save(course);
 
         log.info("Course created successfully with id {} and code {}", saved.getId(), code);

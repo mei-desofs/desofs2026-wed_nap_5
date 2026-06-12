@@ -29,12 +29,7 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
-    public ChatMessage(String id, ChatRoom chatRoom, String content, Date sentAt) {
-        this.id = id;
-        this.chatRoom = chatRoom;
-        this.content = content;
-        this.sentAt = sentAt;
-    }
+    
 
     public ChatMessage(ChatRoom chatRoom, String content, Date sentAt) {
         this.id = generateSecureId();

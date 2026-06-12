@@ -5,7 +5,6 @@ import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.repositories.UserRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -44,6 +43,8 @@ public class UserServiceTest {
         );
 
         assertNotNull(result);
+        assertNotNull(result.getId());
+        assertTrue(result.getId().startsWith("USR-"));
         assertEquals("Student", result.getName());
         assertEquals("student@test.com", result.getEmail());
         assertEquals("encoded-password", result.getPasswordHash());
@@ -101,8 +102,9 @@ public class UserServiceTest {
 
     @Test
     public void testFindByIdSuccess() {
-        UUID id = UUID.randomUUID();
         User user = new User("User", "user@test.com", "hash", UserRole.STUDENT);
+        String id = user.getId(); // Captura o ID gerado internamente pelo construtor
+        
         when(repository.findById(id)).thenReturn(Optional.of(user));
 
         User result = userService.findById(id);
@@ -112,7 +114,7 @@ public class UserServiceTest {
 
     @Test
     public void testFindByIdNotFoundThrowsException() {
-        UUID id = UUID.randomUUID();
+        String id = "USR-QUALQUERCOISA12345";
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> userService.findById(id));
@@ -139,8 +141,8 @@ public class UserServiceTest {
 
     @Test
     public void testChangePasswordSuccessUpdatesHashAndTokenVersion() {
-        UUID userId = UUID.randomUUID();
         User user = new User("User", "user@test.com", "old-hash", UserRole.STUDENT);
+        String userId = user.getId(); // Captura o ID gerado automaticamente
 
         when(repository.findById(userId)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("oldPassword123", "old-hash")).thenReturn(true);
@@ -156,8 +158,8 @@ public class UserServiceTest {
 
     @Test
     public void testChangePasswordWithWrongCurrentPasswordThrowsException() {
-        UUID userId = UUID.randomUUID();
         User user = new User("User", "user@test.com", "old-hash", UserRole.STUDENT);
+        String userId = user.getId(); // Captura o ID gerado automaticamente
 
         when(repository.findById(userId)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrongPassword", "old-hash")).thenReturn(false);

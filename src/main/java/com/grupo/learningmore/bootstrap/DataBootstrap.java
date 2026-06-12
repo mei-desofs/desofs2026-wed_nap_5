@@ -76,11 +76,11 @@ public class DataBootstrap implements CommandLineRunner {
         User savedAdmin = userRepository.save(admin);
         System.out.println("Created Admin: " + savedAdmin.getEmail());
 
-        Course course1 = new Course("Cibersegurança Avançada", "Curso sobre princípios e práticas de cibersegurança", savedProfessor.getId());
+        Course course1 = new Course("Cibersegurança Avançada", "CRS-001", "Curso sobre princípios e práticas de cibersegurança", savedProfessor.getId());
         Course savedCourse1 = courseRepository.save(course1);
         System.out.println("Created Course 1: " + savedCourse1.getName() + " with Code: " + savedCourse1.getCode());
 
-        Course course2 = new Course("Desenvolvimento Web Moderno", "Curso sobre desenvolvimento web com tecnologias modernas", savedProfessor.getId());
+        Course course2 = new Course("Desenvolvimento Web Moderno", "CRS-002", "Curso sobre desenvolvimento web com tecnologias modernas", savedProfessor.getId());
         Course savedCourse2 = courseRepository.save(course2);
         System.out.println("Created Course 2: " + savedCourse2.getName() + " with Code: " + savedCourse2.getCode());
 

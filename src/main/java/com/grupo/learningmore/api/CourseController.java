@@ -4,7 +4,7 @@ import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.enrollment.Enrollment;
 import com.grupo.learningmore.dto.request.CreateCourseRequest;
 import com.grupo.learningmore.dto.request.UpdateCourseRequest;
-import com.grupo.learningmore.dto.response.CourseResponse;
+import com.grupo.learningmore.dto.Response.CourseResponse;
 import com.grupo.learningmore.services.CourseService;
 import com.grupo.learningmore.repositories.EnrollmentRepository;
 import jakarta.validation.Valid;
@@ -41,8 +41,7 @@ public class CourseController {
         String userId = authentication.getName();
 
         log.info("POST /courses - Create course request by admin {}", userId);
-        UUID userId = UUID.fromString(authentication.getName());
-
+ 
         log.info("POST /courses - Create course request by admin {}", userId);
 
         Course course = courseService.createCourse(
@@ -62,9 +61,7 @@ public class CourseController {
     @GetMapping("/{id}")
     public ResponseEntity<CourseResponse> getCourseById(@PathVariable String id) {
 
-        log.info("GET /courses/{} - Fetch course by id", id);
-
-    public ResponseEntity<CourseResponse> getCourseById(@PathVariable UUID id) {
+       
 
         log.info("GET /courses/{} - Fetch course by id", id);
 
@@ -123,9 +120,7 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable String id) {
 
-        log.warn("DELETE /courses/{} - Delete course request", id);
-
-    public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
+       
 
         log.warn("DELETE /courses/{} - Delete course request", id);
 

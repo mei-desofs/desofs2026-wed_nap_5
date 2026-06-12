@@ -41,9 +41,9 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, String description, String createdBy) {
+    public Course(String name,String code, String description, String createdBy) {
         this.id = generateSecureId();
-        this.code = generateSecureCourseCode();        
+        this.code = code;     
         this.name = name;
         this.description = description;
         this.createdBy = createdBy;
@@ -53,11 +53,11 @@ public class Course {
 
      
 
-    private String generateSecureCourseCode() {
+    /*private String generateSecureCourseCode() {
         byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura
         secureRandom.nextBytes(bytes); // CSPRNG preenche o array com bytes seguros
         return "CRS-" + HexFormat.of().formatHex(bytes).toUpperCase(); // Transforma em String Hexadecimal
-    }
+    }*/
 
     private String generateSecureId() {
         byte[] bytes = new byte[16]; // 16 bytes = 128 bits de entropia pura

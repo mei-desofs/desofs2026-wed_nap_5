@@ -3,7 +3,7 @@ package com.grupo.learningmore.api;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.dto.request.LoginRequest;
-import com.grupo.learningmore.dto.response.LoginResponse;
+import com.grupo.learningmore.dto.Response.LoginResponse;
 import com.grupo.learningmore.security.JwtService;
 import com.grupo.learningmore.services.LoginAttemptService;
 import com.grupo.learningmore.services.UserService;

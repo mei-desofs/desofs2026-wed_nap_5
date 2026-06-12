@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public record CreateChatRoomRequest(
         @NotBlank String name,
-        @NotNull UUID courseId
+        @NotNull String courseId
 ) {
 }
