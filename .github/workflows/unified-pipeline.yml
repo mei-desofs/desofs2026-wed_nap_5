@@ -5,10 +5,12 @@ on:
     branches:
       - main
       - phase2-sprint*
+      - feature/*
   pull_request:
     branches:
       - main
       - phase2-sprint*
+      - feature/*
   workflow_dispatch:
 
 permissions:
