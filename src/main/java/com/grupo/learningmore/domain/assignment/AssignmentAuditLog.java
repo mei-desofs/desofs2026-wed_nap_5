@@ -47,7 +47,7 @@ public class AssignmentAuditLog {
     }
 
     public AssignmentAuditLog(String assignmentId, String action, String actorId, String oldValues, String newValues, LocalDateTime timestamp) {
-        //this.assignmentId = generateSecureId();
+        this.assignmentId = assignmentId;
         this.action = action;
         this.actorId = actorId;
         this.oldValues = oldValues;
@@ -70,9 +70,9 @@ public class AssignmentAuditLog {
         return "ASN-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 
-    /*public void setAssignmentId(String assignmentId) {
+   public void setAssignmentId(String assignmentId) {
         this.assignmentId = assignmentId;
-    }*/
+    } 
 
     public void setAction(String action) {
         this.action = action;
