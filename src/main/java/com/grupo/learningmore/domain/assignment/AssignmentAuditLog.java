@@ -6,6 +6,10 @@ import lombok.Getter;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
+
+import org.hibernate.annotations.JdbcTypeCode;
+ 
+import java.sql.Types;
  
 
 /**
@@ -23,6 +27,7 @@ public class AssignmentAuditLog {
      
     @Id
     @Column(unique = true, nullable = false)
+    @JdbcTypeCode(Types.VARCHAR)
     private String id;
 
     @Column(nullable = false)
