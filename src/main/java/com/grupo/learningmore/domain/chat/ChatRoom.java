@@ -4,15 +4,20 @@ import com.grupo.learningmore.domain.course.Course;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.util.UUID;
+import java.security.SecureRandom;
+import java.util.HexFormat;
+ 
 
 @Entity
 @Getter
 public class ChatRoom {
 
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     private String name;
 
@@ -25,18 +30,26 @@ public class ChatRoom {
     public ChatRoom() {
     }
 
-    public ChatRoom(UUID id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public ChatRoom(String name) {
+       // this.id = generateSecureId();
         this.name = name;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
     }
+
+   
+
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "CHR-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
+    }
+
 
     public void setName(String name) {
         this.name = name;

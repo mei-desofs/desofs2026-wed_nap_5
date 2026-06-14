@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api")
@@ -34,10 +34,10 @@ public class AssignmentController {
     @PostMapping("/courses/{courseId}/assignments")
     public ResponseEntity<AssignmentResponse> createAssignment(
             Authentication authentication,
-            @PathVariable UUID courseId,
+            @PathVariable String courseId,
             @Valid @RequestBody CreateAssignmentRequest request
     ) {
-        UUID actorId = UUID.fromString(authentication.getName());
+        String actorId =  authentication.getName();
 
         log.info("POST /courses/{}/assignments - Create assignment by user {}", courseId, actorId);
 
@@ -56,7 +56,7 @@ public class AssignmentController {
     }
 
     @GetMapping("/courses/{courseId}/assignments")
-    public ResponseEntity<List<AssignmentResponse>> getAssignmentsByCourse(@PathVariable UUID courseId) {
+    public ResponseEntity<List<AssignmentResponse>> getAssignmentsByCourse(@PathVariable String courseId) {
 
         log.info("GET /courses/{}/assignments - Fetch assignments", courseId);
 
@@ -71,7 +71,7 @@ public class AssignmentController {
     }
 
     @GetMapping("/assignments/{assignmentId}")
-    public ResponseEntity<AssignmentResponse> getAssignmentById(@PathVariable UUID assignmentId) {
+    public ResponseEntity<AssignmentResponse> getAssignmentById(@PathVariable String assignmentId) {
 
         log.info("GET /assignments/{} - Fetch assignment", assignmentId);
 
@@ -84,11 +84,11 @@ public class AssignmentController {
     @PutMapping("/courses/{courseId}/assignments/{assignmentId}")
     public ResponseEntity<AssignmentResponse> updateAssignment(
             Authentication authentication,
-            @PathVariable UUID courseId,
-            @PathVariable UUID assignmentId,
+            @PathVariable String courseId,
+            @PathVariable String assignmentId,
             @Valid @RequestBody UpdateAssignmentRequest request
     ) {
-        UUID actorId = UUID.fromString(authentication.getName());
+        String actorId =  authentication.getName();
 
         log.info("PUT /courses/{}/assignments/{} - Update requested by user {}", courseId, assignmentId, actorId);
 
@@ -111,10 +111,10 @@ public class AssignmentController {
     @DeleteMapping("/courses/{courseId}/assignments/{assignmentId}")
     public ResponseEntity<Void> deleteAssignment(
             Authentication authentication,
-            @PathVariable UUID courseId,
-            @PathVariable UUID assignmentId
+            @PathVariable String courseId,
+            @PathVariable String assignmentId
     ) {
-        UUID actorId = UUID.fromString(authentication.getName());
+        String actorId =  authentication.getName();
 
         log.warn("DELETE /courses/{}/assignments/{} - Delete requested by user {}", courseId, assignmentId, actorId);
 

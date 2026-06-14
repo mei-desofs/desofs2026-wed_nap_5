@@ -4,7 +4,7 @@ import com.grupo.learningmore.domain.assignment.Assignment;
 import com.grupo.learningmore.domain.assignment.Submission;
 import com.grupo.learningmore.domain.assignment.SubmissionStatus;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
-import com.grupo.learningmore.services.EnrollmentService;
+ 
 import com.grupo.learningmore.repositories.AssignmentRepository;
 import com.grupo.learningmore.repositories.SubmissionAuditLogRepository;
 import com.grupo.learningmore.repositories.SubmissionRepository;
@@ -26,10 +26,11 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
+ 
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,28 +54,30 @@ public class SubmissionServiceTest {
     @TempDir
     Path tempDir;
 
-    private UUID assignmentId;
-    private UUID studentId;
-    private UUID professorId;
+    private String assignmentId;
+    private String studentId;
+    private String professorId;
 
     @BeforeEach
     public void setUp() {
-        assignmentId = UUID.randomUUID();
-        studentId = UUID.randomUUID();
-        professorId = UUID.randomUUID();
+        assignmentId =  "assignment123";
+        studentId = "student123";
+        professorId = "professor123";
         ReflectionTestUtils.setField(submissionService, "uploadDir", tempDir.toString());
     }
 
     @Test
     public void testSubmitSuccess() throws IOException {
         Assignment assignment = new Assignment(
-                assignmentId,
+               
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
+
+        
 
         MockMultipartFile file = new MockMultipartFile("file", "work.pdf", "application/pdf", "content".getBytes());
 
@@ -83,7 +86,9 @@ public class SubmissionServiceTest {
         when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            if (s.getId() == null) {
+                ReflectionTestUtils.setField(s, "id", "SUB-SUCCESS-123");
+            }
             return s;
         });
 
@@ -97,11 +102,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenAlreadySubmitted() {
         Assignment assignment = new Assignment(
-                assignmentId,
+                
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -118,11 +123,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenFileIsNull() {
         Assignment assignment = new Assignment(
-                assignmentId,
+               
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -138,11 +143,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenMimeTypeIsNotAllowed() {
         Assignment assignment = new Assignment(
-                assignmentId,
+              
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -160,11 +165,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenExtensionIsNotAllowed() {
         Assignment assignment = new Assignment(
-                assignmentId,
+                
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -182,11 +187,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenFileIsTooLarge() {
         Assignment assignment = new Assignment(
-                assignmentId,
+                
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -206,11 +211,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitSanitizesFilenameAndStoresWithinAssignmentDirectory() throws IOException {
         Assignment assignment = new Assignment(
-                assignmentId,
+              
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -221,7 +226,7 @@ public class SubmissionServiceTest {
         when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            
             return s;
         });
 
@@ -235,11 +240,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitAcceptsFileAtMaximumSize() throws IOException {
         Assignment assignment = new Assignment(
-                assignmentId,
+               
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -255,7 +260,9 @@ public class SubmissionServiceTest {
         when(maxSizeFile.getBytes()).thenReturn("content".getBytes());
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+            if (s.getId() == null) {
+                ReflectionTestUtils.setField(s, "id", "SUB-MAXSIZE-123");
+            }
             return s;
         });
 
@@ -268,11 +275,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitPreservesOneHundredCharacterFilename() throws IOException {
         Assignment assignment = new Assignment(
-                assignmentId,
+                 
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",    
                 professorId
         );
 
@@ -284,7 +291,7 @@ public class SubmissionServiceTest {
         when(enrollmentService.isUserEnrolledInCourse(studentId, assignment.getCourseId())).thenReturn(true);
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> {
             Submission s = invocation.getArgument(0);
-            s.setId(UUID.randomUUID());
+             
             return s;
         });
 
@@ -297,11 +304,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenDeadlineExpired() {
         Assignment assignment = new Assignment(
-                assignmentId,
+                
                 "Project",
                 "Desc",
                 LocalDateTime.now().minusDays(1),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -316,11 +323,11 @@ public class SubmissionServiceTest {
     @Test
     public void testSubmitFailsWhenStudentNotEnrolled() {
         Assignment assignment = new Assignment(
-                assignmentId,
+                
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(3),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -336,14 +343,14 @@ public class SubmissionServiceTest {
 
     @Test
     public void testGradeFailsWhenNotOwner() {
-        UUID otherProfessor = UUID.randomUUID();
+        String otherProfessor = "otherProfessor123";
 
         Assignment assignment = new Assignment(
-                UUID.randomUUID(),
+                
                 "Project",
                 "Desc",
                 LocalDateTime.now().plusDays(2),
-                UUID.randomUUID(),
+                "course123",
                 professorId
         );
 
@@ -354,7 +361,7 @@ public class SubmissionServiceTest {
                 SubmissionStatus.PENDING,
                 "uploads/test.pdf"
         );
-        submission.setId(UUID.randomUUID());
+         
 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
 
@@ -372,11 +379,11 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionSuccess() {
     Assignment assignment = new Assignment(
-        UUID.randomUUID(),
+        
         "Project",
         "Desc",
         LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
+        "course123",
         professorId
     );
 
@@ -387,7 +394,7 @@ public class SubmissionServiceTest {
         SubmissionStatus.PENDING,
         "uploads/test.pdf"
     );
-    submission.setId(UUID.randomUUID());
+     
 
     when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
     when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -409,19 +416,26 @@ public class SubmissionServiceTest {
 
     @Test
     public void testGradeSubmissionRejectsInvalidLowGrade() {
-    assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        UUID.randomUUID(),
-        new BigDecimal("-1"),
-        "Bad grade",
-        professorId,
-        false
-    ));
+        String dummySubmissionId = "SUB-1234567890ABCDEF";
+
+         
+
+        assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
+                dummySubmissionId,
+                new BigDecimal("-1"),  
+                "Bad grade",
+                professorId,
+                false
+        ));
     }
 
     @Test
     public void testGradeSubmissionRejectsNullGrade() {
+
+        String dummySubmissionId = "SUB-1234567890ABCDEF";
+
         assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-                UUID.randomUUID(),
+                dummySubmissionId,
                 null,
                 "Bad grade",
                 professorId,
@@ -431,8 +445,11 @@ public class SubmissionServiceTest {
 
     @Test
     public void testGradeSubmissionRejectsInvalidHighGrade() {
+    String dummySubmissionId = "SUB-1234567890ABCDEF";
+
+        
     assertThrows(IllegalArgumentException.class, () -> submissionService.gradeSubmission(
-        UUID.randomUUID(),
+        dummySubmissionId,
         new BigDecimal("101"),
         "Bad grade",
         professorId,
@@ -443,11 +460,11 @@ public class SubmissionServiceTest {
         @Test
         public void testGradeSubmissionAcceptsZeroGrade() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            
             "Project",
             "Desc",
             LocalDateTime.now().plusDays(2),
-            UUID.randomUUID(),
+            "course123",
             professorId
         );
 
@@ -458,7 +475,7 @@ public class SubmissionServiceTest {
             SubmissionStatus.PENDING,
             "uploads/test.pdf"
         );
-        submission.setId(UUID.randomUUID());
+        
 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -478,11 +495,11 @@ public class SubmissionServiceTest {
         @Test
         public void testGradeSubmissionAcceptsHundredGrade() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            
             "Project",
             "Desc",
             LocalDateTime.now().plusDays(2),
-            UUID.randomUUID(),
+            "course123",
             professorId
         );
 
@@ -493,8 +510,7 @@ public class SubmissionServiceTest {
             SubmissionStatus.PENDING,
             "uploads/test.pdf"
         );
-        submission.setId(UUID.randomUUID());
-
+ 
         when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
         when(submissionRepository.save(any(Submission.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -513,11 +529,11 @@ public class SubmissionServiceTest {
     @Test
     public void testGradeSubmissionRejectsAlreadyGradedSubmission() {
     Assignment assignment = new Assignment(
-        UUID.randomUUID(),
+       
         "Project",
         "Desc",
         LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
+        "course123",
         professorId
     );
 
@@ -528,7 +544,7 @@ public class SubmissionServiceTest {
         SubmissionStatus.PENDING,
         "uploads/test.pdf"
     );
-    submission.setId(UUID.randomUUID());
+     
     submission.grade(new BigDecimal("10.00"), "Initial grade", professorId);
 
     when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
@@ -546,11 +562,11 @@ public class SubmissionServiceTest {
     public void testGradeSubmissionRejectsWhenAssignmentIsMissing() {
     Submission submission = new Submission(
         new Assignment(
-            UUID.randomUUID(),
+           
             "Project",
             "Desc",
             LocalDateTime.now().plusDays(2),
-            UUID.randomUUID(),
+            "course123",   
             professorId
         ),
         studentId,
@@ -558,7 +574,7 @@ public class SubmissionServiceTest {
         SubmissionStatus.PENDING,
         "uploads/test.pdf"
     );
-    submission.setId(UUID.randomUUID());
+     
     submission.setAssignment(null);
 
     when(submissionRepository.findById(submission.getId())).thenReturn(Optional.of(submission));
@@ -583,11 +599,11 @@ public class SubmissionServiceTest {
     @Test
     public void testGetSubmissionsForAssignmentSuccess() {
     Assignment assignment = new Assignment(
-        assignmentId,
+        
         "Project",
         "Desc",
         LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
+        "course123", 
         professorId
     );
     Submission submission = new Submission(
@@ -597,7 +613,7 @@ public class SubmissionServiceTest {
         SubmissionStatus.PENDING,
         "uploads/test.pdf"
     );
-    submission.setId(UUID.randomUUID());
+    
 
     when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.of(assignment));
     when(submissionRepository.findByAssignmentId(eq(assignmentId), any(Pageable.class))).thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.List.of(submission)));
@@ -611,11 +627,11 @@ public class SubmissionServiceTest {
     @Test
     public void testGetSubmissionsForAssignmentRejectsUnauthorizedActor() {
     Assignment assignment = new Assignment(
-        assignmentId,
+     
         "Project",
         "Desc",
         LocalDateTime.now().plusDays(2),
-        UUID.randomUUID(),
+       "course123", 
         professorId
     );
 
@@ -623,7 +639,7 @@ public class SubmissionServiceTest {
 
     assertThrows(AccessDeniedException.class, () -> submissionService.getSubmissionsForAssignment(
         assignmentId,
-        UUID.randomUUID(),
+        studentId,
         false,
         Pageable.unpaged()
     ));

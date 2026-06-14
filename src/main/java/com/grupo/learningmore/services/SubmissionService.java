@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,6 +29,9 @@ import java.util.*;
 public class SubmissionService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionService.class);
+
+    // SOLUÇÃO ERRO 1: Constante criptográfica segura (CSPRNG) para nomes de ficheiros
+    private static final SecureRandom secureRandom = new SecureRandom();
 
     private static final long MAX_FILE_SIZE_BYTES = 50L * 1024L * 1024L;
 
@@ -71,7 +75,7 @@ public class SubmissionService {
     }
 
     @Transactional
-    public Submission submit(UUID assignmentId, UUID userId, MultipartFile file) throws IOException {
+    public Submission submit(String assignmentId, String userId, MultipartFile file) throws IOException {
 
         log.info("Submission attempt: user={} assignment={}", userId, assignmentId);
 
@@ -101,11 +105,17 @@ public class SubmissionService {
 
         validateSubmissionFile(file, userId, assignmentId);
 
-        Path assignmentUploadPath = Paths.get(uploadDir, "assignments", assignmentId.toString());
+        Path assignmentUploadPath = Paths.get(uploadDir, "assignments", assignmentId);
         Files.createDirectories(assignmentUploadPath);
 
         String safeOriginalName = sanitizeFilename(file.getOriginalFilename());
-        String generatedName = UUID.randomUUID() + "_" + safeOriginalName;
+
+        // CORREÇÃO ERRO 1: Geração segura baseada em 128 bits de entropia para o ficheiro
+        byte[] randomBytes = new byte[16];
+        secureRandom.nextBytes(randomBytes);
+        String randomPrefix = HexFormat.of().formatHex(randomBytes).toUpperCase();
+        
+        String generatedName = randomPrefix + "_" + safeOriginalName;
         Path storedPath = assignmentUploadPath.resolve(generatedName);
 
         Path normalizedPath = storedPath.normalize();
@@ -114,12 +124,12 @@ public class SubmissionService {
         if (!normalizedPath.startsWith(uploadBase)) {
             log.error("Path traversal detected during submission: user={} assignment={}",
                     userId, assignmentId);
-
             throw new IllegalArgumentException("Invalid file path: potential path traversal detected");
         }
 
         Files.write(storedPath, file.getBytes());
 
+         
         Submission submission = new Submission(
                 assignment,
                 userId,
@@ -130,13 +140,14 @@ public class SubmissionService {
 
         Submission saved = submissionRepository.save(submission);
 
+        // CORREÇÃO AUXILIAR: Ajustado o construtor do Log de Auditoria para refletir os campos corretos
         submissionAuditLogRepository.save(new SubmissionAuditLog(
-                saved.getId(),
-                "SUBMIT",
-                userId,
-                null,
-                "status=" + saved.getStatus(),
-                LocalDateTime.now()
+                saved.getId(), // targetId (ID da submissão que foi afetada)
+                "SUBMIT",      // action
+                userId,        // actorId
+                null,          // oldValues
+                "status=" + saved.getStatus(), // newValues
+                LocalDateTime.now() // timestamp
         ));
 
         log.info("Submission successful: submissionId={} user={} assignment={}",
@@ -147,12 +158,11 @@ public class SubmissionService {
 
     @Transactional(readOnly = true)
     public Page<Submission> getSubmissionsForAssignment(
-            UUID assignmentId,
-            UUID actorId,
+            String assignmentId,
+            String actorId,
             boolean isAdmin,
             Pageable pageable
     ) {
-
         log.info("Fetching submissions: assignment={} actor={} admin={}",
                 assignmentId, actorId, isAdmin);
 
@@ -165,7 +175,6 @@ public class SubmissionService {
         if (!isAdmin && !assignment.getCreatedBy().equals(actorId)) {
             log.warn("Unauthorized submission listing attempt: actor={} assignment={}",
                     actorId, assignmentId);
-
             throw new AccessDeniedException("Only the assignment owner can view all submissions");
         }
 
@@ -173,8 +182,7 @@ public class SubmissionService {
     }
 
     @Transactional(readOnly = true)
-    public Submission getMySubmission(UUID assignmentId, UUID userId) {
-
+    public Submission getMySubmission(String assignmentId, String userId) {
         log.info("Fetching personal submission: user={} assignment={}", userId, assignmentId);
 
         return submissionRepository.findByAssignmentIdAndUserId(assignmentId, userId)
@@ -186,13 +194,12 @@ public class SubmissionService {
 
     @Transactional
     public Submission gradeSubmission(
-            UUID submissionId,
+            String submissionId,
             BigDecimal grade,
             String feedback,
-            UUID actorId,
+            String actorId,
             boolean isAdmin
     ) {
-
         log.info("Grading submission: submission={} actor={} admin={}",
                 submissionId, actorId, isAdmin);
 
@@ -217,7 +224,6 @@ public class SubmissionService {
         if (!isAdmin && !assignment.getCreatedBy().equals(actorId)) {
             log.warn("Unauthorized grading attempt: actor={} submission={}",
                     actorId, submissionId);
-
             throw new AccessDeniedException("Only the assignment owner can grade submissions");
         }
 
@@ -241,8 +247,7 @@ public class SubmissionService {
         return saved;
     }
 
-    private void validateSubmissionFile(MultipartFile file, UUID userId, UUID assignmentId) {
-
+    private void validateSubmissionFile(MultipartFile file, String userId, String assignmentId) {
         if (file == null || file.isEmpty()) {
             log.warn("Empty submission file: user={} assignment={}", userId, assignmentId);
             throw new IllegalArgumentException("Submission file cannot be empty");
@@ -251,7 +256,6 @@ public class SubmissionService {
         if (file.getSize() > MAX_FILE_SIZE_BYTES) {
             log.warn("File too large: user={} assignment={} size={}",
                     userId, assignmentId, file.getSize());
-
             throw new IllegalArgumentException("Submission file exceeds maximum size of 50MB");
         }
 
@@ -259,7 +263,6 @@ public class SubmissionService {
         if (mimeType == null || !ALLOWED_MIME_TYPES.contains(mimeType.toLowerCase())) {
             log.warn("Invalid MIME type: user={} assignment={} type={}",
                     userId, assignmentId, mimeType);
-
             throw new IllegalArgumentException("File type not allowed");
         }
 
@@ -273,7 +276,6 @@ public class SubmissionService {
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
             log.warn("Invalid file extension: user={} assignment={} ext={}",
                     userId, assignmentId, extension);
-
             throw new IllegalArgumentException("File extension not allowed");
         }
     }

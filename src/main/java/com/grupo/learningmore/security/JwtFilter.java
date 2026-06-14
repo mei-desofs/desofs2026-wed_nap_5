@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+ 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 log.info("Loading user from DB: {}", username);
 
-                User user = userService.findById(UUID.fromString(username));
+                User user = userService.findById(username);
 
                 log.info("User found -> active: {}",
                         user.isActive());
@@ -121,7 +121,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             } catch (IllegalArgumentException e) {
 
-                log.error("Invalid UUID in token: {}", username);
+                log.error("Invalid String in token: {}", username);
                 filterChain.doFilter(request, response);
                 return;
             }

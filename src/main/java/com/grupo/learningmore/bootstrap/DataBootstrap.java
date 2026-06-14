@@ -125,7 +125,7 @@ public class DataBootstrap implements CommandLineRunner {
                 savedCourse2.getId(),
                 "HTML_CSS_Basico.pdf",
                 "/uploads/HTML_CSS_Basico.pdf",
-                3072000L,
+                3072000L ,
                 "application/pdf",
                 savedProfessor.getId()
         );

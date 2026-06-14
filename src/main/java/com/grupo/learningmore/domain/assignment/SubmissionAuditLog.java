@@ -3,8 +3,10 @@ package com.grupo.learningmore.domain.assignment;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.HexFormat;
+ 
 
 /**
  * SubmissionAuditLog tracks all changes to Submission entities.
@@ -15,18 +17,21 @@ import java.util.UUID;
 @Table(name = "submission_audit_logs")
 public class SubmissionAuditLog {
 
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @Column(nullable = false)
-    private UUID submissionId;
+    private String submissionId;
 
     @Column(nullable = false)
     private String action; // CREATE, UPDATE (grade/feedback), DELETE
 
     @Column(nullable = false)
-    private UUID actorId; // User who performed the action
+    private String actorId; // User who performed the action
 
     @Column(columnDefinition = "TEXT")
     private String oldValues; // JSON representation of previous values
@@ -40,7 +45,8 @@ public class SubmissionAuditLog {
     public SubmissionAuditLog() {
     }
 
-    public SubmissionAuditLog(UUID submissionId, String action, UUID actorId, String oldValues, String newValues, LocalDateTime timestamp) {
+    public SubmissionAuditLog(String submissionId, String action, String actorId, String oldValues, String newValues, LocalDateTime timestamp) {
+        //this.id = generateSecureId();
         this.submissionId = submissionId;
         this.action = action;
         this.actorId = actorId;
@@ -49,19 +55,29 @@ public class SubmissionAuditLog {
         this.timestamp = timestamp;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
     }
 
-    public void setSubmissionId(UUID submissionId) {
-        this.submissionId = submissionId;
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "SUB-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
+
+    public void setSubmissionId(String submissionId) {
+        this.submissionId = submissionId;
+    } 
+
 
     public void setAction(String action) {
         this.action = action;
     }
 
-    public void setActorId(UUID actorId) {
+    public void setActorId(String actorId) {
         this.actorId = actorId;
     }
 

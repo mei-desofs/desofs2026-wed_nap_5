@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+ 
 
 @Service
 public class EnrollmentService {
@@ -25,7 +25,7 @@ public class EnrollmentService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    public boolean isUserEnrolled(UUID userId, UUID chatRoomId) {
+    public boolean isUserEnrolled(String userId, String chatRoomId) {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> {
@@ -48,7 +48,7 @@ public class EnrollmentService {
     /**
      * Check if a user is enrolled in a specific course
      */
-    public boolean isUserEnrolledInCourse(UUID userId, UUID courseId) {
+    public boolean isUserEnrolledInCourse(String userId, String courseId) {
 
         boolean enrolled = enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
 

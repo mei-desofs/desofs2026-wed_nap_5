@@ -7,9 +7,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+ 
 
-public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
+public interface AssignmentRepository extends JpaRepository<Assignment, String> {
 
     /**
      * Find all assignments for a specific course.
@@ -17,7 +17,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
      * @param courseId the course ID
      * @return list of assignments in the course
      */
-    List<Assignment> findByCourseId(UUID courseId);
+    List<Assignment> findByCourseId(String courseId);
 
     /**
      * Find an assignment by ID with ownership validation.
@@ -28,7 +28,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
      * @return optional containing the assignment if it exists in the given course
      */
     @Query("SELECT a FROM Assignment a WHERE a.id = :id AND a.courseId = :courseId")
-    Optional<Assignment> findByIdAndCourseId(@Param("id") UUID id, @Param("courseId") UUID courseId);
+    Optional<Assignment> findByIdAndCourseId(@Param("id") String id, @Param("courseId") String courseId);
 
     /**
      * Check if an assignment exists in a specific course.
@@ -37,13 +37,13 @@ public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
      * @param courseId     the course ID
      * @return true if assignment exists in the course
      */
-    boolean existsByIdAndCourseId(UUID assignmentId, UUID courseId);
+    boolean existsByIdAndCourseId(String assignmentId, String courseId);
 
     /**
      * Find assignments created by a specific professor.
      *
-     * @param createdBy the UUID of the professor (user ID)
+     * @param createdBy the String of the professor (user ID)
      * @return list of assignments created by the professor
      */
-    List<Assignment> findByCreatedBy(UUID createdBy);
+    List<Assignment> findByCreatedBy(String createdBy);
 }

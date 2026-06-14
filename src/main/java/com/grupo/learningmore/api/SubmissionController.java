@@ -16,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api")
@@ -34,11 +34,11 @@ public class SubmissionController {
     @PostMapping("/assignments/{assignmentId}/submissions")
     public ResponseEntity<SubmissionResponse> submitAssignment(
             Authentication authentication,
-            @PathVariable UUID assignmentId,
+            @PathVariable String assignmentId,
             @RequestParam("file") MultipartFile file
     ) throws Exception {
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("POST /assignments/{}/submissions - Submission attempt by user {}", assignmentId, userId);
 
@@ -54,11 +54,11 @@ public class SubmissionController {
     @GetMapping("/assignments/{assignmentId}/submissions")
     public ResponseEntity<Page<SubmissionResponse>> getSubmissionsByAssignment(
             Authentication authentication,
-            @PathVariable UUID assignmentId,
+            @PathVariable String assignmentId,
             Pageable pageable
     ) {
 
-        UUID actorId = UUID.fromString(authentication.getName());
+        String actorId =authentication.getName();
 
         log.info("GET /assignments/{}/submissions - Requested by user {}", assignmentId, actorId);
 
@@ -80,10 +80,10 @@ public class SubmissionController {
     @GetMapping("/assignments/{assignmentId}/submissions/me")
     public ResponseEntity<SubmissionResponse> getMySubmission(
             Authentication authentication,
-            @PathVariable UUID assignmentId
+            @PathVariable String assignmentId
     ) {
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("GET /assignments/{}/submissions/me - User {}", assignmentId, userId);
 
@@ -96,11 +96,11 @@ public class SubmissionController {
     @PutMapping("/submissions/{submissionId}/grade")
     public ResponseEntity<SubmissionResponse> gradeSubmission(
             Authentication authentication,
-            @PathVariable UUID submissionId,
+            @PathVariable String submissionId,
             @Valid @RequestBody GradeSubmissionRequest request
     ) {
 
-        UUID actorId = UUID.fromString(authentication.getName());
+        String actorId = authentication.getName();
 
         log.info("PUT /submissions/{}/grade - Grading attempt by user {}", submissionId, actorId);
 

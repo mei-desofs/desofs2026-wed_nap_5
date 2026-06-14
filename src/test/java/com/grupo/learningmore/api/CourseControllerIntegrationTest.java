@@ -2,8 +2,7 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.repositories.*;
-import com.grupo.learningmore.repositories.EnrollmentRepository;
-import com.grupo.learningmore.repositories.ChatRoomRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
-import java.util.UUID;
+ 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,8 +49,8 @@ public class CourseControllerIntegrationTest {
     
 
     private MockMvc mockMvc;
-    private UUID adminId;
-    private UUID professorId;
+    private String adminId;
+    private String professorId;
 
     @BeforeEach
     public void clean() {     
@@ -70,8 +69,8 @@ public class CourseControllerIntegrationTest {
                 .build();
 
         courseRepository.deleteAll();
-        adminId = UUID.randomUUID();
-        professorId = UUID.randomUUID();
+        adminId = "USR-ADMINMOCK12345";
+        professorId = "USR-PROFMOCK12345";
         
     }
 

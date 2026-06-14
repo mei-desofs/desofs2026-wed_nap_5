@@ -17,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api/courses")
@@ -39,7 +39,7 @@ public class CourseController {
             Authentication authentication,
             @Valid @RequestBody CreateCourseRequest request
     ) {
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("POST /courses - Create course request by admin {}", userId);
 
@@ -58,7 +58,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> getCourseById(@PathVariable UUID id) {
+    public ResponseEntity<CourseResponse> getCourseById(@PathVariable String id) {
 
         log.info("GET /courses/{} - Fetch course by id", id);
 
@@ -96,7 +96,7 @@ public class CourseController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponse> updateCourse(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody UpdateCourseRequest request
     ) {
 
@@ -115,7 +115,7 @@ public class CourseController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable String id) {
 
         log.warn("DELETE /courses/{} - Delete course request", id);
 
@@ -155,9 +155,9 @@ public class CourseController {
     @PostMapping("/{courseId}/enroll")
     public ResponseEntity<Void> enrollInCourse(
             Authentication authentication,
-            @PathVariable UUID courseId
+            @PathVariable String courseId
     ) {
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("POST /courses/{}/enroll - Enrollment request by user {}", courseId, userId);
 
