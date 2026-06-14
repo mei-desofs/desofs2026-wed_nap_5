@@ -252,9 +252,9 @@ public class DataBootstrap implements CommandLineRunner {
         System.out.println("Created enrollments for all students successfully");
 
 
-// =========================
-// CYBERSECURITY - COURSE 1
-// =========================
+        // =========================
+        // CYBERSECURITY - COURSE 1
+        // =========================
         resourceRepository.save(new Resource(
                 savedCourse1.getId(),
                 "Introduction_to_Cybersecurity.pdf",
@@ -302,9 +302,9 @@ public class DataBootstrap implements CommandLineRunner {
 
         System.out.println("Created resources for Cybersecurity course");
 
-// =========================
-// WEB DEVELOPMENT - COURSE 2
-// =========================
+        // =========================
+        // WEB DEVELOPMENT - COURSE 2
+        // =========================
         resourceRepository.save(new Resource(
                 savedCourse2.getId(),
                 "HTML_CSS_Fundamentals.pdf",
@@ -445,10 +445,9 @@ public class DataBootstrap implements CommandLineRunner {
         System.out.println("Created resources for AI course");
 
 
-// =========================
-// CHAT ROOMS
-// =========================
-
+        // =========================
+        // CHAT ROOMS
+        // =========================
         ChatRoom savedChat1 = createChat(
                 "General Chat - Cybersecurity",
                 savedCourse1
@@ -636,7 +635,7 @@ public class DataBootstrap implements CommandLineRunner {
                 30
         );
 
-// Web Development Assignment submissions
+        // Web Development Assignment submissions
         createSubmission(
                 savedAssignment3,
                 savedStudent1,
@@ -705,11 +704,162 @@ public class DataBootstrap implements CommandLineRunner {
                 8
         );
 
+        // =========================
+        // Web Application Security Analysis
+        // Assignment 2
+        // =========================
+        createSubmission(
+                savedAssignment2,
+                savedStudent4,
+                SubmissionStatus.GRADED,
+                "/submissions/michael_web_security.zip",
+                new BigDecimal("16.75"),
+                "Good analysis of SQL Injection and XSS vulnerabilities.",
+                savedProfessor,
+                15
+        );
+
+        createSubmission(
+                savedAssignment2,
+                savedStudent5,
+                SubmissionStatus.PENDING,
+                "/submissions/sophia_web_security.zip",
+                null,
+                null,
+                null,
+                8
+        );
+
+        createSubmission(
+                savedAssignment2,
+                savedStudent6,
+                SubmissionStatus.LATE,
+                "/submissions/daniel_web_security.zip",
+                null,
+                null,
+                null,
+                3
+        );
+
+
+        // =========================
+        // Frontend UI Clone Project
+        // Assignment 4
+        // =========================
+        createSubmission(
+                savedAssignment4,
+                savedStudent2,
+                SubmissionStatus.GRADED,
+                "/submissions/peter_ui_clone.zip",
+                new BigDecimal("18.00"),
+                "Excellent responsiveness and visual accuracy.",
+                savedProfessor,
+                20
+        );
+
+        createSubmission(
+                savedAssignment4,
+                savedStudent7,
+                SubmissionStatus.PENDING,
+                "/submissions/olivia_ui_clone.zip",
+                null,
+                null,
+                null,
+                6
+        );
+
+        createSubmission(
+                savedAssignment4,
+                savedStudent1,
+                SubmissionStatus.GRADED,
+                "/submissions/mary_ui_clone.zip",
+                new BigDecimal("14.50"),
+                "Good implementation, but some spacing inconsistencies remain.",
+                savedProfessor,
+                10
+        );
+
+
+        // =========================
+        // Database Design Project
+        // Assignment 6
+        // =========================
+        createSubmission(
+                savedAssignment6,
+                savedStudent3,
+                SubmissionStatus.GRADED,
+                "/submissions/emily_database.zip",
+                new BigDecimal("19.50"),
+                "Database schema is well normalized and documented.",
+                savedProfessor,
+                24
+        );
+
+        createSubmission(
+                savedAssignment6,
+                savedStudent5,
+                SubmissionStatus.PENDING,
+                "/submissions/sophia_database.zip",
+                null,
+                null,
+                null,
+                12
+        );
+
+        createSubmission(
+                savedAssignment6,
+                savedStudent2,
+                SubmissionStatus.LATE,
+                "/submissions/peter_database.zip",
+                null,
+                null,
+                null,
+                2
+        );
+
+
+        // =========================
+        // Cloud Deployment Exercise
+        // Assignment 7
+        // =========================
+        createSubmission(
+                savedAssignment7,
+                savedStudent6,
+                SubmissionStatus.GRADED,
+                "/submissions/daniel_cloud.zip",
+                new BigDecimal("17.25"),
+                "Successful deployment and proper documentation.",
+                savedProfessor,
+                14
+        );
+
+        createSubmission(
+                savedAssignment7,
+                savedStudent4,
+                SubmissionStatus.PENDING,
+                "/submissions/michael_cloud.zip",
+                null,
+                null,
+                null,
+                7
+        );
+
+        createSubmission(
+                savedAssignment7,
+                savedStudent7,
+                SubmissionStatus.GRADED,
+                "/submissions/olivia_cloud.zip",
+                new BigDecimal("18.75"),
+                "Excellent use of cloud services and CI/CD pipeline.",
+                savedProfessor,
+                22
+        );
+
         System.out.println("Created submissions successfully");
     }
 
 
-    private void enroll(UUID studentId, UUID courseId) {
+    private void enroll(String studentId, String courseId) {
         enrollmentRepository.save(new Enrollment(studentId, courseId));
     }
 

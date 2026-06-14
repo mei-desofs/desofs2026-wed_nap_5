@@ -172,8 +172,8 @@ public class CourseController {
     @PostMapping("/{courseId}/enroll/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> enrollUser(
-            @PathVariable UUID courseId,
-            @PathVariable UUID userId
+            @PathVariable String courseId,
+            @PathVariable String userId
     ) {
         log.info("POST /courses/{}/enroll/{} - admin enrollment request", courseId, userId);
 
