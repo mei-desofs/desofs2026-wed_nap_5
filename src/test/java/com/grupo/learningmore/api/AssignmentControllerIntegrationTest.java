@@ -177,7 +177,9 @@ public class AssignmentControllerIntegrationTest {
         assignmentRepository.save(assignment);
 
         mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
-                        .with(user(studentId.toString()).roles("STUDENT"))
+                        .with(user(studentId).roles("STUDENT"))
+                        .with(authentication(new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(studentId, null, org.springframework.security.core.authority.AuthorityUtils.createAuthorityList("ROLE_STUDENT"))))
+                        .header("Authorization", "Bearer mock-test-token-to-avoid-500-error")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
