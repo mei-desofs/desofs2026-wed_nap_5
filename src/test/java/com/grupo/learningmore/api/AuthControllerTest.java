@@ -58,7 +58,7 @@ class AuthControllerTest {
         
         when(userService.findByEmail("bruno@test.com")).thenReturn(user);
         when(passwordEncoder.matches("password123", "hashed-password")).thenReturn(true);
-        when(jwtService.generateToken(user.getId().toString(), "STUDENT", 0L)).thenReturn("jwt-token");
+        when(jwtService.generateToken(user.getId(), "STUDENT", 0L)).thenReturn("jwt-token");
 
         ResponseEntity<LoginResponse> response = authController.login(
                 new LoginRequest("bruno@test.com", "password123")
@@ -67,13 +67,13 @@ class AuthControllerTest {
         assertEquals(200, response.getStatusCode().value());
         assertNotNull(response.getBody());
         assertEquals("jwt-token", response.getBody().token());
-        assertEquals(user.getId().toString(), response.getBody().userId());
+        assertEquals(user.getId(), response.getBody().userId());
         assertEquals("Bruno", response.getBody().name());
         assertEquals("bruno@test.com", response.getBody().email());
         assertEquals("STUDENT", response.getBody().role());
 
         verify(loginAttemptService).resetAttempts("bruno@test.com");
-        verify(jwtService).generateToken(user.getId().toString(), "STUDENT", 0L);
+        verify(jwtService).generateToken(user.getId(), "STUDENT", 0L);
     }
 
     @Test

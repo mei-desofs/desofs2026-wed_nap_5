@@ -46,6 +46,20 @@ public class ResourceService {
     
     courseService.findById(courseId);
 
+        if (courseId == null || courseId.isBlank()) {
+            log.warn("Invalid courseId upload attempt by user {}", uploadedBy);
+            throw new IllegalArgumentException("Invalid course id");
+        }
+        String cleanCourseId = org.springframework.util.StringUtils.cleanPath(courseId);
+        if (cleanCourseId.contains("..") ||
+                cleanCourseId.contains("/") ||
+                cleanCourseId.contains("\\")) {
+            log.warn("Path traversal attempt detected in courseId '{}' by user {}",
+                    cleanCourseId, uploadedBy);
+            throw new IllegalArgumentException("Invalid course id");
+        }
+        String safeCourseId = Paths.get(cleanCourseId).getFileName().toString();
+
     // Validate file
     if (file.isEmpty()) {
         log.warn("Empty file upload attempt by user {} in course {}", uploadedBy, courseId);
@@ -74,10 +88,18 @@ public class ResourceService {
 
     String safeOriginalFilename = Paths.get(cleanOriginalFilename).getFileName().toString();
 
-    
-    Path uploadPath = Paths.get(uploadDir, courseId)
-            .normalize()
-            .toAbsolutePath();
+
+        Path uploadBasePath = Paths.get(uploadDir)
+                .normalize()
+                .toAbsolutePath();
+        Path uploadPath = uploadBasePath.resolve(safeCourseId)
+                .normalize()
+                .toAbsolutePath();
+        if (!uploadPath.startsWith(uploadBasePath)) {
+            log.warn("Invalid resolved upload path detected for course {} by user {}",
+                    courseId, uploadedBy);
+            throw new IllegalArgumentException("Invalid course path");
+        }
 
     Files.createDirectories(uploadPath);
 
