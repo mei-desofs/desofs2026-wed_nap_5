@@ -95,7 +95,15 @@ public class AssignmentControllerIntegrationTest {
         enrollmentRepository.deleteAll();
         chatRoomRepository.deleteAll();
         courseRepository.deleteAll();  
-        userRepository.deleteAll();
+        //userRepository.deleteAll();
+
+        User existingProf = userRepository.findByEmail("prof@test.com").orElse(null);
+        if (existingProf != null) userRepository.delete(existingProf);
+
+        User existingStudent = userRepository.findByEmail("student@test.com").orElse(null);
+        if (existingStudent != null) userRepository.delete(existingStudent);
+
+        userRepository.flush();
 
         User professor = new User("Dr. Professor", "prof@test.com", passwordEncoder.encode("password123"), UserRole.PROFESSOR);
         User savedProfessor = userRepository.save(professor);
