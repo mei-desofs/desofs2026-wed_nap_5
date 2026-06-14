@@ -881,10 +881,22 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "const response = pm.response.json();\r",
+                  "let response;\r",
                   "\r",
-                  "pm.collectionVariables.set(\"resourceId\", pm.response.json().id);\r",
-                  ""
+                  "if (pm.response.headers.get(\"Content-Type\")?.includes(\"application/json\")) {\r",
+                  "\r",
+                  "    response = pm.response.json();\r",
+                  "\r",
+                  "    if (response && response.id) {\r",
+                  "        pm.collectionVariables.set(\"resourceId\", response.id);\r",
+                  "    } else {\r",
+                  "        pm.collectionVariables.unset(\"resourceId\");\r",
+                  "    }\r",
+                  "\r",
+                  "} else {\r",
+                  "    console.log(\"Not JSON:\", pm.response.text());\r",
+                  "    pm.collectionVariables.unset(\"resourceId\");\r",
+                  "}"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -1201,7 +1213,7 @@
                 {
                   "key": "file",
                   "type": "file",
-                  "src": "updloadFiles-models/another-file.txt"
+                  "src": "/C:/Users/anaog/OneDrive/Ambiente de Trabalho/mestrado/primeiro ano/segundo semestre/DESOFS/desofs2026-wed_nap_5/updloadFiles-models/another-file.txt"
                 }
               ]
             },
@@ -1359,10 +1371,6 @@
       "value": ""
     },
     {
-      "key": "resourceId",
-      "value": ""
-    },
-    {
       "key": "assignmentId",
       "value": ""
     },
@@ -1376,6 +1384,10 @@
     },
     {
       "key": "courseCode",
+      "value": ""
+    },
+    {
+      "key": "resourceId",
       "value": ""
     }
   ]
