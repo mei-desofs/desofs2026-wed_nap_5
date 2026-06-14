@@ -1,13 +1,14 @@
 package com.grupo.learningmore.services;
 
 import com.grupo.learningmore.domain.chat.ChatRoom;
+import com.grupo.learningmore.domain.enrollment.Enrollment;
 import com.grupo.learningmore.repositories.ChatRoomRepository;
 import com.grupo.learningmore.repositories.EnrollmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
- 
+
 
 @Service
 public class EnrollmentService {
@@ -33,16 +34,10 @@ public class EnrollmentService {
                     return new RuntimeException("Chat room not found");
                 });
 
-        boolean enrolled = enrollmentRepository
-                .existsByUserIdAndCourseId(
-                        userId,
-                        chatRoom.getCourse().getId()
-                );
-
-        log.debug("Enrollment check (chatRoom): user {} enrolled in course {} = {}",
-                userId, chatRoom.getCourse().getId(), enrolled);
-
-        return enrolled;
+        return enrollmentRepository.existsByUserIdAndCourseId(
+                userId,
+                chatRoom.getCourse().getId()
+        );
     }
 
     /**
@@ -50,11 +45,6 @@ public class EnrollmentService {
      */
     public boolean isUserEnrolledInCourse(String userId, String courseId) {
 
-        boolean enrolled = enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
-
-        log.debug("Enrollment check (course): user {} in course {} = {}",
-                userId, courseId, enrolled);
-
-        return enrolled;
+        return enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
     }
 }

@@ -32,9 +32,7 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @PreAuthorize(
-            "hasRole('ADMIN') or hasRole('STUDENT') or hasRole('PROFESSOR')"
-    )
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/{chatRoomId}/messages")
     public ResponseEntity<ChatMessageResponse> sendMessage(
             Authentication authentication,

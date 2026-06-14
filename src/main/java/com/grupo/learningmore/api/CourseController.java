@@ -151,27 +151,36 @@ public class CourseController {
         );
     }
 
-    @PreAuthorize("hasRole('STUDENT')and hasRole('ADMIN')")
     @PostMapping("/{courseId}/enroll")
-    public ResponseEntity<Void> enrollInCourse(
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Void> enrollSelf(
             Authentication authentication,
             @PathVariable String courseId
     ) {
         String userId = authentication.getName();
 
-        log.info("POST /courses/{}/enroll - Enrollment request by user {}", courseId, userId);
-
-        courseService.findById(courseId);
-
-        if (enrollmentRepository.existsByUserIdAndCourseIdAndActiveTrue(userId, courseId)) {
-            log.warn("User {} attempted duplicate enrollment in course {}", userId, courseId);
-            throw new IllegalArgumentException("You are already enrolled in this course.");
-        }
+        log.info("POST /courses/{}/enroll - student enrollment request by user {}", courseId, userId);
 
         Enrollment enrollment = new Enrollment(userId, courseId);
         enrollmentRepository.save(enrollment);
 
-        log.info("User {} enrolled successfully in course {}", userId, courseId);
+        log.info("Student {} successfully enrolled in course {}", userId, courseId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/{courseId}/enroll/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> enrollUser(
+            @PathVariable String courseId,
+            @PathVariable String userId
+    ) {
+        log.info("POST /courses/{}/enroll/{} - admin enrollment request", courseId, userId);
+
+        Enrollment enrollment = new Enrollment(userId, courseId);
+        enrollmentRepository.save(enrollment);
+
+        log.info("Admin enrolled user {} into course {}", userId, courseId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
