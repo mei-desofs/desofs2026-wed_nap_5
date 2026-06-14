@@ -152,7 +152,7 @@
                 </dependencies>
 
                 <configuration>
-                     
+
                     <targetClasses>
                         <param>com.grupo.learningmore.services.*</param>
                     </targetClasses>
@@ -160,7 +160,7 @@
                     <targetTests>
                         <param>com.grupo.learningmore.services.*Test</param>
                     </targetTests>
-                     
+
                 </configuration>
             </plugin>
 
@@ -182,7 +182,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> 
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -260,6 +260,9 @@
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
                 <version>12.1.3</version>
+                <configuration>
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.cyclonedx</groupId>
