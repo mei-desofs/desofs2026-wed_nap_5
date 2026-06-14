@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+ 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +46,8 @@ public class ChatService {
 
     @Transactional
     public ChatMessageResponse sendMessage(
-            UUID userId,
-            UUID chatRoomId,
+            String userId,
+            String chatRoomId,
             SendMessageRequest request
     ) {
 
@@ -98,7 +98,7 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ChatMessageResponse> getMessages(UUID chatRoomId, Pageable pageable) {
+    public Page<ChatMessageResponse> getMessages(String chatRoomId, Pageable pageable) {
 
         log.info("Fetching paginated messages for chatRoom {}", chatRoomId);
 
@@ -117,7 +117,7 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatRoom> getChatsForUser(UUID userId) {
+    public List<ChatRoom> getChatsForUser(String userId) {
 
         log.info("Fetching chats for user {}", userId);
 
@@ -125,7 +125,7 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatRoom createChatRoom(String name, UUID courseId) {
+    public ChatRoom createChatRoom(String name, String courseId) {
 
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
@@ -138,14 +138,14 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public ChatRoom getChatRoomById(UUID chatRoomId) {
+    public ChatRoom getChatRoomById(String chatRoomId) {
 
         return chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("Chat room not found"));
     }
 
     @Transactional(readOnly = true)
-    public List<ChatRoom> getChatRoomsByCourse(UUID courseId) {
+    public List<ChatRoom> getChatRoomsByCourse(String courseId) {
         return chatRoomRepository.findByCourseId(courseId);
     }
 

@@ -3,20 +3,25 @@ package com.grupo.learningmore.domain.course;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.HexFormat;
+ 
 
 @Entity
 @Table(name = "resources")
 @Getter
 public class Resource {
 
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)      
+    private String id;
 
     @Column(nullable = false)
-    private UUID courseId;
+    private String courseId;
 
     @Column(nullable = false)
     private String filename;
@@ -34,12 +39,13 @@ public class Resource {
     private LocalDateTime uploadedAt;
 
     @Column(nullable = false)
-    private UUID uploadedBy;
+    private String uploadedBy;
 
     public Resource() {
     }
 
-    public Resource(UUID courseId, String filename, String filePath, Long fileSize, String contentType, UUID uploadedBy) {
+    public Resource(String courseId, String filename, String filePath, Long fileSize, String contentType, String uploadedBy) {
+        //this.id = generateSecureId();
         this.courseId = courseId;
         this.filename = filename;
         this.filePath = filePath;
@@ -49,11 +55,20 @@ public class Resource {
         this.uploadedAt = LocalDateTime.now();
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
     }
 
-    public void setCourseId(UUID courseId) {
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "RSC-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
+    }
+
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
@@ -77,7 +92,7 @@ public class Resource {
         this.uploadedAt = uploadedAt;
     }
 
-    public void setUploadedBy(UUID uploadedBy) {
+    public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
     }
 }

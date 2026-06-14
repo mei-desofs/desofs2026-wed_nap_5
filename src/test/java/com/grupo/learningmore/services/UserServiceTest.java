@@ -5,7 +5,7 @@ import com.grupo.learningmore.domain.user.UserRole;
 import com.grupo.learningmore.repositories.UserRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+ 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -101,7 +101,7 @@ public class UserServiceTest {
 
     @Test
     public void testFindByIdSuccess() {
-        UUID id = UUID.randomUUID();
+        String id = "user123";
         User user = new User("User", "user@test.com", "hash", UserRole.STUDENT);
         when(repository.findById(id)).thenReturn(Optional.of(user));
 
@@ -112,7 +112,7 @@ public class UserServiceTest {
 
     @Test
     public void testFindByIdNotFoundThrowsException() {
-        UUID id = UUID.randomUUID();
+        String id = "user123";
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> userService.findById(id));
@@ -139,7 +139,7 @@ public class UserServiceTest {
 
     @Test
     public void testChangePasswordSuccessUpdatesHashAndTokenVersion() {
-        UUID userId = UUID.randomUUID();
+        String userId = "user123";
         User user = new User("User", "user@test.com", "old-hash", UserRole.STUDENT);
 
         when(repository.findById(userId)).thenReturn(Optional.of(user));
@@ -156,7 +156,7 @@ public class UserServiceTest {
 
     @Test
     public void testChangePasswordWithWrongCurrentPasswordThrowsException() {
-        UUID userId = UUID.randomUUID();
+        String userId = "user123";
         User user = new User("User", "user@test.com", "old-hash", UserRole.STUDENT);
 
         when(repository.findById(userId)).thenReturn(Optional.of(user));

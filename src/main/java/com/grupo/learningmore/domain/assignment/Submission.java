@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.HexFormat;
+ 
 
 /**
  * Submission entity within the Assignment aggregate.
@@ -16,19 +18,21 @@ import java.util.UUID;
 @Table(name = "submissions")
 public class Submission {
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
 
     @Column(name = "assignment_id", insertable = false, updatable = false)
-    private UUID assignmentId;
+    private String assignmentId;
 
     @Column(nullable = false)
-    private UUID userId;
+    private String userId;
 
     @Column(nullable = false)
     private LocalDateTime submittedAt;
@@ -57,13 +61,13 @@ public class Submission {
     private LocalDateTime updatedAt;
 
     @Column(name = "last_modified_by")
-    private UUID lastModifiedBy;
+    private String lastModifiedBy;
 
     public Submission() {
     }
 
-    public Submission(Assignment assignment,
-                      UUID userId,
+    /*public Submission(Assignment assignment,
+                      String userId,
                       LocalDateTime submittedAt,
                       SubmissionStatus status,
                       String filePath) {
@@ -76,39 +80,47 @@ public class Submission {
         this.version = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-    }
+    }*/
 
-    public Submission(UUID id,
+    public Submission( 
                       Assignment assignment,
-                      UUID userId,
+                      String userId,
                       LocalDateTime submittedAt,
                       SubmissionStatus status,
-                      String filePath,
-                      BigDecimal grade,
-                      String feedback) {
+                      String filePath 
+                       ) {
 
-        this.id = id;
+        //this.id = generateSecureId();
         this.assignment = assignment;
         this.userId = userId;
         this.submittedAt = submittedAt;
         this.status = status;
         this.filePath = filePath;
-        this.grade = grade;
-        this.feedback = feedback;
+        this.grade = null;
+        this.feedback = null;
         this.version = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
+    }
+
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "SUB-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 
     public void setAssignment(Assignment assignment) {
         this.assignment = assignment;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -147,13 +159,13 @@ public class Submission {
         this.updatedAt = updatedAt;
     }
 
-    public void setLastModifiedBy(UUID lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
     public void grade(BigDecimal grade,
                       String feedback,
-                      UUID graderId) {
+                      String graderId) {
 
         if (this.status == SubmissionStatus.GRADED) {
             throw new IllegalStateException("Submission already graded");

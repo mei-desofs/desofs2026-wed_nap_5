@@ -14,8 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,6 +54,8 @@ class AuthControllerTest {
     void loginSuccessReturnsTokenAndUserData() {
         User user = new User("Bruno", "bruno@test.com", "hashed-password", UserRole.STUDENT);
 
+        ReflectionTestUtils.setField(user, "id", "USR-MOCK123456789");
+        
         when(userService.findByEmail("bruno@test.com")).thenReturn(user);
         when(passwordEncoder.matches("password123", "hashed-password")).thenReturn(true);
         when(jwtService.generateToken(user.getId().toString(), "STUDENT", 0L)).thenReturn("jwt-token");

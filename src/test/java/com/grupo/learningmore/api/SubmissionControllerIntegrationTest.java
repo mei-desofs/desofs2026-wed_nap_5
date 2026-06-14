@@ -21,8 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
-
+ 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
@@ -65,10 +64,10 @@ public class SubmissionControllerIntegrationTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private UUID professorId;
-    private UUID studentId;
-    private UUID courseId;
-    private UUID assignmentId;
+    private String professorId;
+    private String studentId;
+    private String courseId;
+    private String assignmentId;
 
     @BeforeEach
     public void clean() {     

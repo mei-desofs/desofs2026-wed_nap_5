@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+ 
 
 @Service
 public class CourseService {
@@ -23,7 +23,7 @@ public class CourseService {
     }
 
     @Transactional
-    public Course createCourse(String code, String name, String description, UUID createdBy) {
+    public Course createCourse(String code, String name, String description, String createdBy) {
 
         log.info("Creating course with code {} by user {}", code, createdBy);
 
@@ -41,7 +41,7 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public Course findById(UUID id) {
+    public Course findById(String id) {
 
         log.info("Fetching course by id {}", id);
 
@@ -77,7 +77,7 @@ public class CourseService {
     }
 
     @Transactional
-    public Course updateCourse(UUID id, String name, String description) {
+    public Course updateCourse(String id, String name, String description) {
 
         log.info("Updating course {}", id);
 
@@ -95,7 +95,7 @@ public class CourseService {
     }
 
     @Transactional
-    public void deleteCourse(UUID id) {
+    public void deleteCourse(String id) {
 
         log.warn("Deleting course by id {}", id);
 

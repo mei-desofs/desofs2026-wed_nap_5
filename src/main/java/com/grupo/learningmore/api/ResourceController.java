@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api/courses/{courseId}/resources")
@@ -35,11 +35,11 @@ public class ResourceController {
     @PostMapping
     public ResponseEntity<ResourceResponse> uploadResource(
             Authentication authentication,
-            @PathVariable UUID courseId,
+            @PathVariable String courseId,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("POST /courses/{}/resources - Upload resource by user {}", courseId, userId);
 
@@ -53,7 +53,7 @@ public class ResourceController {
 
     @GetMapping
     public ResponseEntity<List<ResourceResponse>> getResourcesByCourse(
-            @PathVariable UUID courseId,
+            @PathVariable String courseId,
             Authentication authentication
     ) {
         log.info("GET /courses/{}/resources - Fetch resources", courseId);
@@ -79,8 +79,8 @@ public class ResourceController {
 
     @GetMapping("/{resourceId}")
     public ResponseEntity<ResourceResponse> getResourceById(
-            @PathVariable UUID courseId,
-            @PathVariable UUID resourceId,
+            @PathVariable String courseId,
+            @PathVariable String resourceId,
             Authentication authentication
     ) {
         log.info("GET /courses/{}/resources/{} - Fetch resource", courseId, resourceId);
@@ -106,8 +106,8 @@ public class ResourceController {
     @PreAuthorize("hasRole('PROFESSOR') or hasRole('ADMIN')")
     @DeleteMapping("/{resourceId}")
     public ResponseEntity<Void> deleteResource(
-            @PathVariable UUID courseId,
-            @PathVariable UUID resourceId
+            @PathVariable String courseId,
+            @PathVariable String resourceId
     ) throws IOException {
 
         log.warn("DELETE /courses/{}/resources/{} - Delete resource request", courseId, resourceId);
@@ -138,7 +138,7 @@ public class ResourceController {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    private <T> ResponseEntity<T> validateUserAccess(Authentication authentication, UUID courseId) {
+    private <T> ResponseEntity<T> validateUserAccess(Authentication authentication, String courseId) {
         if (authentication == null) {
             log.warn("Unauthorized access attempt to course resources {}", courseId);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -146,7 +146,7 @@ public class ResourceController {
 
         if (!hasAdminOrProfessorRole(authentication)) {
             try {
-                UUID userId = UUID.fromString(authentication.getName());
+                String userId = authentication.getName();
 
                 if (!enrollmentService.isUserEnrolledInCourse(userId, courseId)) {
                     log.warn("Forbidden access: user {} not enrolled in course {}", userId, courseId);

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.UUID;
+ 
 
 @Service
 public class UserService {
@@ -71,7 +71,7 @@ public class UserService {
         return repository.findAll();
     }
 
-    public User findById(UUID id) {
+    public User findById(String id) {
 
         return repository.findById(id)
                 .orElseThrow(() -> {
@@ -91,7 +91,7 @@ public class UserService {
 
     @Transactional
     public void changePassword(
-            UUID userId,
+            String userId,
             String currentPassword,
             String newPassword
     ) {
@@ -116,7 +116,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deactivateUser(UUID userId) {
+    public void deactivateUser(String userId) {
 
         log.warn("User deactivation requested: user={}", userId);
 

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
-import java.util.UUID;
+ 
 
 /**
  * Assignment aggregate root.
@@ -19,9 +21,11 @@ import java.util.UUID;
 @Table(name = "assignments")
 public class Assignment {
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @Column(nullable = false)
     private String title;
@@ -33,7 +37,7 @@ public class Assignment {
     private LocalDateTime deadline;
 
     @Column(nullable = false)
-    private UUID courseId;
+    private String courseId;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -42,7 +46,7 @@ public class Assignment {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private UUID createdBy;
+    private String createdBy;
 
     @Version
     @Column(nullable = false)
@@ -56,7 +60,20 @@ public class Assignment {
     public Assignment() {
     }
 
-    public Assignment(String title, String description, LocalDateTime deadline, UUID courseId, UUID createdBy) {
+    /*public Assignment(String title, String description, LocalDateTime deadline, UUID courseId, UUID createdBy) {
+        this.title = title;
+        this.description = description;
+        this.deadline = deadline;
+        this.courseId = courseId;
+        this.createdBy = createdBy;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.version = 0;
+        this.submissions = new ArrayList<>();
+    }*/
+
+    public Assignment(  String title, String description, LocalDateTime deadline, String courseId, String createdBy) {
+        //this.id = generateSecureId();
         this.title = title;
         this.description = description;
         this.deadline = deadline;
@@ -68,22 +85,22 @@ public class Assignment {
         this.submissions = new ArrayList<>();
     }
 
-    public Assignment(UUID id, String title, String description, LocalDateTime deadline, UUID courseId, UUID createdBy) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.deadline = deadline;
-        this.courseId = courseId;
-        this.createdBy = createdBy;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.version = 0;
-        this.submissions = new ArrayList<>();
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "ASN-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
+
+    /*public void setId(String id) {
+        this.id = id;
+    }*/
 
     public void setTitle(String title) {
         this.title = title;
@@ -98,7 +115,7 @@ public class Assignment {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void setCourseId(UUID courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
@@ -110,7 +127,7 @@ public class Assignment {
         this.updatedAt = updatedAt;
     }
 
-    public void setCreatedBy(UUID createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -170,7 +187,7 @@ public class Assignment {
      * @param submissionId the submission ID
      * @return the submission or null if not found
      */
-    public Submission findSubmissionById(UUID submissionId) {
+    public Submission findSubmissionById(String submissionId) {
         return this.submissions.stream()
                 .filter(submission -> submission.getId().equals(submissionId))
                 .findFirst()
@@ -184,7 +201,7 @@ public class Assignment {
      * @param userId the user ID
      * @return the submission or null if not found
      */
-    public Submission findSubmissionByUserId(UUID userId) {
+    public Submission findSubmissionByUserId(String userId) {
         return this.submissions.stream()
                 .filter(submission -> submission.getUserId().equals(userId))
                 .findFirst()

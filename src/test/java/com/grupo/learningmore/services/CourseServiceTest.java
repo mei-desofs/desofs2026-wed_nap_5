@@ -9,11 +9,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
-
+ 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -27,11 +27,11 @@ public class CourseServiceTest {
     @InjectMocks
     private CourseService courseService;
 
-    private UUID professorId;
+    private String professorId;
 
     @BeforeEach
     public void setUp() {
-        professorId = UUID.randomUUID();
+        professorId =  "professor123";
     }
 
     @Test
@@ -78,9 +78,9 @@ public class CourseServiceTest {
     @Test
     public void testFindByIdSuccess() {
         // Arrange
-        UUID courseId = UUID.randomUUID();
+        String courseId = "course123";
         Course expectedCourse = new Course("PHYS101", "Physics", "Mechanics", professorId);
-        expectedCourse.setId(courseId);
+        
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(expectedCourse));
 
         // Act
@@ -95,7 +95,7 @@ public class CourseServiceTest {
     @Test
     public void testFindByIdNotFoundThrowsException() {
         // Arrange
-        UUID courseId = UUID.randomUUID();
+        String courseId = "course123";
         when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -134,9 +134,10 @@ public class CourseServiceTest {
         // Arrange
         String courseCode = "CS101";
         Course expectedCourse = new Course(courseCode, "Computer Science", "Intro", professorId);
-        UUID courseId = UUID.randomUUID();
-        expectedCourse.setId(courseId); // O ID que o deleteById vai receber
+        String courseId = "course123";
 
+        ReflectionTestUtils.setField(expectedCourse, "id", courseId);
+ 
         // Simulamos o findByCode que o service invoca internamente
         when(courseRepository.findByCode(courseCode)).thenReturn(Optional.of(expectedCourse));
 
@@ -182,10 +183,9 @@ public class CourseServiceTest {
     @Test
     public void testUpdateCourseSuccess() {
         // Arrange
-        UUID courseId = UUID.randomUUID();
+        String courseId = "course123";
         Course existingCourse = new Course("CS101", "Old Name", "Old Desc", professorId);
-        existingCourse.setId(courseId);
-        
+         
          
         LocalDateTime dataAntiga = LocalDateTime.now().minusDays(5);
         existingCourse.setUpdatedAt(dataAntiga);
@@ -211,7 +211,7 @@ public class CourseServiceTest {
     @Test
     public void testDeleteCourseSuccess() {
         // Arrange
-        UUID targetId = UUID.randomUUID();
+        String targetId = "course123";
  
         // Act
         courseService.deleteCourse(targetId);

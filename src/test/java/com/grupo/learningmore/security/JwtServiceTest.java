@@ -1,12 +1,21 @@
 package com.grupo.learningmore.security;
 
+
+ 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JwtServiceTest {
+
+@SpringBootTest(properties = {
+    "security.jwt.secret=this-is-a-secure-test-secret-key-with-32-chars-minimum",
+    "security.jwt.expiration=86400000"
+})
+@ActiveProfiles("test")class JwtServiceTest {
 
     private JwtService jwtService;
 

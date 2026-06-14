@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api/chat")
@@ -36,14 +36,14 @@ public class ChatController {
     @PostMapping("/{chatRoomId}/messages")
     public ResponseEntity<ChatMessageResponse> sendMessage(
             Authentication authentication,
-            @PathVariable UUID chatRoomId,
+            @PathVariable String chatRoomId,
             @Valid @RequestBody SendMessageRequest request
     ) {
 
         log.info("POST /chat/{}/messages - Send message request", chatRoomId);
 
         try {
-            UUID userId = UUID.fromString(authentication.getName());
+            String userId = authentication.getName();
 
             log.info("User {} sending message to chat {}", userId, chatRoomId);
 
@@ -72,7 +72,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{chatRoomId}/messages")
     public ResponseEntity<Page<ChatMessageResponse>> getMessages(
-            @PathVariable UUID chatRoomId,
+            @PathVariable String chatRoomId,
             Pageable pageable
     ) {
 
@@ -90,7 +90,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ChatRoomResponse>> getMyChats(Authentication authentication) {
 
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
 
         log.info("GET /chat/me - user {}", userId);
 
@@ -131,7 +131,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/chatrooms/{chatRoomId}")
     public ResponseEntity<ChatRoomResponse> getChatRoomById(
-            @PathVariable UUID chatRoomId
+            @PathVariable String chatRoomId
     ) {
 
         log.info("GET /chatrooms/{} - Fetch chat room", chatRoomId);
@@ -148,7 +148,7 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/courses/{courseId}/chatrooms")
     public ResponseEntity<List<ChatRoomResponse>> getChatRoomsByCourse(
-            @PathVariable UUID courseId
+            @PathVariable String courseId
     ) {
 
         log.info("GET /chat/courses/{}/chatrooms", courseId);

@@ -5,6 +5,7 @@ import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
 import com.grupo.learningmore.repositories.AssignmentAuditLogRepository;
 import com.grupo.learningmore.repositories.AssignmentRepository;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
-
+ 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 public class AssignmentServiceTest {
@@ -35,24 +36,27 @@ public class AssignmentServiceTest {
     @InjectMocks
     private AssignmentService assignmentService;
 
-    private UUID courseId;
-    private UUID professorId;
+    private String courseId;
+    private String professorId;
 
     @BeforeEach
     public void setUp() {
-        courseId = UUID.randomUUID();
-        professorId = UUID.randomUUID();
+        courseId = "course123";
+        professorId = "professor123";
     }
 
     @Test
     public void testCreateAssignmentSuccess() {
         Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
-        course.setId(courseId);
 
         when(courseService.findById(courseId)).thenReturn(course);
+         
+
         when(assignmentRepository.save(any(Assignment.class))).thenAnswer(invocation -> {
             Assignment a = invocation.getArgument(0);
-            a.setId(UUID.randomUUID());
+            if (a.getId() == null) {
+                ReflectionTestUtils.setField(a, "id", "ASN-TEST123456789");
+            }
             return a;
         });
 
@@ -73,13 +77,14 @@ public class AssignmentServiceTest {
 
     @Test
     public void testCreateAssignmentAsAdminBypassesOwnershipCheck() {
-        Course course = new Course("CS-001", "Cybersecurity", "Course", UUID.randomUUID());
-        course.setId(courseId);
-
+        Course course = new Course("CS-001", "Cybersecurity", "Course",  professorId);
+ 
         when(courseService.findById(courseId)).thenReturn(course);
         when(assignmentRepository.save(any(Assignment.class))).thenAnswer(invocation -> {
             Assignment a = invocation.getArgument(0);
-            a.setId(UUID.randomUUID());
+            if (a.getId() == null) {
+                ReflectionTestUtils.setField(a, "id", "ASN-ADMIN123456789");
+            }
             return a;
         });
 
@@ -100,9 +105,8 @@ public class AssignmentServiceTest {
 
     @Test
     public void testCreateAssignmentRejectsNullDeadline() {
-        Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
-        course.setId(courseId);
-
+        //Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
+ 
         assertThrows(IllegalArgumentException.class, () -> assignmentService.createAssignment(
                 courseId,
                 "Project 1",
@@ -117,10 +121,10 @@ public class AssignmentServiceTest {
 
     @Test
     public void testCreateAssignmentDeniedWhenNotCourseOwner() {
-        UUID otherProfessor = UUID.randomUUID();
+        String otherProfessor = "professor456";
 
         Course course = new Course("CS-001", "Cybersecurity", "Course", otherProfessor);
-        course.setId(courseId);
+        
 
         when(courseService.findById(courseId)).thenReturn(course);
 
@@ -139,7 +143,7 @@ public class AssignmentServiceTest {
     @Test
     public void testUpdateAssignmentSuccess() {
         Assignment assignment = new Assignment(
-                UUID.randomUUID(),
+                
                 "Old title",
                 "Old desc",
                 LocalDateTime.now().plusDays(2),
@@ -168,7 +172,7 @@ public class AssignmentServiceTest {
         @Test
         public void testFindByCourseIdReturnsAssignments() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            
             "Title",
             "Desc",
             LocalDateTime.now().plusDays(3),
@@ -176,7 +180,7 @@ public class AssignmentServiceTest {
             professorId
         );
         Course course = new Course("CS-001", "Cybersecurity", "Course", professorId);
-        course.setId(courseId);
+        
 
         when(courseService.findById(courseId)).thenReturn(course);
         when(assignmentRepository.findByCourseId(courseId)).thenReturn(java.util.List.of(assignment));
@@ -191,7 +195,7 @@ public class AssignmentServiceTest {
 
         @Test
         public void testFindByIdNotFoundThrowsException() {
-        UUID assignmentId = UUID.randomUUID();
+        String assignmentId = "assignment456";
 
         when(assignmentRepository.findById(assignmentId)).thenReturn(Optional.empty());
 
@@ -202,7 +206,7 @@ public class AssignmentServiceTest {
         @Test
         public void testUpdateAssignmentPreservesUnprovidedFieldsAndUpdatesDeadline() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+            
             "Old title",
             "Old desc",
             LocalDateTime.now().plusDays(2),
@@ -235,7 +239,7 @@ public class AssignmentServiceTest {
         @Test
         public void testUpdateAssignmentRejectsUnauthorizedActor() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+         
             "Old title",
             "Old desc",
             LocalDateTime.now().plusDays(2),
@@ -251,7 +255,7 @@ public class AssignmentServiceTest {
             "New title",
             "New desc",
             LocalDateTime.now().plusDays(5),
-            UUID.randomUUID(),
+            "professor456",
             false
         ));
 
@@ -261,7 +265,7 @@ public class AssignmentServiceTest {
         @Test
         public void testUpdateAssignmentRejectsExpiredDeadline() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+          
             "Old title",
             "Old desc",
             LocalDateTime.now().plusDays(2),
@@ -287,7 +291,7 @@ public class AssignmentServiceTest {
         @Test
         public void testDeleteAssignmentSuccess() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+          
             "Title",
             "Desc",
             LocalDateTime.now().plusDays(2),
@@ -306,7 +310,7 @@ public class AssignmentServiceTest {
         @Test
         public void testDeleteAssignmentRejectsUnauthorizedActor() {
         Assignment assignment = new Assignment(
-            UUID.randomUUID(),
+           
             "Title",
             "Desc",
             LocalDateTime.now().plusDays(2),
@@ -319,7 +323,7 @@ public class AssignmentServiceTest {
         assertThrows(AccessDeniedException.class, () -> assignmentService.deleteAssignment(
             courseId,
             assignment.getId(),
-            UUID.randomUUID(),
+            "professor456",
             false
         ));
 

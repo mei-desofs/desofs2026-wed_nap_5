@@ -1,14 +1,21 @@
 package com.grupo.learningmore.domain.user;
 
 import jakarta.persistence.*;
-import java.util.UUID;
+
+import java.security.SecureRandom;
+import java.util.HexFormat;
+ 
 
 @Entity
 @Table(name = "users")
 public class User {
 
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @Column(nullable = false)
     private String name;
@@ -33,7 +40,7 @@ public class User {
     }
 
     public User(String name, String email, String passwordHash, UserRole role) {
-        this.id = UUID.randomUUID();
+       // this.id = generateSecureId();
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -42,7 +49,20 @@ public class User {
         this.tokenVersion = 0;
     }
 
-    public UUID getId() {
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
+    }
+
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "USR-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
+    }
+
+    public String getId() {
         return id;
     }
 

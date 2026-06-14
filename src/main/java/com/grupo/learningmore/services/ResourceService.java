@@ -13,13 +13,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HexFormat;
 import java.util.List;
-import java.util.UUID;
+
+import java.security.SecureRandom;
+ 
 
 @Service
 public class ResourceService {
 
     private static final Logger log = LoggerFactory.getLogger(ResourceService.class);
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
 
     private final ResourceRepository resourceRepository;
     private final CourseService courseService;
@@ -33,82 +39,89 @@ public class ResourceService {
     }
 
     @Transactional
-    public Resource uploadResource(UUID courseId, MultipartFile file, UUID uploadedBy) throws IOException {
+    public Resource uploadResource(String courseId, MultipartFile file, String uploadedBy) throws IOException {
+    
+    log.info("Uploading resource to course {} by user {}", courseId, uploadedBy);
 
-        log.info("Uploading resource to course {} by user {}", courseId, uploadedBy);
+    
+    courseService.findById(courseId);
 
-        // Verify course exists
-        courseService.findById(courseId);
-
-        // Validate file
-        if (file.isEmpty()) {
-            log.warn("Empty file upload attempt by user {} in course {}", uploadedBy, courseId);
-            throw new IllegalArgumentException("File cannot be empty");
-        }
-
-        String originalFilename = file.getOriginalFilename();
-
-        if (originalFilename == null || originalFilename.isBlank()) {
-            log.warn("Invalid filename upload attempt by user {} in course {}", uploadedBy, courseId);
-            throw new IllegalArgumentException("Invalid file name");
-        }
-
-        if (originalFilename.contains("..") ||
-                originalFilename.contains("/") ||
-                originalFilename.contains("\\")) {
-
-            log.warn("Path traversal attempt detected in filename '{}' by user {}",
-                    originalFilename, uploadedBy);
-
-            throw new IllegalArgumentException("Invalid file name");
-        }
-
-        String safeOriginalFilename =
-                Paths.get(originalFilename).getFileName().toString();
-
-        // Create upload directory if it doesn't exist
-        Path uploadPath = Paths.get(uploadDir, courseId.toString())
-                .normalize()
-                .toAbsolutePath();
-
-        Files.createDirectories(uploadPath);
-
-        // Generate unique filename
-        String filename = UUID.randomUUID() + "_" + safeOriginalFilename;
-
-        Path filePath = uploadPath.resolve(filename)
-                .normalize()
-                .toAbsolutePath();
-
-        if (!filePath.startsWith(uploadPath)) {
-            log.warn("Invalid resolved file path detected for course {} by user {}",
-                    courseId, uploadedBy);
-
-            throw new IllegalArgumentException("Invalid file path");
-        }
-
-        // Save file to disk
-        Files.write(filePath, file.getBytes());
-
-        Resource resource = new Resource(
-                courseId,
-                safeOriginalFilename,
-                filePath.toString(),
-                file.getSize(),
-                file.getContentType(),
-                uploadedBy
-        );
-
-        Resource saved = resourceRepository.save(resource);
-
-        log.info("Resource uploaded successfully: {} for course {} by user {}",
-                saved.getId(), courseId, uploadedBy);
-
-        return saved;
+    // Validate file
+    if (file.isEmpty()) {
+        log.warn("Empty file upload attempt by user {} in course {}", uploadedBy, courseId);
+        throw new IllegalArgumentException("File cannot be empty");
     }
 
+    String originalFilename = file.getOriginalFilename();
+
+    if (originalFilename == null || originalFilename.isBlank()) {
+        log.warn("Invalid filename upload attempt by user {} in course {}", uploadedBy, courseId);
+        throw new IllegalArgumentException("Invalid file name");
+    }
+
+    //Against Path Traversal
+    String cleanOriginalFilename = org.springframework.util.StringUtils.cleanPath(originalFilename);
+
+    if (cleanOriginalFilename.contains("..") ||
+            cleanOriginalFilename.contains("/") ||
+            cleanOriginalFilename.contains("\\")) {
+
+        log.warn("Path traversal attempt detected in filename '{}' by user {}",
+                cleanOriginalFilename, uploadedBy);
+
+        throw new IllegalArgumentException("Invalid file name");
+    }
+
+    String safeOriginalFilename = Paths.get(cleanOriginalFilename).getFileName().toString();
+
+    
+    Path uploadPath = Paths.get(uploadDir, courseId)
+            .normalize()
+            .toAbsolutePath();
+
+    Files.createDirectories(uploadPath);
+
+     
+    byte[] randomBytes = new byte[16]; 
+    secureRandom.nextBytes(randomBytes);
+    String randomPrefix = HexFormat.of().formatHex(randomBytes).toUpperCase();
+    
+    String filename = randomPrefix + "_" + safeOriginalFilename;
+
+    Path filePath = uploadPath.resolve(filename)
+            .normalize()
+            .toAbsolutePath();
+
+    if (!filePath.startsWith(uploadPath)) {
+        log.warn("Invalid resolved file path detected for course {} by user {}",
+                courseId, uploadedBy);
+
+        throw new IllegalArgumentException("Invalid file path");
+    }
+
+     
+    Files.write(filePath, file.getBytes());
+
+     
+    Resource resource = new Resource(
+            courseId,
+            filename,  
+            filePath.toString(),
+            file.getSize(),
+            file.getContentType(),
+            uploadedBy
+    );
+
+    Resource saved = resourceRepository.save(resource);
+
+    log.info("Resource uploaded successfully: {} for course {} by user {}",
+            saved.getId(), courseId, uploadedBy);
+
+    return saved;
+}
+
     @Transactional(readOnly = true)
-    public Resource findById(UUID id) {
+    public Resource findById(String id) {
 
         log.info("Fetching resource {}", id);
 
@@ -120,7 +133,7 @@ public class ResourceService {
     }
 
     @Transactional(readOnly = true)
-    public List<Resource> findByCourseId(UUID courseId) {
+    public List<Resource> findByCourseId(String courseId) {
 
         log.info("Fetching resources for course {}", courseId);
 
@@ -132,7 +145,7 @@ public class ResourceService {
     }
 
     @Transactional
-    public void deleteResource(UUID id) throws IOException {
+    public void deleteResource(String id) throws IOException {
 
         log.warn("Deleting resource {}", id);
 

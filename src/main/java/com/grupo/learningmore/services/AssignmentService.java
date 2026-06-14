@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+ 
 
 @Service
 public class AssignmentService {
@@ -34,7 +34,7 @@ public class AssignmentService {
     }
 
     @Transactional
-    public Assignment createAssignment(UUID courseId, String title, String description, LocalDateTime deadline, UUID actorId, boolean isAdmin) {
+    public Assignment createAssignment(  String courseId, String title, String description, LocalDateTime deadline, String actorId, boolean isAdmin) {
 
         log.info("Creating assignment for course {} by user {}", courseId, actorId);
 
@@ -68,7 +68,7 @@ public class AssignmentService {
     }
 
     @Transactional(readOnly = true)
-    public List<Assignment> findByCourseId(UUID courseId) {
+    public List<Assignment> findByCourseId(String courseId) {
 
         log.info("Fetching assignments for course {}", courseId);
 
@@ -82,7 +82,7 @@ public class AssignmentService {
     }
 
     @Transactional(readOnly = true)
-    public Assignment findById(UUID assignmentId) {
+    public Assignment findById(String assignmentId) {
 
         log.info("Fetching assignment {}", assignmentId);
 
@@ -95,12 +95,12 @@ public class AssignmentService {
 
     @Transactional
     public Assignment updateAssignment(
-            UUID courseId,
-            UUID assignmentId,
+            String courseId,
+            String assignmentId,
             String title,
             String description,
             LocalDateTime deadline,
-            UUID actorId,
+            String actorId,
             boolean isAdmin
     ) {
 
@@ -152,7 +152,7 @@ public class AssignmentService {
     }
 
     @Transactional
-    public void deleteAssignment(UUID courseId, UUID assignmentId, UUID actorId, boolean isAdmin) {
+    public void deleteAssignment(String courseId, String assignmentId, String actorId, boolean isAdmin) {
 
         log.warn("Deleting assignment {} from course {} by user {}", assignmentId, courseId, actorId);
 
