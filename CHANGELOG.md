@@ -1,5 +1,59 @@
 # Changelog
 
+## [2.1.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.0.0...v2.1.0) (2026-06-14)
+
+
+### Features
+
+* adds logging to JwtFilter ([4db3782](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/4db3782ed5ae6cafafee6b80b736d74116558c0e))
+* adds more chatroom and user endpoints and correct related code. updates psotamn collection ([5f0069b](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/5f0069b7a48e9c16c687ab0867f2eafe4fb237dc))
+* adds postman collection ([d34889b](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/d34889bc5197174859e0aa3a94e0b05efbe08608))
+* **ci:** implement unified CI/CD pipeline and restore old workflows ([ef4dfda](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/ef4dfda4333958039e12fd6b340a83786b476325))
+* improves and adds more logging ([c3420a5](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/c3420a5a23e1e7856116808380d82008e7412fb2))
+* **logging:** audit user lifecycle events ([a87357b](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/a87357b96a07c832466ef257906a44e41dfba090))
+* **pipeline:** adding parallel jobs and dast security testing ([07f9bf7](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/07f9bf7b27f08eeef6f8207c2c5572beab1b168b))
+* **pipeline:** adding runtime security tests with newman ([9e52134](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/9e521349f44104dc3c760da2c1949d865c35c6ba))
+* updates bootstrap to create more data on start ([207b989](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/207b989d6b44b344907e598faec81fd7daa3a775))
+* updates chat related endpoints ([1e863d0](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/1e863d0b72fbf2aebb7d7e8acd06608816e886ca))
+* updates CourseController and EnrollementService ([fbcaa5d](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/fbcaa5df9d05f8f701e7f72331cd446ccc83b6fb))
+* updates postman collection ([4e0a136](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/4e0a13692e3162fb45dafebee218ee9b949ee94e))
+* **user:** add profile and account deactivation endpoints ([3594639](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/3594639865ae7ae101e0092c2de4a9521de6e773))
+
+
+### Bug Fixes
+
+* Added fix to assignment and submission entities ([65bcdc4](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/65bcdc414090eac3e387cf663d8866fd3e175e1b))
+* adding report actions for owasp dependency in pipeline ([591da95](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/591da956e0512361c976204684075dacbf85ded4))
+* app properties for testing ([37bf9b3](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/37bf9b335fd40afef2aee186133438303ecfab5c))
+* application properties test ([5d52085](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/5d52085144cdbc3fc6f833ae71b2b7a6c1a6c8c7))
+* Assignment ID added to AuditLog ([5321824](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/5321824f47c38c2acdc32a27211f27bbf61b109e))
+* Assignment Test ([117e6a5](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/117e6a5a9e3bb08ff9030da643fb28849630ad5c))
+* AssignmentControllerIntegration Test ([5f04d13](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/5f04d1341dae18f66f67b6d3e40cc6708a1f5aa4))
+* Change app properties of tests ([4ae7b5a](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/4ae7b5ab0047cd913e9905cedd1e138b071aa243))
+* changing Test ([0d83dac](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/0d83dac67d8df3bbfeb06f21a2442db4ae85df41))
+* **chat:** handle missing chat room validation correctly ([915b45f](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/915b45f54cdd70f35e54c8fb703748fde71b9c7e))
+* code corrections to unsure consistence ([9b381df](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/9b381dfc6c7890e379bd259c799e7b4e2e233546))
+* corrects dependencies ([0a1d66e](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/0a1d66e628766cf98b3f93056cb55a7e61d52023))
+* corrects folder names ([b3361d3](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/b3361d360f1078a20af4f8d529134a8f987bbda8))
+* corrects ids used ([52c9db1](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/52c9db16d85d66ea2475f257e417c839151691d8))
+* corrects path for uploading files in postamn collection ([aaf80fd](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/aaf80fd0c5c031f89506b248d4e3c3948b6439ff))
+* corrects postamn collection ([92ac53d](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/92ac53d172c9b85ac50df03f9a77898e419ffb22))
+* corrects target branches on unified pipeline ([1959781](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/1959781a5f8d10451e12e090ac2483b208275c63))
+* corrects target branches on unified pipeline ([1c73e47](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/1c73e4730832186f2196bda28485a145610094b0))
+* fix login and bootstrap password information ([0de5976](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/0de5976e6b67e29bf1cc2e4c88782241886906c6))
+* fix pipeline after merge from master ([c99410a](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/c99410a4e409fe7afe2657b02f9cb236c6fe648b))
+* fixes pipeline ([9e3f902](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/9e3f90281f2e7bd4ca14c784541450653a07c305))
+* fixes release-please pipeline ([061e5b4](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/061e5b401ffe37cfd04e13bd8b8f172fca073c97))
+* Ids generated with CSPRNG ([81b25ad](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/81b25adf681b6abbc19eb126b80d3d24767fbff6))
+* ipdates owasp dependency ([1bffd57](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/1bffd5725b84519cf46548003f5497e1d724450e))
+* makes changes for codeQL suggestions ([e5e0e32](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/e5e0e32ad608ddcfd9cb3dd99899dd06af3a75ab))
+* makes changes for codeQL suggestions ([7f83f46](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/7f83f466bd88956a3572f1a3947212737aed25e1))
+* reverts changes to UserController and SecurityConfig ([db4917f](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/db4917f71257d3411946b35af2749ad7a99d3dd8))
+* **security:** harden JWT filter validation flow ([0f888a1](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/0f888a13249b540b2a3676531de8044ed9bf8996))
+* updates owasp in pipeline ([3ef2e6a](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/3ef2e6ab2a6acc651a7f6ce0bf4959af17c85314))
+* updates owasp in pipeline ([1ee9293](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/1ee9293c9abc21c347a948d37a7e9795152f19b8))
+* updates unified pipeline and corrects dependencies ([af4ab44](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/af4ab4417f504d0e01753cb1c778f686a2ea6900))
+
 ## [2.0.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v1.1.1...v2.0.0) (2026-05-18)
 
 
