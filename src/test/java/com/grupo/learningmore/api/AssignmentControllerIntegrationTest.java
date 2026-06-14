@@ -174,17 +174,22 @@ public class AssignmentControllerIntegrationTest {
                 courseId,
                 professorId
         );
-        assignmentRepository.save(assignment);
+        assignmentRepository.saveAndFlush(assignment);
 
-        mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
-                        .with(user(studentId).roles("STUDENT"))
-                        .with(authentication(new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(studentId, null, org.springframework.security.core.authority.AuthorityUtils.createAuthorityList("ROLE_STUDENT"))))
-                        .header("Authorization", "Bearer mock-test-token-to-avoid-500-error")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
-    }
+        try {
+                mockMvc.perform(get("/api/courses/" + courseId + "/assignments")
+                                .with(user(studentId).roles("STUDENT"))
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$", hasSize(1)));
+        } catch (Exception e) {
+                // Se houver uma exceção genérica do Spring
+                throw new AssertionError("O teste falhou com a exceção: " + e.getMessage(), e);
+        } catch (AssertionError e) {
+                // Se o MockMvc capturou o 500, tentamos extrair o erro do MVC
+                throw new AssertionError("Erro 500 detetado! Verifica se há um NullPointerException ou problema de BD no código do teu AssignmentController/Service.", e);
+        }
+}
 
     @Test
     public void testUpdateAssignmentForbiddenOtherProfessor() throws Exception {
