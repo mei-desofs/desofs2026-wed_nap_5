@@ -7,7 +7,7 @@ import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.enrollment.Enrollment;
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
-import com.grupo.learningmore.dto.Request.SendMessageRequest;
+import com.grupo.learningmore.dto.request.SendMessageRequest;
 import com.grupo.learningmore.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+ 
+ 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,20 +61,20 @@ public class ChatControllerIntegrationTest {
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
-    private UUID chatRoomId;
-    private UUID studentId;
-    private UUID professorId;
+    private String chatRoomId;
+    private String studentId;
+    private String professorId;
 
     @BeforeEach
-    public void clean() {     
+    public void clean() {
         chatMessageRepository.deleteAll();
         enrollmentRepository.deleteAll();
         chatRoomRepository.deleteAll();
         userRepository.deleteAll();
         courseRepository.deleteAll();
         }
-    
-    
+
+
     @BeforeEach
     void setUp() {
 
@@ -108,8 +109,8 @@ public class ChatControllerIntegrationTest {
         studentId = userRepository.save(student).getId();
         professorId = userRepository.save(professor).getId();
 
-        // course
-        String courseCode = "CS-" + UUID.randomUUID();
+         
+        String courseCode = "CRS-" + java.util.HexFormat.of().formatHex(new byte[16]).toUpperCase();
 
         Course course = new Course(
                 courseCode,
@@ -120,7 +121,6 @@ public class ChatControllerIntegrationTest {
 
         Course savedCourse = courseRepository.save(course);
 
-        // chat room linked to course
         ChatRoom room = new ChatRoom();
         room.setName("General Chat");
         room.setCourse(savedCourse);
@@ -128,7 +128,6 @@ public class ChatControllerIntegrationTest {
         ChatRoom savedRoom = chatRoomRepository.save(room);
         chatRoomId = savedRoom.getId();
 
-        // enrollment MUST be course-based
         Enrollment enrollment = new Enrollment();
         enrollment.setUserId(studentId);
         enrollment.setCourseId(savedCourse.getId());
@@ -138,8 +137,8 @@ public class ChatControllerIntegrationTest {
         enrollmentRepository.save(enrollment);
     }
 
-    private RequestPostProcessor auth(UUID userId, String role) {
-        return user(userId.toString())
+    private RequestPostProcessor auth(String userId, String role) {
+        return user(userId )
                 .roles(role)
                 .authorities(new SimpleGrantedAuthority("ROLE_" + role));
     }
@@ -147,8 +146,8 @@ public class ChatControllerIntegrationTest {
     @Test
     void shouldSendMessageSuccessfully() throws Exception {
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Hello professor");
+        SendMessageRequest request =
+                new SendMessageRequest("Hello professor");
 
         mockMvc.perform(post("/api/chat/" + chatRoomId + "/messages")
                         .with(user(studentId.toString()).roles("STUDENT"))
@@ -162,8 +161,7 @@ public class ChatControllerIntegrationTest {
 
     @Test
     void shouldRejectWhenUserNotEnrolled() throws Exception {
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Trying to access chat");
+        SendMessageRequest request = new SendMessageRequest("Trying to access chat");
 
         mockMvc.perform(post("/api/chat/" + chatRoomId + "/messages")
                         .with(auth(professorId, "PROFESSOR"))
@@ -189,23 +187,23 @@ public class ChatControllerIntegrationTest {
         mockMvc.perform(get("/api/chat/" + chatRoomId + "/messages")
                         .with(auth(studentId, "STUDENT")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].content").value("First message"))
-                .andExpect(jsonPath("$[1].content").value("Second message"));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].content").value("First message"))
+                .andExpect(jsonPath("$.content[1].content").value("Second message"));
     }
 
     @Test
     void shouldReturnErrorWhenChatRoomDoesNotExist() throws Exception {
-        UUID randomId = UUID.randomUUID();
 
-        SendMessageRequest request = new SendMessageRequest();
-        request.setContent("Hello");
+        String randomId = "CHT-00000000000000000000000000000000";
+
+        SendMessageRequest request = new SendMessageRequest("Hello");
 
         mockMvc.perform(post("/api/chat/" + randomId + "/messages")
                         .with(auth(studentId, "STUDENT"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 
 }

@@ -1,15 +1,15 @@
-package com.grupo.learningmore.dto.Response;
+package com.grupo.learningmore.dto.response;
 
 import com.grupo.learningmore.domain.assignment.SubmissionStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
+ 
 
 public record SubmissionResponse(
-        UUID id,
-        UUID assignmentId,
-        UUID userId,
+        String id,
+        String assignmentId,
+        String userId,
         LocalDateTime submittedAt,
         SubmissionStatus status,
         BigDecimal grade,

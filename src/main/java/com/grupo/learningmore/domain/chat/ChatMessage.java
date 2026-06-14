@@ -3,17 +3,21 @@ package com.grupo.learningmore.domain.chat;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.security.SecureRandom;
 import java.util.Date;
-import java.util.UUID;
+import java.util.HexFormat;
+ 
 
 
 @Entity
 @Getter
 public class ChatMessage {
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(unique = true, nullable = false)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "chat_room_id")
@@ -25,22 +29,30 @@ public class ChatMessage {
     public ChatMessage() {
     }
 
-    public ChatMessage(UUID id, ChatRoom chatRoom, String content, Date sentAt) {
-        this.id = id;
+    public ChatMessage( ChatRoom chatRoom, String content, Date sentAt) {
+      //  this.id = generateSecureId();
         this.chatRoom = chatRoom;
         this.content = content;
         this.sentAt = sentAt;
     }
 
-    public ChatMessage(ChatRoom chatRoom, String content, Date sentAt) {
+    /*public ChatMessage(ChatRoom chatRoom, String content, Date sentAt) {
         this.chatRoom = chatRoom;
         this.content = content;
         this.sentAt = sentAt;
-    }
+    }*/
 
+    @PrePersist
+    protected void onCreate() {
+        if (this.id == null) {
+            this.id = generateSecureId();
+        }
+    }    
 
-    public void setId(UUID id) {
-        this.id = id;
+    private String generateSecureId() {
+        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
+        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        return "CHM-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 
     public void setContent(String content) {

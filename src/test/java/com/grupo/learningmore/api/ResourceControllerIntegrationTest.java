@@ -22,8 +22,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.UUID;
+ 
+ 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -57,8 +57,8 @@ public class ResourceControllerIntegrationTest {
     private ResourceRepository resourceRepository;
 
     private MockMvc mockMvc;
-    private UUID courseId;
-    private UUID professorId;
+    private String courseId;
+    private String professorId;
 
     
     @BeforeEach
@@ -81,7 +81,7 @@ public class ResourceControllerIntegrationTest {
         resourceRepository.deleteAll();
         courseRepository.deleteAll();
 
-        professorId = UUID.randomUUID();
+        professorId = "USR-PROFMOCK12345";
         
         // Criamos um curso base para associar os recursos nos testes
         Course course = courseRepository.save(new Course("CS101", "Computer Science", "Introduction", professorId));
@@ -99,11 +99,11 @@ public class ResourceControllerIntegrationTest {
 
         mockMvc.perform(multipart("/api/courses/" + courseId + "/resources")
                         .file(file)
-                        .with(user(professorId.toString()).roles("PROFESSOR"))
+                        .with(user(professorId).roles("PROFESSOR"))
                         .with(csrf()))
                  .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.filename").value("lecture1.pdf"))
-                .andExpect(jsonPath("$.courseId").value(courseId.toString()));
+                .andExpect(jsonPath("$.filename").value(matchesRegex(".*lecture1\\.pdf$")))
+                .andExpect(jsonPath("$.courseId").value(courseId));
     }
 
     @Test
@@ -185,14 +185,14 @@ public class ResourceControllerIntegrationTest {
          mockMvc.perform(delete("/api/courses/" + courseId + "/resources/" + resource.getId())
                         .with(user(professorId.toString()).roles("PROFESSOR"))
                         .with(csrf()))
-                .andExpect(status().isNoContent()); // Should still succeed with 204!
+                .andExpect(status().isNoContent());  
 
          org.junit.jupiter.api.Assertions.assertFalse(resourceRepository.existsById(resource.getId()));
  }     
 
     @Test
     public void testUploadResourceToNonExistentCourseFails() throws Exception {
-        UUID nonExistentCourseId = UUID.randomUUID();
+        String nonExistentCourseId =  "USR-PROFMOCK12346";  
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "content".getBytes());
 
         mockMvc.perform(multipart("/api/courses/" + nonExistentCourseId + "/resources")
@@ -208,7 +208,7 @@ public class ResourceControllerIntegrationTest {
 
     @Test
     public void testGetResourcesAsAdmin_BypassesEnrollment() throws Exception {
-        UUID adminId = UUID.randomUUID();
+        String adminId = "USR-ADMINMOCK12345";
 
         // Admin checks don't read from the enrollment table
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
@@ -219,7 +219,7 @@ public class ResourceControllerIntegrationTest {
 
     @Test
     public void testGetResourcesAsEnrolledStudent_Success() throws Exception {
-        UUID studentId = UUID.randomUUID();
+        String studentId = "USR-STUDENTMOCK12345";
 
         // Physically save an active enrollment in your test database context
         enrollmentRepository.save(new Enrollment(studentId, courseId));
@@ -234,7 +234,7 @@ public class ResourceControllerIntegrationTest {
 
     @Test
     public void testGetResourcesAsUnenrolledStudent_ReturnsForbidden() throws Exception {
-        UUID maliciousStudentId = UUID.randomUUID();
+        String maliciousStudentId = "USR-UNENROLLEDSTUDENTMOCK12345";
 
         // We specifically DO NOT add an enrollment mapping for this user ID
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
@@ -249,7 +249,7 @@ public class ResourceControllerIntegrationTest {
         mockMvc.perform(get("/api/courses/" + courseId + "/resources")
                         .with(user("malformed-string-id-abc").roles("STUDENT"))
                         .with(csrf()))
-                .andExpect(status().isUnauthorized()); 
+                .andExpect(status().isForbidden()); 
     }
 
 

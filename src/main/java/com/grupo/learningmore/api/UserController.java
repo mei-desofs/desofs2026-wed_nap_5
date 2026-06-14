@@ -2,19 +2,24 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.user.User;
 import com.grupo.learningmore.domain.user.UserRole;
+import com.grupo.learningmore.dto.request.ChangePasswordRequest;
+import com.grupo.learningmore.dto.request.CreateUserRequest;
+import com.grupo.learningmore.dto.response.UserResponse;
 import com.grupo.learningmore.services.UserService;
-import org.springframework.web.bind.annotation.*;
-
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserService service;
 
@@ -23,14 +28,18 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponse create(@Valid @RequestBody CreateUserRequest request) {
+    public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
+
+        log.info("POST /api/users - Creating user with email {}", request.email());
 
         User user = service.createUser(
                 request.name(),
                 request.email(),
                 request.password(),
-                request.role()
+                UserRole.STUDENT
         );
+
+        log.info("User created successfully with id {}", user.getId());
 
         return new UserResponse(
                 user.getId(),
@@ -41,10 +50,62 @@ public class UserController {
         );
     }
 
+    @GetMapping("/me")
+    public UserResponse me(Authentication authentication) {
+
+        log.info("Authentication name: {}", authentication.getName());
+
+        String userId = authentication.getName();
+
+        log.info("GET /api/users/me - Fetching user profile for {}", userId);
+
+        User user = service.findById(userId);
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole(),
+                user.isActive()
+        );
+    }
+
+    @PutMapping("/me/password")
+    public void changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+
+        String userId = authentication.getName();
+
+        log.info("PUT /api/users/me/password - Password change request for user {}", userId);
+
+        service.changePassword(
+                userId,
+                request.currentPassword(),
+                request.newPassword()
+        );
+
+        log.info("Password changed successfully for user {}", userId);
+    }
+
+    @PutMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deactivateUser(@PathVariable String id) {
+
+        log.warn("PUT /api/users/{}/deactivate - User deactivation requested", id);
+
+        service.deactivateUser(id);
+
+        log.info("User {} deactivated successfully", id);
+    }
+
     @GetMapping
     public List<UserResponse> findAll() {
 
-        return service.findAll()
+        log.info("GET /api/users - Fetching all users");
+
+        List<UserResponse> users = service.findAll()
                 .stream()
                 .map(user -> new UserResponse(
                         user.getId(),
@@ -54,30 +115,9 @@ public class UserController {
                         user.isActive()
                 ))
                 .toList();
-    }
 
-    public record CreateUserRequest(
+        log.info("Fetched {} users", users.size());
 
-            @NotBlank
-            String name,
-
-            @Email
-            @NotBlank
-            String email,
-
-            @NotBlank
-            String password,
-
-            UserRole role
-    ) {
-    }
-
-    public record UserResponse(
-            UUID id,
-            String name,
-            String email,
-            UserRole role,
-            boolean active
-    ) {
+        return users;
     }
 }

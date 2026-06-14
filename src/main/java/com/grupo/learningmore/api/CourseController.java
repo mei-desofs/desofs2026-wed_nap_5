@@ -2,11 +2,14 @@ package com.grupo.learningmore.api;
 
 import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.domain.enrollment.Enrollment;
-import com.grupo.learningmore.dto.Request.CreateCourseRequest;
-import com.grupo.learningmore.dto.Response.CourseResponse;
+import com.grupo.learningmore.dto.request.CreateCourseRequest;
+import com.grupo.learningmore.dto.request.UpdateCourseRequest;
+import com.grupo.learningmore.dto.response.CourseResponse;
 import com.grupo.learningmore.services.CourseService;
 import com.grupo.learningmore.repositories.EnrollmentRepository;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,11 +17,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
+ 
 
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController {
+
+    private static final Logger log = LoggerFactory.getLogger(CourseController.class);
 
     private final CourseService courseService;
     private final EnrollmentRepository enrollmentRepository;
@@ -34,7 +39,9 @@ public class CourseController {
             Authentication authentication,
             @Valid @RequestBody CreateCourseRequest request
     ) {
-        UUID userId = UUID.fromString(authentication.getName());
+        String userId = authentication.getName();
+
+        log.info("POST /courses - Create course request by admin {}", userId);
 
         Course course = courseService.createCourse(
                 request.code(),
@@ -43,65 +50,92 @@ public class CourseController {
                 userId
         );
 
-        CourseResponse response = mapToCourseResponse(course);
+        log.info("Course created successfully with id {} and code {}", course.getId(), course.getCode());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(response);
+                .body(mapToCourseResponse(course));
     }
 
-     
-    
     @GetMapping("/{id}")
-    public ResponseEntity<CourseResponse> getCourseById(@PathVariable UUID id) {
+    public ResponseEntity<CourseResponse> getCourseById(@PathVariable String id) {
+
+        log.info("GET /courses/{} - Fetch course by id", id);
+
         Course course = courseService.findById(id);
+
         return ResponseEntity.ok(mapToCourseResponse(course));
     }
 
-     
-    
     @GetMapping("/code/{code}")
     public ResponseEntity<CourseResponse> getCourseByCode(@PathVariable String code) {
+
+        log.info("GET /courses/code/{} - Fetch course by code", code);
+
         Course course = courseService.findByCode(code);
+
         return ResponseEntity.ok(mapToCourseResponse(course));
     }
 
-    
-    @GetMapping  
+    @GetMapping
     public ResponseEntity<List<CourseResponse>> getAllCourses() {
+
+        log.info("GET /courses - Fetch all courses");
+
         List<Course> courses = courseService.findAll();
+
         List<CourseResponse> responses = courses.stream()
                 .map(this::mapToCourseResponse)
                 .toList();
+
+        log.info("Returned {} courses", responses.size());
+
         return ResponseEntity.ok(responses);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CourseResponse> updateCourse(
-            @PathVariable UUID id,
+            @PathVariable String id,
             @Valid @RequestBody UpdateCourseRequest request
     ) {
+
+        log.info("PUT /courses/{} - Update course request", id);
+
         Course course = courseService.updateCourse(
                 id,
                 request.name(),
                 request.description()
         );
 
+        log.info("Course {} updated successfully", id);
+
         return ResponseEntity.ok(mapToCourseResponse(course));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable String id) {
+
+        log.warn("DELETE /courses/{} - Delete course request", id);
+
         courseService.deleteCourse(id);
+
+        log.info("Course {} deleted successfully", id);
+
         return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/code/{code}")
     public ResponseEntity<Void> deleteCourseByCode(@PathVariable String code) {
+
+        log.warn("DELETE /courses/code/{} - Delete course request", code);
+
         courseService.deleteCourseByCode(code);
+
+        log.info("Course with code {} deleted successfully", code);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -117,36 +151,45 @@ public class CourseController {
         );
     }
 
-    public record UpdateCourseRequest(
-            String name,
-            String description
-    ) {
-    }
-
-     
-
-    @PreAuthorize("hasRole('STUDENT')and hasRole('ADMIN')")
     @PostMapping("/{courseId}/enroll")
-    public ResponseEntity<Void> enrollInCourse(
-            Authentication authentication, 
-            @PathVariable UUID courseId
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<Void> enrollSelf(
+            Authentication authentication,
+            @PathVariable String courseId
     ) {
-        UUID userId = UUID.fromString(authentication.getName());
-        
-        courseService.findById(courseId);
-        
-        if (enrollmentRepository.existsByUserIdAndCourseIdAndActiveTrue(userId, courseId)) {
-            throw new IllegalArgumentException("You are already enrolled in this course.");
-        }
-        
+        String userId = authentication.getName();
+
+        log.info("POST /courses/{}/enroll - student enrollment request by user {}", courseId, userId);
+
         Enrollment enrollment = new Enrollment(userId, courseId);
         enrollmentRepository.save(enrollment);
-        
+
+        log.info("Student {} successfully enrolled in course {}", userId, courseId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/{courseId}/enroll/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> enrollUser(
+            @PathVariable String courseId,
+            @PathVariable String userId
+    ) {
+        log.info("POST /courses/{}/enroll/{} - admin enrollment request", courseId, userId);
+
+        Enrollment enrollment = new Enrollment(userId, courseId);
+        enrollmentRepository.save(enrollment);
+
+        log.info("Admin enrolled user {} into course {}", userId, courseId);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+
+        log.warn("Bad request: {}", ex.getMessage());
+
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }

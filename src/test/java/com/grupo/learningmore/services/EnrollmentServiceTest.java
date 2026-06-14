@@ -13,8 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.UUID;
-
+ 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -30,16 +29,16 @@ public class EnrollmentServiceTest {
     @InjectMocks
     private EnrollmentService enrollmentService;
 
-    private UUID userId;
-    private UUID courseId;
-    private UUID chatRoomId;
+    private String userId;
+    private String courseId;
+    private String chatRoomId;
     private ChatRoom mockChatRoom;
 
     @BeforeEach
     public void setUp() {
-        userId = UUID.randomUUID();
-        courseId = UUID.randomUUID();
-        chatRoomId = UUID.randomUUID();
+        userId = "user123";
+        courseId = "course123";
+        chatRoomId = "chatroom123";
 
         mockChatRoom = mock(ChatRoom.class);
         Course mockCourse = mock(Course.class);
