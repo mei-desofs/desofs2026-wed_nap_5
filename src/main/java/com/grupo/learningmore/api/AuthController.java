@@ -64,7 +64,7 @@ public class AuthController {
             loginAttemptService.resetAttempts(request.email());
 
             String token = jwtService.generateToken(
-                    user.getId().toString(),
+                    user.getId(),
                     user.getRole().name(),
                     user.getTokenVersion()
             );
@@ -73,7 +73,7 @@ public class AuthController {
 
             return ResponseEntity.ok(new LoginResponse(
                     token,
-                    user.getId().toString(),
+                    user.getId(),
                     user.getName(),
                     user.getEmail(),
                     user.getRole().name()

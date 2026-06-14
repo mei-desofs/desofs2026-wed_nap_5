@@ -30,7 +30,6 @@ public class SubmissionService {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionService.class);
 
-    // SOLUÇÃO ERRO 1: Constante criptográfica segura (CSPRNG) para nomes de ficheiros
     private static final SecureRandom secureRandom = new SecureRandom();
 
     private static final long MAX_FILE_SIZE_BYTES = 50L * 1024L * 1024L;
@@ -103,18 +102,45 @@ public class SubmissionService {
             throw new AccessDeniedException("User is not enrolled in the course for this assignment");
         }
 
+        if (assignmentId == null || assignmentId.isBlank()) {
+            throw new IllegalArgumentException("Invalid assignment id");
+        }
+
+        if (!assignmentId.matches("^[a-zA-Z0-9_-]+$")) {
+            log.warn("Invalid assignmentId format: {}", assignmentId);
+            throw new IllegalArgumentException("Invalid assignment id");
+        }
+
+        String cleanAssignmentId = org.springframework.util.StringUtils.cleanPath(assignmentId);
+        String safeAssignmentId = java.nio.file.Paths.get(cleanAssignmentId)
+                .getFileName()
+                .toString();
+
         validateSubmissionFile(file, userId, assignmentId);
 
-        Path assignmentUploadPath = Paths.get(uploadDir, "assignments", assignmentId);
+        Path uploadBasePath = Paths.get(uploadDir)
+                .toAbsolutePath()
+                .normalize();
+
+        Path assignmentUploadPath = uploadBasePath
+                .resolve("assignments")
+                .resolve(safeAssignmentId)
+                .normalize();
+
+        if (!assignmentUploadPath.startsWith(uploadBasePath)) {
+            log.error("Path traversal detected during submission: user={} assignment={}",
+                    userId, assignmentId);
+            throw new IllegalArgumentException("Invalid file path: potential path traversal detected");
+        }
+
         Files.createDirectories(assignmentUploadPath);
 
         String safeOriginalName = sanitizeFilename(file.getOriginalFilename());
 
-        // CORREÇÃO ERRO 1: Geração segura baseada em 128 bits de entropia para o ficheiro
         byte[] randomBytes = new byte[16];
         secureRandom.nextBytes(randomBytes);
         String randomPrefix = HexFormat.of().formatHex(randomBytes).toUpperCase();
-        
+
         String generatedName = randomPrefix + "_" + safeOriginalName;
         Path storedPath = assignmentUploadPath.resolve(generatedName);
 
@@ -122,14 +148,13 @@ public class SubmissionService {
         Path uploadBase = assignmentUploadPath.normalize();
 
         if (!normalizedPath.startsWith(uploadBase)) {
-            log.error("Path traversal detected during submission: user={} assignment={}",
+            log.error("Path traversal detected during submission file write: user={} assignment={}",
                     userId, assignmentId);
             throw new IllegalArgumentException("Invalid file path: potential path traversal detected");
         }
 
         Files.write(storedPath, file.getBytes());
 
-         
         Submission submission = new Submission(
                 assignment,
                 userId,
@@ -140,14 +165,13 @@ public class SubmissionService {
 
         Submission saved = submissionRepository.save(submission);
 
-        // CORREÇÃO AUXILIAR: Ajustado o construtor do Log de Auditoria para refletir os campos corretos
         submissionAuditLogRepository.save(new SubmissionAuditLog(
-                saved.getId(), // targetId (ID da submissão que foi afetada)
-                "SUBMIT",      // action
-                userId,        // actorId
-                null,          // oldValues
-                "status=" + saved.getStatus(), // newValues
-                LocalDateTime.now() // timestamp
+                saved.getId(),
+                "SUBMIT",
+                userId,
+                null,
+                "status=" + saved.getStatus(),
+                LocalDateTime.now()
         ));
 
         log.info("Submission successful: submissionId={} user={} assignment={}",
