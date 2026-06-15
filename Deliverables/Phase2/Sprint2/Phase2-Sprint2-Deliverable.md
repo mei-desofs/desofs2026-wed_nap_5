@@ -2,6 +2,28 @@
 
 <!-- TOC -->
 * [Phase 2 – Sprint 2: Development, Testing & Deployment](#phase-2--sprint-2-development-testing--deployment)
+  * [1. Overview](#1-overview)
+  * [2. Development Practices](#2-development-practices)
+    * [2.1 Code Reviews](#21-code-reviews)
+    * [2.2 Branching Strategy](#22-branching-strategy)
+  * [3. DevSecOps Pipeline](#3-devsecops-pipeline)
+    * [3.1 Pipeline Overview](#31-pipeline-overview)
+    * [3.2 Build and Testing Workflow](#32-build-and-testing-workflow)
+    * [3.3 Static Application Security Testing (SAST)](#33-static-application-security-testing-sast)
+    * [3.4 Dynamic Application Security Testing (DAST)](#34-dynamic-application-security-testing-dast)
+    * [3.5 Interactive Application Security Testing (IAST)](#35-interactive-application-security-testing-iast)
+    * [3.6 Software Composition Analysis (SCA)](#36-software-composition-analysis-sca)
+    * [3.7 Security Configuration and Installation](#37-security-configuration-and-installation)
+    * [3.8 Deployment Workflow](#38-deployment-workflow)
+    * [3.9 Security Gates and Pipeline Enforcement](#39-security-gates-and-pipeline-enforcement)
+  * [4. Security Testing](#4-security-testing)
+    * [4.1 Security Testing Strategy](#41-security-testing-strategy)
+    * [4.2 Security Test Cases](#42-security-test-cases)
+  * [5. Security Assessment](#5-security-assessment)
+    * [Strengths](#strengths)
+    * [Limitations](#limitations)
+    * [Future Work](#future-work)
+  * [6. Conclusion](#6-conclusion)
 <!-- TOC -->
 
 ---
@@ -266,7 +288,7 @@ Explain how testing is integrated into the DevSecOps pipeline.
 Create a table similar to:
 
 | Test ID | Description                   | Expected Result             |
-| ------- | ----------------------------- | --------------------------- |
+|---------|-------------------------------|-----------------------------|
 | ST-01   | Unauthorized endpoint access  | Access denied               |
 | ST-02   | Invalid JWT token             | Authentication failure      |
 | ST-03   | Invalid input validation      | Validation error            |
