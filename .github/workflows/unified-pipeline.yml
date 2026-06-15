@@ -233,14 +233,3 @@ jobs:
             newman-report.xml
             report_html.html
             app.log
-
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [code-quality, sast, sca, trivy, mutation-testing, runtime-testing]
-    steps:
-      - uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: simple
