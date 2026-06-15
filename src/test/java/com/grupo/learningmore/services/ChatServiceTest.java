@@ -485,4 +485,32 @@ class ChatServiceTest {
 
         verify(chatRoomRepository).findAll();
     }
+
+    @Test
+    void shouldCoverSanitizationBranchCorrectly() {
+
+        String malicious = "<script>alert(1)</script>";
+
+        SendMessageRequest request =
+                new SendMessageRequest(malicious);
+
+        ChatRoom room = new ChatRoom();
+
+        when(enrollmentService.isUserEnrolled(userId, chatRoomId))
+                .thenReturn(true);
+
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.of(room));
+
+        when(chatMessageRepository.save(any(ChatMessage.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        chatService.sendMessage(userId, chatRoomId, request);
+
+        verify(chatMessageRepository).save(argThat(msg ->
+                msg.getContent().contains("&lt;") &&
+                        msg.getContent().contains("&gt;") &&
+                        !msg.getContent().equals(malicious)
+        ));
+    }
 }
