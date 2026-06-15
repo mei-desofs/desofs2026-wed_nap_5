@@ -1,8 +1,8 @@
 CREATE TABLE enrollments
 (
-    id          UUID PRIMARY KEY,
-    user_id     UUID NOT NULL,
-    course_id   UUID NOT NULL,
+    id          VARCHAR(64) PRIMARY KEY,
+    user_id     VARCHAR(64) NOT NULL,
+    course_id   VARCHAR(64) NOT NULL,
     enrolled_at TIMESTAMP NOT NULL,
     FOREIGN KEY (course_id) REFERENCES courses (id),
     UNIQUE (user_id, course_id)
