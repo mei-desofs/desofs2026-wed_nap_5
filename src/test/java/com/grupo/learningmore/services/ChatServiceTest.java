@@ -2,11 +2,13 @@ package com.grupo.learningmore.services;
 
 import com.grupo.learningmore.domain.chat.ChatMessage;
 import com.grupo.learningmore.domain.chat.ChatRoom;
+import com.grupo.learningmore.domain.course.Course;
 import com.grupo.learningmore.dto.request.SendMessageRequest;
 import com.grupo.learningmore.dto.response.ChatMessageResponse;
 import com.grupo.learningmore.exceptions.AccessDeniedException;
 import com.grupo.learningmore.repositories.ChatMessageRepository;
 import com.grupo.learningmore.repositories.ChatRoomRepository;
+import com.grupo.learningmore.repositories.CourseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +33,9 @@ class ChatServiceTest {
 
     @Mock
     private ChatMessageRepository chatMessageRepository;
+
+    @Mock
+    private CourseRepository courseRepository;
 
     @Mock
     private ChatRoomRepository chatRoomRepository;
@@ -347,5 +352,137 @@ class ChatServiceTest {
         );
 
         assertEquals("Chat room not found", ex.getMessage());
+    }
+
+    @Test
+    void shouldReturnChatsForUser() {
+
+        ChatRoom room1 = new ChatRoom();
+        ChatRoom room2 = new ChatRoom();
+
+        when(chatRoomRepository.findChatsByUserId(userId))
+                .thenReturn(List.of(room1, room2));
+
+        List<ChatRoom> result =
+                chatService.getChatsForUser(userId);
+
+        assertEquals(2, result.size());
+
+        verify(chatRoomRepository)
+                .findChatsByUserId(userId);
+    }
+
+    @Test
+    void shouldCreateChatRoom() {
+
+        Course course = new Course(
+                "CS101",
+                "Software Engineering",
+                "Course description",
+                "professor1"
+        );
+
+        ChatRoom savedRoom = new ChatRoom();
+        savedRoom.setName("General");
+        savedRoom.setCourse(course);
+
+        when(courseRepository.findById("course1"))
+                .thenReturn(Optional.of(course));
+
+        when(chatRoomRepository.save(any(ChatRoom.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        ChatRoom result =
+                chatService.createChatRoom(
+                        "General",
+                        "course1"
+                );
+
+        assertEquals("General", result.getName());
+        assertEquals(course, result.getCourse());
+
+        verify(chatRoomRepository)
+                .save(argThat(room ->
+                        room.getName().equals("General") &&
+                                room.getCourse().equals(course)
+                ));
+    }
+
+    @Test
+    void shouldThrowWhenCourseDoesNotExist() {
+
+        when(courseRepository.findById("course1"))
+                .thenReturn(Optional.empty());
+
+        IllegalArgumentException ex =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> chatService.createChatRoom(
+                                "General",
+                                "course1")
+                );
+
+        assertEquals("Course not found", ex.getMessage());
+    }
+
+    @Test
+    void shouldReturnChatRoomById() {
+
+        ChatRoom room = new ChatRoom();
+
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.of(room));
+
+        ChatRoom result =
+                chatService.getChatRoomById(chatRoomId);
+
+        assertEquals(room, result);
+    }
+
+    @Test
+    void shouldThrowWhenGettingUnknownChatRoom() {
+
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.empty());
+
+        IllegalArgumentException ex =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> chatService.getChatRoomById(chatRoomId)
+                );
+
+        assertEquals("Chat room not found", ex.getMessage());
+    }
+
+    @Test
+    void shouldReturnChatRoomsByCourse() {
+
+        ChatRoom room1 = new ChatRoom();
+        ChatRoom room2 = new ChatRoom();
+
+        when(chatRoomRepository.findByCourseId("course1"))
+                .thenReturn(List.of(room1, room2));
+
+        List<ChatRoom> result =
+                chatService.getChatRoomsByCourse("course1");
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void shouldReturnAllChatRooms() {
+
+        ChatRoom room1 = new ChatRoom();
+        ChatRoom room2 = new ChatRoom();
+
+        when(chatRoomRepository.findAll())
+                .thenReturn(List.of(room1, room2));
+
+        List<ChatRoom> result =
+                chatService.findAllChatRooms();
+
+        assertEquals(2, result.size());
+
+        verify(chatRoomRepository).findAll();
     }
 }
