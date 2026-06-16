@@ -34,7 +34,8 @@
     * [10.7 Change password](#107-change-password)
     * [10.8 Confirm old token invalidation](#108-confirm-old-token-invalidation)
     * [10.9 Login with the new password](#109-login-with-the-new-password)
-  * [11. Conclusion](#11-conclusion)
+  * [11. Security Evidence](#11-security-evidence)
+  * [12. Conclusion](#12-conclusion)
 <!-- TOC -->
 
 ---
