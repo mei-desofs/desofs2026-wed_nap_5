@@ -1,14 +1,14 @@
 -- Create assignments table
 CREATE TABLE assignments
 (
-    id          UUID PRIMARY KEY,
+    id          VARCHAR(64) PRIMARY KEY,
     title       VARCHAR(255) NOT NULL,
     description TEXT,
     deadline    TIMESTAMP    NOT NULL,
-    course_id   UUID         NOT NULL,
+    course_id   VARCHAR(64)         NOT NULL,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by  UUID         NOT NULL,
+    created_by  VARCHAR(64)         NOT NULL,
     version     INT          NOT NULL DEFAULT 0,
     FOREIGN KEY (course_id) REFERENCES courses (id),
     FOREIGN KEY (created_by) REFERENCES users (id)
@@ -21,9 +21,9 @@ CREATE INDEX idx_assignments_deadline ON assignments (deadline);
 -- Create submissions table
 CREATE TABLE submissions
 (
-    id               UUID PRIMARY KEY,
-    assignment_id    UUID        NOT NULL,
-    user_id          UUID        NOT NULL,
+    id               VARCHAR(64) PRIMARY KEY,
+    assignment_id    VARCHAR(64)        NOT NULL,
+    user_id          VARCHAR(64)        NOT NULL,
     submitted_at     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status           VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     file_path        VARCHAR(500),
@@ -32,7 +32,7 @@ CREATE TABLE submissions
     version          INT         NOT NULL DEFAULT 0,
     created_at       TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_modified_by UUID,
+    last_modified_by VARCHAR(64),
     FOREIGN KEY (assignment_id) REFERENCES assignments (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (last_modified_by) REFERENCES users (id),
@@ -47,10 +47,10 @@ CREATE INDEX idx_submissions_submitted_at ON submissions (submitted_at);
 -- Create assignment audit log table
 CREATE TABLE assignment_audit_logs
 (
-    id            UUID PRIMARY KEY,
-    assignment_id UUID        NOT NULL,
+    id            VARCHAR(64) PRIMARY KEY,
+    assignment_id VARCHAR(64)        NOT NULL,
     action        VARCHAR(50) NOT NULL,
-    actor_id      UUID        NOT NULL,
+    actor_id      VARCHAR(64)        NOT NULL,
     old_values    TEXT,
     new_values    TEXT,
     timestamp     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -64,10 +64,10 @@ CREATE INDEX idx_assignment_audit_logs_timestamp ON assignment_audit_logs (times
 -- Create submission audit log table
 CREATE TABLE submission_audit_logs
 (
-    id            UUID PRIMARY KEY,
-    submission_id UUID        NOT NULL,
+    id            VARCHAR(64) PRIMARY KEY,
+    submission_id VARCHAR(64)        NOT NULL,
     action        VARCHAR(50) NOT NULL,
-    actor_id      UUID        NOT NULL,
+    actor_id      VARCHAR(64)        NOT NULL,
     old_values    TEXT,
     new_values    TEXT,
     timestamp     TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,

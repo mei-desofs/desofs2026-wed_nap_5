@@ -1,13 +1,13 @@
 CREATE TABLE resources
 (
-    id           UUID PRIMARY KEY,
-    course_id    UUID         NOT NULL,
+    id           VARCHAR(64) PRIMARY KEY,
+    course_id    VARCHAR(64)         NOT NULL,
     filename     VARCHAR(255) NOT NULL,
     file_path    VARCHAR(512) NOT NULL,
     file_size    BIGINT       NOT NULL,
     content_type VARCHAR(100),
     uploaded_at  TIMESTAMP    NOT NULL,
-    uploaded_by  UUID         NOT NULL,
+    uploaded_by  VARCHAR(64)         NOT NULL,
     FOREIGN KEY (course_id) REFERENCES courses (id),
     FOREIGN KEY (uploaded_by) REFERENCES users (id)
 );

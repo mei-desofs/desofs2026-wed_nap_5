@@ -1,15 +1,15 @@
 CREATE TABLE chat_room
 (
-    id        UUID PRIMARY KEY,
+    id        VARCHAR(64) PRIMARY KEY,
     name      VARCHAR(255),
-    course_id UUID,
+    course_id VARCHAR(64),
     FOREIGN KEY (course_id) REFERENCES courses (id)
 );
 
 CREATE TABLE chat_message
 (
-    id           UUID PRIMARY KEY,
-    chat_room_id UUID,
+    id           VARCHAR(64) PRIMARY KEY,
+    chat_room_id VARCHAR(64),
     content      TEXT,
     sent_at      TIMESTAMP,
     FOREIGN KEY (chat_room_id) REFERENCES chat_room (id)
