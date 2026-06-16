@@ -4,6 +4,7 @@
 
 SR1: Passwords must be stored using strong, salted hashing algorithms   
 SR1.1: Passwords must not contain context-specific words or easy-to-guess patterns (e.g., "learningmore", "isep", "desofs")
+SR1.2: Passwords must be checked against a set of known breached passwords using a secure API (e.g., Have I Been Pwned)
 SR2: The system must enforce secure authentication mechanisms using validated credentials and protected session/token mechanisms  
 SR3: The system must prevent brute force attacks
 
