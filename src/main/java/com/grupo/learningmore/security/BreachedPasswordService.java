@@ -40,7 +40,6 @@ public class BreachedPasswordService {
         } catch (Exception e) {
             log.error("Error checking breached password API", e);
             // In case of API failure, we might choose to allow or deny. 
-            // Usually, we allow to not block users if HIBP is down.
             return false;
         }
 
