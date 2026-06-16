@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.2.0...v2.3.0) (2026-06-16)
+
+
+### Features
+
+* **password security:** creating verification for publicly breached passwords ([b63bbbe](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/b63bbbef19b898515bc22db88e587ade635d1e07))
+
+
+### Bug Fixes
+
+* adding additional weak password validation ([b2cfaab](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/b2cfaaba63c299084e335ed6f5436d11c298d492))
+
 ## [2.2.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.1.0...v2.2.0) (2026-06-16)
 
 
