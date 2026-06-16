@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 public class DataBootstrap implements CommandLineRunner {
@@ -76,7 +75,7 @@ public class DataBootstrap implements CommandLineRunner {
         User savedProfessor = userRepository.save(professor);
         System.out.println("Created Professor: " + savedProfessor.getEmail());
 
-// Create admin
+        // Create admin
         User admin = new User(
                 "Admin User",
                 "admin@learningmore.com",
@@ -86,7 +85,7 @@ public class DataBootstrap implements CommandLineRunner {
         User savedAdmin = userRepository.save(admin);
         System.out.println("Created Admin: " + savedAdmin.getEmail());
 
-// Create students
+        // Create students
         User student1 = new User(
                 "Mary Johnson",
                 "student1@learningmore.com",
@@ -205,9 +204,9 @@ public class DataBootstrap implements CommandLineRunner {
         System.out.println("Created 6 courses successfully");
 
 
-// =========================
-// ENROLLMENTS
-// =========================
+        // =========================
+        // ENROLLMENTS
+        // =========================
 
         // STUDENT 1 - Mary Johnson
         enroll(savedStudent1.getId(), savedCourse1.getId());

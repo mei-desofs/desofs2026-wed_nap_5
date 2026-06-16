@@ -60,18 +60,6 @@ public class Assignment {
     public Assignment() {
     }
 
-    /*public Assignment(String title, String description, LocalDateTime deadline, UUID courseId, UUID createdBy) {
-        this.title = title;
-        this.description = description;
-        this.deadline = deadline;
-        this.courseId = courseId;
-        this.createdBy = createdBy;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.version = 0;
-        this.submissions = new ArrayList<>();
-    }*/
-
     public Assignment(  String title, String description, LocalDateTime deadline, String courseId, String createdBy) {
         //this.id = generateSecureId();
         this.title = title;
@@ -93,8 +81,8 @@ public class Assignment {
     }
 
     private String generateSecureId() {
-        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
-        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
         return "ASN-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 
@@ -139,7 +127,6 @@ public class Assignment {
         this.submissions = submissions;
     }
 
-    // ============ Business logic methods ============
 
     /**
      * Check if the assignment deadline has expired.

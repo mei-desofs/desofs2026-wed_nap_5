@@ -34,16 +34,16 @@ public class AssignmentAuditLog {
     private String assignmentId;
 
     @Column(nullable = false)
-    private String action; // CREATE, UPDATE, DELETE
+    private String action;
 
     @Column(nullable = false)
-    private String actorId; // User who performed the action
+    private String actorId;
 
     @Column(columnDefinition = "TEXT")
-    private String oldValues; // JSON representation of previous values
+    private String oldValues;
 
     @Column(columnDefinition = "TEXT")
-    private String newValues; // JSON representation of new values
+    private String newValues;
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
@@ -70,8 +70,8 @@ public class AssignmentAuditLog {
 
 
     private String generateSecureId() {
-        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
-        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
         return "ASN-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 

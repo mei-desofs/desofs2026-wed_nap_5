@@ -66,22 +66,6 @@ public class Submission {
     public Submission() {
     }
 
-    /*public Submission(Assignment assignment,
-                      String userId,
-                      LocalDateTime submittedAt,
-                      SubmissionStatus status,
-                      String filePath) {
-
-        this.assignment = assignment;
-        this.userId = userId;
-        this.submittedAt = submittedAt;
-        this.status = status;
-        this.filePath = filePath;
-        this.version = 0;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }*/
-
     public Submission( 
                       Assignment assignment,
                       String userId,
@@ -111,8 +95,8 @@ public class Submission {
     }
 
     private String generateSecureId() {
-        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
-        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
         return "SUB-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 

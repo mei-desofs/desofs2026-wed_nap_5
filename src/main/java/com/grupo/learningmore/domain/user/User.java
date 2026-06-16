@@ -57,8 +57,8 @@ public class User {
     }
 
     private String generateSecureId() {
-        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
-        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
         return "USR-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 

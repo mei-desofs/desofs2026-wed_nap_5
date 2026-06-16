@@ -51,8 +51,8 @@ public class Enrollment {
     }
 
     private String generateSecureId() {
-        byte[] bytes = new byte[16]; // 16 bytes = 128 bits de pura entropia
-        secureRandom.nextBytes(bytes); // CSPRNG (SecureRandom)
+        byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
         return "ENR-" + HexFormat.of().formatHex(bytes).toUpperCase(); 
     }
 
