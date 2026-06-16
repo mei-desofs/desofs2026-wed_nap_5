@@ -5,13 +5,35 @@
   * [1. Overview](#1-overview)
   * [2. Sprint 2 Scope](#2-sprint-2-scope)
   * [3. Development](#3-development)
+    * [3.1 Backend Aggregates](#31-backend-aggregates)
+    * [3.2 Main REST Controllers](#32-main-rest-controllers)
+    * [3.3 User and Authentication Improvements](#33-user-and-authentication-improvements)
+    * [3.4 ID Generation Changes](#34-id-generation-changes)
   * [4. Security Improvements](#4-security-improvements)
+    * [4.1 Authentication](#41-authentication)
+    * [4.2 Authorization and RBAC](#42-authorization-and-rbac)
+    * [4.3 Session and Token Invalidation](#43-session-and-token-invalidation)
+    * [4.4 CSRF Configuration](#44-csrf-configuration)
+    * [4.5 Logging and Traceability](#45-logging-and-traceability)
   * [5. Build and Test](#5-build-and-test)
   * [6. CI/CD Pipeline](#6-cicd-pipeline)
+    * [6.1 Software Composition Analysis](#61-software-composition-analysis)
+    * [6.2 SBOM](#62-sbom)
   * [7. Runtime Security Testing](#7-runtime-security-testing)
   * [8. Production and Operate Evidence](#8-production-and-operate-evidence)
+    * [8.1 Production](#81-production)
+    * [8.2 Operate](#82-operate)
   * [9. ASVS Traceability](#9-asvs-traceability)
   * [10. Demonstration Guide](#10-demonstration-guide)
+    * [10.1 Start the application](#101-start-the-application)
+    * [10.2 Create a student account](#102-create-a-student-account)
+    * [10.3 Login](#103-login)
+    * [10.4 Store Bearer token](#104-store-bearer-token)
+    * [10.5 Access protected profile endpoint](#105-access-protected-profile-endpoint)
+    * [10.6 Access protected endpoint without token](#106-access-protected-endpoint-without-token)
+    * [10.7 Change password](#107-change-password)
+    * [10.8 Confirm old token invalidation](#108-confirm-old-token-invalidation)
+    * [10.9 Login with the new password](#109-login-with-the-new-password)
   * [11. Conclusion](#11-conclusion)
 <!-- TOC -->
 
@@ -39,16 +61,16 @@ LearningMore is a secure academic platform that supports:
 
 The Sprint 2 work focused on the following areas:
 
-| Area | Work performed |
-|---|---|
-| Development | User/Auth hardening, endpoint fixes, chat validation fixes, ID generation changes, bootstrap/Postman support |
-| Authentication | JWT Bearer authentication, password hashing, login attempt protection |
-| Authorization | RBAC with ADMIN, PROFESSOR and STUDENT roles |
-| Session Security | JWT token versioning and invalidation after password changes/account deactivation |
-| Logging | Authentication logs, user lifecycle logs, exception logs and chat operation logs |
-| Testing | Unit tests, integration tests, runtime API tests and Postman/Newman collection |
-| Pipeline | Unified CI/CD pipeline with build, test, SAST, SCA, DAST, mutation testing and runtime checks |
-| ASVS | ASVS tracker updated according to the implemented security controls |
+| Area             | Work performed                                                                                               |
+|------------------|--------------------------------------------------------------------------------------------------------------|
+| Development      | User/Auth hardening, endpoint fixes, chat validation fixes, ID generation changes, bootstrap/Postman support |
+| Authentication   | JWT Bearer authentication, password hashing, login attempt protection                                        |
+| Authorization    | RBAC with ADMIN, PROFESSOR and STUDENT roles                                                                 |
+| Session Security | JWT token versioning and invalidation after password changes/account deactivation                            |
+| Logging          | Authentication logs, user lifecycle logs, exception logs and chat operation logs                             |
+| Testing          | Unit tests, integration tests, runtime API tests and Postman/Newman collection                               |
+| Pipeline         | Unified CI/CD pipeline with build, test, SAST, SCA, DAST, mutation testing and runtime checks                |
+| ASVS             | ASVS tracker updated according to the implemented security controls                                          |
 
 ---
 
@@ -58,29 +80,29 @@ The Sprint 2 work focused on the following areas:
 
 The project maintains a Domain-Driven Design structure with multiple aggregates:
 
-| Aggregate | Responsibility |
-|---|---|
-| User | Identity, authentication data, roles, active status and token version |
-| Course | Course creation, update, deletion and enrollment |
-| Assignment | Assignment lifecycle, deadlines and course association |
-| Submission | Student submissions, professor grading and feedback |
-| Resource | Course material upload and retrieval |
-| Chat | Chat rooms and course messages |
+| Aggregate  | Responsibility                                                        |
+|------------|-----------------------------------------------------------------------|
+| User       | Identity, authentication data, roles, active status and token version |
+| Course     | Course creation, update, deletion and enrollment                      |
+| Assignment | Assignment lifecycle, deadlines and course association                |
+| Submission | Student submissions, professor grading and feedback                   |
+| Resource   | Course material upload and retrieval                                  |
+| Chat       | Chat rooms and course messages                                        |
 
 ### 3.2 Main REST Controllers
 
 The following REST controllers are available in the backend:
 
-| Controller | Main responsibility |
-|---|---|
-| `AuthController` | Login and JWT issuing |
-| `UserController` | User registration, profile, password change and account deactivation |
-| `CourseController` | Course management and enrollment |
-| `AssignmentController` | Assignment management |
-| `SubmissionController` | Submission and grading operations |
-| `ResourceController` | Resource upload and access |
-| `ChatController` | Chat rooms and messages |
-| `HealthController` | Health endpoint used by pipeline/runtime tests |
+| Controller             | Main responsibility                                                  |
+|------------------------|----------------------------------------------------------------------|
+| `AuthController`       | Login and JWT issuing                                                |
+| `UserController`       | User registration, profile, password change and account deactivation |
+| `CourseController`     | Course management and enrollment                                     |
+| `AssignmentController` | Assignment management                                                |
+| `SubmissionController` | Submission and grading operations                                    |
+| `ResourceController`   | Resource upload and access                                           |
+| `ChatController`       | Chat rooms and messages                                              |
+| `HealthController`     | Health endpoint used by pipeline/runtime tests                       |
 
 ### 3.3 User and Authentication Improvements
 
@@ -180,13 +202,13 @@ This is aligned with the use of JWT Bearer tokens and avoids CSRF token requirem
 
 Logging was improved across several components.
 
-| Component | Logged events |
-|---|---|
-| `AuthController` | login attempts, successful login, failed login, blocked login, inactive account login |
-| `UserController` | user creation, profile retrieval, password change request, account deactivation |
-| `UserService` | user creation, password changes, failed password validation, user deactivation |
-| `GlobalExceptionHandler` | access denied, validation errors, invalid arguments, unexpected errors |
-| `ChatService` | message sending activity |
+| Component                | Logged events                                                                         |
+|--------------------------|---------------------------------------------------------------------------------------|
+| `AuthController`         | login attempts, successful login, failed login, blocked login, inactive account login |
+| `UserController`         | user creation, profile retrieval, password change request, account deactivation       |
+| `UserService`            | user creation, password changes, failed password validation, user deactivation        |
+| `GlobalExceptionHandler` | access denied, validation errors, invalid arguments, unexpected errors                |
+| `ChatService`            | message sending activity                                                              |
 
 Sensitive values such as raw passwords and JWT tokens are not logged.
 
@@ -198,12 +220,12 @@ The project currently includes automated tests for service and API behavior.
 
 The test suite includes:
 
-| Test category | Examples |
-|---|---|
-| Unit tests | UserService, JwtService, AssignmentService, CourseService, ResourceService, SubmissionService |
-| Integration tests | CourseController, ResourceController, AssignmentController, SubmissionController, ChatController |
-| Security-oriented tests | login behavior, token issuing, token validation, password change, token versioning |
-| Runtime API tests | Postman collection executed with Newman |
+| Test category           | Examples                                                                                         |
+|-------------------------|--------------------------------------------------------------------------------------------------|
+| Unit tests              | UserService, JwtService, AssignmentService, CourseService, ResourceService, SubmissionService    |
+| Integration tests       | CourseController, ResourceController, AssignmentController, SubmissionController, ChatController |
+| Security-oriented tests | login behavior, token issuing, token validation, password change, token versioning               |
+| Runtime API tests       | Postman collection executed with Newman                                                          |
 
 The latest local execution result was:
 
@@ -229,17 +251,17 @@ The workflow is configured for:
 
 Pipeline jobs include:
 
-| Job | Purpose |
-|---|---|
-| Secret Detection | Detect committed secrets using Gitleaks |
-| Build & Test | Compile project, run tests and generate SBOM |
-| Code Quality | Run Checkstyle and SpotBugs |
-| SAST | Run CodeQL static analysis |
-| SCA | Run OWASP Dependency-Check |
-| Trivy | Filesystem vulnerability and misconfiguration scan |
-| PIT Mutation | Mutation testing |
-| Runtime API & Security Tests | Start application, run Newman and ZAP baseline |
-| Release | Release automation for main branch |
+| Job                          | Purpose                                            |
+|------------------------------|----------------------------------------------------|
+| Secret Detection             | Detect committed secrets using Gitleaks            |
+| Build & Test                 | Compile project, run tests and generate SBOM       |
+| Code Quality                 | Run Checkstyle and SpotBugs                        |
+| SAST                         | Run CodeQL static analysis                         |
+| SCA                          | Run OWASP Dependency-Check                         |
+| Trivy                        | Filesystem vulnerability and misconfiguration scan |
+| PIT Mutation                 | Mutation testing                                   |
+| Runtime API & Security Tests | Start application, run Newman and ZAP baseline     |
+| Release                      | Release automation for main branch                 |
 
 ### 6.1 Software Composition Analysis
 
@@ -284,22 +306,22 @@ Although production deployment is not the main focus of the project, Sprint 2 ad
 
 ### 8.1 Production
 
-| Practice | Evidence |
-|---|---|
+| Practice                 | Evidence                                                           |
+|--------------------------|--------------------------------------------------------------------|
 | Configuration management | Environment-specific test configuration and application properties |
-| Logging and traceability | Authentication, user lifecycle, exception and chat logs |
-| Patch management | Dependency scanning through OWASP Dependency-Check and Trivy |
-| Release management | Release workflow available for main branch |
-| Security configuration | Stateless JWT security, RBAC and deny-by-default access control |
+| Logging and traceability | Authentication, user lifecycle, exception and chat logs            |
+| Patch management         | Dependency scanning through OWASP Dependency-Check and Trivy       |
+| Release management       | Release workflow available for main branch                         |
+| Security configuration   | Stateless JWT security, RBAC and deny-by-default access control    |
 
 ### 8.2 Operate
 
-| Practice | Evidence |
-|---|---|
-| Monitoring readiness | `/api/health` endpoint used in runtime pipeline |
-| Vulnerability management | SCA and Trivy reports generated in CI |
-| Penetration testing support | OWASP ZAP baseline scan |
-| Runtime validation | Newman API collection |
+| Practice                       | Evidence                                                                         |
+|--------------------------------|----------------------------------------------------------------------------------|
+| Monitoring readiness           | `/api/health` endpoint used in runtime pipeline                                  |
+| Vulnerability management       | SCA and Trivy reports generated in CI                                            |
+| Penetration testing support    | OWASP ZAP baseline scan                                                          |
+| Runtime validation             | Newman API collection                                                            |
 | Incident investigation support | Structured logs for authentication, authorization failures and unexpected errors |
 
 ---
@@ -310,17 +332,17 @@ The ASVS tracker was updated during Sprint 2 to reflect the implemented security
 
 Main affected ASVS areas:
 
-| ASVS area | Sprint 2 evidence |
-|---|---|
-| Authentication | BCrypt password hashing, login endpoint, failed login handling |
-| Session Management | JWT expiration and token version invalidation |
-| Access Control | RBAC and protected endpoints |
-| Token Security | Signed JWTs, token claims and backend validation |
-| Input Validation | DTO validation with Jakarta Validation |
-| Logging | authentication/user lifecycle/exception logging |
-| Error Handling | global exception handler with generic responses |
-| API Security | CSRF disabled for stateless JWT API, protected endpoints |
-| Software Supply Chain | SCA, SBOM and dependency scanning |
+| ASVS area             | Sprint 2 evidence                                              |
+|-----------------------|----------------------------------------------------------------|
+| Authentication        | BCrypt password hashing, login endpoint, failed login handling |
+| Session Management    | JWT expiration and token version invalidation                  |
+| Access Control        | RBAC and protected endpoints                                   |
+| Token Security        | Signed JWTs, token claims and backend validation               |
+| Input Validation      | DTO validation with Jakarta Validation                         |
+| Logging               | authentication/user lifecycle/exception logging                |
+| Error Handling        | global exception handler with generic responses                |
+| API Security          | CSRF disabled for stateless JWT API, protected endpoints       |
+| Software Supply Chain | SCA, SBOM and dependency scanning                              |
 
 ---
 
