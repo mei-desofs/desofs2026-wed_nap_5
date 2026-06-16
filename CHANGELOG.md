@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.1.0...v2.2.0) (2026-06-16)
+
+
+### Features
+
+* **frontend security:** Integrated the FetchMetadataFilter into the SecurityConfig filter chain, ensuring it runs early to protect all endpoints. ([77a88b7](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/77a88b72faa2ff3660297cdaea33422222e0a631))
+
+
+### Bug Fixes
+
+* **db:** align migrations with string identifiers ([2d8ef2c](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/2d8ef2ced9ab0dd9ce064f5cec7f2fb228682a67))
+
 ## [2.1.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.0.0...v2.1.0) (2026-06-14)
 
 
