@@ -34,7 +34,8 @@
     * [10.7 Change password](#107-change-password)
     * [10.8 Confirm old token invalidation](#108-confirm-old-token-invalidation)
     * [10.9 Login with the new password](#109-login-with-the-new-password)
-  * [11. Conclusion](#11-conclusion)
+  * [11. Security Evidence](#11-security-evidence)
+  * [12. Conclusion](#12-conclusion)
 <!-- TOC -->
 
 ---
@@ -314,6 +315,9 @@ Although production deployment is not the main focus of the project, Sprint 2 ad
 | Release management       | Release workflow available for main branch                         |
 | Security configuration   | Stateless JWT security, RBAC and deny-by-default access control    |
 
+The project validates deployment readiness through CI/CD checks, runtime tests and generated artifacts. 
+Automated deployment to an external production environment was not implemented in this sprint.
+
 ### 8.2 Operate
 
 | Practice                       | Evidence                                                                         |
@@ -363,14 +367,17 @@ http://localhost:9393
 ### 10.2 Create a student account
 
 ```powershell
+$email = "demo$(Get-Random)@test.com"
+
 Invoke-RestMethod `
     -Uri "http://localhost:9393/api/users" `
     -Method POST `
     -ContentType "application/json" `
     -Body (@{
-        name="Alex"
-        email="alex@test.com"
+        name="Demo User"
+        email=$email
         password="Password123"
+        role="STUDENT"
     } | ConvertTo-Json)
 ```
 
@@ -388,7 +395,7 @@ $login = Invoke-RestMethod `
     -Method POST `
     -ContentType "application/json" `
     -Body (@{
-        email="alex@test.com"
+        email=$email
         password="Password123"
     } | ConvertTo-Json)
 
@@ -472,7 +479,7 @@ $login = Invoke-RestMethod `
     -Method POST `
     -ContentType "application/json" `
     -Body (@{
-        email="alex@test.com"
+        email=$email
         password="NewPassword123"
     } | ConvertTo-Json)
 
@@ -486,7 +493,24 @@ Expected result:
 
 ---
 
-## 11. Conclusion
+## 11. Security Evidence
+
+The following controls were validated during Sprint 2:
+
+- JWT authentication
+- BCrypt password hashing
+- Protected endpoint access with Bearer token
+- Rejection of missing or invalid tokens
+- Password change workflow
+- Token invalidation through tokenVersion
+- RBAC enforcement
+- Newman runtime API validation
+- OWASP ZAP baseline scan
+- CodeQL, Dependency Check and Trivy security checks
+
+---
+
+## 12. Conclusion
 
 Sprint 2 consolidated the secure implementation of LearningMore.
 
