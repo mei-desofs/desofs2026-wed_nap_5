@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.1](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.3.0...v2.3.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* removes comments ([eb3069f](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/eb3069f44bed39ea7f98f3d61cc1d6befbaa97c6))
+* removing unnecessary comments ([66a6753](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/66a6753f722d144a67452595fb5fb63c70bb039b))
+
 ## [2.3.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.2.0...v2.3.0) (2026-06-16)
 
 
