@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.3.1...v3.0.0) (2026-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* updates avs
+
+### Features
+
+* updates avs ([5aeab35](https://github.com/mei-desofs/desofs2026-wed_nap_5/commit/5aeab3591c18f7b2aac6277d2c1af5bab2c43876))
+
 ## [2.3.1](https://github.com/mei-desofs/desofs2026-wed_nap_5/compare/v2.3.0...v2.3.1) (2026-06-16)
 
 
