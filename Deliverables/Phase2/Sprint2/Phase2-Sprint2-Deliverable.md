@@ -3,349 +3,485 @@
 <!-- TOC -->
 * [Phase 2 – Sprint 2: Development, Testing & Deployment](#phase-2--sprint-2-development-testing--deployment)
   * [1. Overview](#1-overview)
-  * [2. Development Practices](#2-development-practices)
-    * [2.1 Code Reviews](#21-code-reviews)
-    * [2.2 Branching Strategy](#22-branching-strategy)
-  * [3. DevSecOps Pipeline](#3-devsecops-pipeline)
-    * [3.1 Pipeline Overview](#31-pipeline-overview)
-    * [3.2 Build and Testing Workflow](#32-build-and-testing-workflow)
-    * [3.3 Static Application Security Testing (SAST)](#33-static-application-security-testing-sast)
-    * [3.4 Dynamic Application Security Testing (DAST)](#34-dynamic-application-security-testing-dast)
-    * [3.5 Interactive Application Security Testing (IAST)](#35-interactive-application-security-testing-iast)
-    * [3.6 Software Composition Analysis (SCA)](#36-software-composition-analysis-sca)
-    * [3.7 Security Configuration and Installation](#37-security-configuration-and-installation)
-    * [3.8 Deployment Workflow](#38-deployment-workflow)
-    * [3.9 Security Gates and Pipeline Enforcement](#39-security-gates-and-pipeline-enforcement)
-  * [4. Security Testing](#4-security-testing)
-    * [4.1 Security Testing Strategy](#41-security-testing-strategy)
-    * [4.2 Security Test Cases](#42-security-test-cases)
-  * [5. Security Assessment](#5-security-assessment)
-    * [Strengths](#strengths)
-    * [Limitations](#limitations)
-    * [Future Work](#future-work)
-  * [6. Conclusion](#6-conclusion)
+  * [2. Sprint 2 Scope](#2-sprint-2-scope)
+  * [3. Development](#3-development)
+  * [4. Security Improvements](#4-security-improvements)
+  * [5. Build and Test](#5-build-and-test)
+  * [6. CI/CD Pipeline](#6-cicd-pipeline)
+  * [7. Runtime Security Testing](#7-runtime-security-testing)
+  * [8. Production and Operate Evidence](#8-production-and-operate-evidence)
+  * [9. ASVS Traceability](#9-asvs-traceability)
+  * [10. Demonstration Guide](#10-demonstration-guide)
+  * [11. Conclusion](#11-conclusion)
 <!-- TOC -->
 
 ---
 
 ## 1. Overview
 
-This sprint focused on extending the DevSecOps practices introduced in the previous sprint by strengthening the security
-pipeline, improving testing strategies, and validating deployment and configuration mechanisms.
+This deliverable documents the work completed during **Phase 2 – Sprint 2** for the LearningMore project.
 
-The objective was to integrate security controls throughout the software development lifecycle, ensuring continuous
-verification of code quality, dependency security, runtime behavior, and deployment processes.
+The main focus of this sprint was to consolidate the secure backend implementation, improve the authentication and authorization flows, increase automated testing coverage, add runtime security validation, and strengthen DevSecOps evidence for deployment readiness.
 
-The sprint also emphasized secure configuration, automated security assessments, and the adoption of security testing
-techniques to improve the overall resilience of the application.
+LearningMore is a secure academic platform that supports:
+
+- user management;
+- authentication and authorization;
+- course management;
+- resource management;
+- assignment and submission management;
+- course chat rooms;
+- audit logging and security monitoring.
 
 ---
 
-## 2. Development Practices
+## 2. Sprint 2 Scope
 
-This section describes the development processes and collaboration practices followed during the sprint to ensure code
-quality, maintainability, and security.
+The Sprint 2 work focused on the following areas:
 
-### 2.1 Code Reviews
+| Area | Work performed |
+|---|---|
+| Development | User/Auth hardening, endpoint fixes, chat validation fixes, ID generation changes, bootstrap/Postman support |
+| Authentication | JWT Bearer authentication, password hashing, login attempt protection |
+| Authorization | RBAC with ADMIN, PROFESSOR and STUDENT roles |
+| Session Security | JWT token versioning and invalidation after password changes/account deactivation |
+| Logging | Authentication logs, user lifecycle logs, exception logs and chat operation logs |
+| Testing | Unit tests, integration tests, runtime API tests and Postman/Newman collection |
+| Pipeline | Unified CI/CD pipeline with build, test, SAST, SCA, DAST, mutation testing and runtime checks |
+| ASVS | ASVS tracker updated according to the implemented security controls |
 
-Describe:
+---
 
-* Pull request review process
-* Number of required reviewers (if applicable)
-* Review criteria used
-* Security-related aspects verified during reviews
-* Use of automated review tools
+## 3. Development
 
-Possible topics:
+### 3.1 Backend Aggregates
 
-* Code correctness
-* Secure coding practices
-* Compliance with project standards
-* Test coverage validation
-* Pipeline execution results
+The project maintains a Domain-Driven Design structure with multiple aggregates:
 
-Include screenshot:
+| Aggregate | Responsibility |
+|---|---|
+| User | Identity, authentication data, roles, active status and token version |
+| Course | Course creation, update, deletion and enrollment |
+| Assignment | Assignment lifecycle, deadlines and course association |
+| Submission | Student submissions, professor grading and feedback |
+| Resource | Course material upload and retrieval |
+| Chat | Chat rooms and course messages |
 
-```text
-![Code Review](images/code-review.png)
+### 3.2 Main REST Controllers
+
+The following REST controllers are available in the backend:
+
+| Controller | Main responsibility |
+|---|---|
+| `AuthController` | Login and JWT issuing |
+| `UserController` | User registration, profile, password change and account deactivation |
+| `CourseController` | Course management and enrollment |
+| `AssignmentController` | Assignment management |
+| `SubmissionController` | Submission and grading operations |
+| `ResourceController` | Resource upload and access |
+| `ChatController` | Chat rooms and messages |
+| `HealthController` | Health endpoint used by pipeline/runtime tests |
+
+### 3.3 User and Authentication Improvements
+
+Sprint 2 introduced or consolidated the following security-related user features:
+
+- public user registration creates only `STUDENT` accounts;
+- passwords are encoded with `BCryptPasswordEncoder`;
+- authenticated users can retrieve their own profile using `GET /api/users/me`;
+- authenticated users can change their password using `PUT /api/users/me/password`;
+- administrators can deactivate users using `PUT /api/users/{id}/deactivate`;
+- deactivated users can no longer authenticate successfully;
+- password changes and account deactivation increment `tokenVersion`, invalidating previously issued JWTs.
+
+### 3.4 ID Generation Changes
+
+The project was updated to improve the way identifiers are generated and represented across entities and endpoints.
+
+This helped standardize API behavior, simplify Postman/Newman testing, and reduce mismatch issues between API input, authentication identity and persistence identifiers.
+
+---
+
+## 4. Security Improvements
+
+### 4.1 Authentication
+
+Authentication is implemented using JWT Bearer tokens.
+
+When a user logs in successfully:
+
+1. the backend validates the email and password;
+2. the password is checked using BCrypt;
+3. the system validates that the account is active;
+4. failed login counters are reset;
+5. a JWT is issued with the user identifier, role and token version.
+
+Implemented controls:
+
+- secure password hashing;
+- JWT signature validation;
+- token expiration validation;
+- login attempt tracking;
+- temporary blocking after excessive failed attempts;
+- generic unauthorized responses for invalid credentials.
+
+### 4.2 Authorization and RBAC
+
+The application uses Spring Security with role-based access control.
+
+Current roles:
+
+- `ADMIN`;
+- `PROFESSOR`;
+- `STUDENT`.
+
+Security configuration follows a deny-by-default approach:
+
+- `/api/auth/**` is public;
+- `POST /api/users` is public for student registration;
+- `/api/admin/**` requires `ADMIN`;
+- `/api/professor/**` requires `PROFESSOR`;
+- `/api/student/**` requires `STUDENT`;
+- all other endpoints require authentication.
+
+Additional endpoint-level authorization is applied through annotations such as:
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
 ```
 
-### 2.2 Branching Strategy
+### 4.3 Session and Token Invalidation
 
-Describe the branch organization adopted during Sprint 2.
+The user entity includes a `tokenVersion` field.
 
-Possible branches:
+The JWT includes a matching `tokenVersion` claim. During request filtering, the backend compares the token version against the current value stored in the database.
 
-* `main`
-* `phase2-sprint2`
-* `feature/...`
-* `hotfix/...` (if used)
+A token becomes invalid when:
 
-Explain:
+- the user changes password;
+- the account is deactivated;
+- the token is expired;
+- the user no longer exists;
+- the token version does not match the database value.
 
-* Development flow
-* Merge strategy
-* Release process
+This provides stateless session invalidation without storing issued tokens server-side.
+
+### 4.4 CSRF Configuration
+
+CSRF protection is disabled for the stateless REST API:
+
+```java
+.csrf(AbstractHttpConfigurer::disable)
+```
+
+This is aligned with the use of JWT Bearer tokens and avoids CSRF token requirements for API clients such as Postman/Newman.
+
+### 4.5 Logging and Traceability
+
+Logging was improved across several components.
+
+| Component | Logged events |
+|---|---|
+| `AuthController` | login attempts, successful login, failed login, blocked login, inactive account login |
+| `UserController` | user creation, profile retrieval, password change request, account deactivation |
+| `UserService` | user creation, password changes, failed password validation, user deactivation |
+| `GlobalExceptionHandler` | access denied, validation errors, invalid arguments, unexpected errors |
+| `ChatService` | message sending activity |
+
+Sensitive values such as raw passwords and JWT tokens are not logged.
 
 ---
 
-## 3. DevSecOps Pipeline
+## 5. Build and Test
 
-### 3.1 Pipeline Overview
+The project currently includes automated tests for service and API behavior.
 
-Provide an overview of the CI/CD and security workflows implemented during the sprint.
+The test suite includes:
 
-Describe:
+| Test category | Examples |
+|---|---|
+| Unit tests | UserService, JwtService, AssignmentService, CourseService, ResourceService, SubmissionService |
+| Integration tests | CourseController, ResourceController, AssignmentController, SubmissionController, ChatController |
+| Security-oriented tests | login behavior, token issuing, token validation, password change, token versioning |
+| Runtime API tests | Postman collection executed with Newman |
 
-* GitHub Actions usage
-* Workflow triggers
-* Security gates
-* Artifact generation
-* Release automation
-
-Include a pipeline diagram if available.
+The latest local execution result was:
 
 ```text
-![Pipeline Overview](images/pipeline-overview.png)
+Tests run: 132
+Failures: 0
+Errors: 0
+BUILD SUCCESS
 ```
 
 ---
 
-### 3.2 Build and Testing Workflow
+## 6. CI/CD Pipeline
 
-Describe:
+A unified GitHub Actions pipeline is used for automated build, quality checks and security testing.
 
-* Application build process
-* Unit tests execution
-* Integration tests execution
-* Test reports generation
+The workflow is configured for:
 
-Topics:
+- `main`;
+- `phase2-sprint*`;
+- pull requests targeting those branches;
+- manual workflow dispatch.
 
-* Maven lifecycle
-* Automated execution
-* Failure handling
+Pipeline jobs include:
 
-Include workflow snippet and screenshots.
+| Job | Purpose |
+|---|---|
+| Secret Detection | Detect committed secrets using Gitleaks |
+| Build & Test | Compile project, run tests and generate SBOM |
+| Code Quality | Run Checkstyle and SpotBugs |
+| SAST | Run CodeQL static analysis |
+| SCA | Run OWASP Dependency-Check |
+| Trivy | Filesystem vulnerability and misconfiguration scan |
+| PIT Mutation | Mutation testing |
+| Runtime API & Security Tests | Start application, run Newman and ZAP baseline |
+| Release | Release automation for main branch |
+
+### 6.1 Software Composition Analysis
+
+OWASP Dependency-Check is used to identify vulnerable dependencies.
+
+The workflow disables unauthenticated OSS Index analysis to avoid external `401 Unauthorized` failures and relies on NVD/CISA-based analysis.
+
+The pipeline still produces Dependency-Check reports as artifacts for vulnerability management and review.
+
+### 6.2 SBOM
+
+CycloneDX is configured to generate a Software Bill of Materials during the build process.
+
+This supports dependency inventory and supply-chain security review.
 
 ---
 
-### 3.3 Static Application Security Testing (SAST)
+## 7. Runtime Security Testing
 
-Describe the use of SAST tools such as:
+Runtime testing was added using:
 
-* CodeQL
-* SpotBugs Security Plugin
-* SonarQube (if applicable)
+- Spring Boot application startup in CI;
+- health check readiness verification;
+- Newman execution of the Sprint 2 Postman collection;
+- OWASP ZAP baseline scan.
 
-Discuss:
+The Postman collection validates the application API flows and supports demonstration of:
 
-* Vulnerability detection
-* Secure coding verification
-* Integration with GitHub Security tab
+- user creation;
+- login;
+- token usage;
+- protected endpoints;
+- course operations;
+- assignment/submission flows;
+- chat/resource flows.
 
-Include screenshots:
+---
 
-```text
-![SAST Results](images/sast-results.png)
+## 8. Production and Operate Evidence
+
+Although production deployment is not the main focus of the project, Sprint 2 added evidence for production and operational readiness.
+
+### 8.1 Production
+
+| Practice | Evidence |
+|---|---|
+| Configuration management | Environment-specific test configuration and application properties |
+| Logging and traceability | Authentication, user lifecycle, exception and chat logs |
+| Patch management | Dependency scanning through OWASP Dependency-Check and Trivy |
+| Release management | Release workflow available for main branch |
+| Security configuration | Stateless JWT security, RBAC and deny-by-default access control |
+
+### 8.2 Operate
+
+| Practice | Evidence |
+|---|---|
+| Monitoring readiness | `/api/health` endpoint used in runtime pipeline |
+| Vulnerability management | SCA and Trivy reports generated in CI |
+| Penetration testing support | OWASP ZAP baseline scan |
+| Runtime validation | Newman API collection |
+| Incident investigation support | Structured logs for authentication, authorization failures and unexpected errors |
+
+---
+
+## 9. ASVS Traceability
+
+The ASVS tracker was updated during Sprint 2 to reflect the implemented security controls.
+
+Main affected ASVS areas:
+
+| ASVS area | Sprint 2 evidence |
+|---|---|
+| Authentication | BCrypt password hashing, login endpoint, failed login handling |
+| Session Management | JWT expiration and token version invalidation |
+| Access Control | RBAC and protected endpoints |
+| Token Security | Signed JWTs, token claims and backend validation |
+| Input Validation | DTO validation with Jakarta Validation |
+| Logging | authentication/user lifecycle/exception logging |
+| Error Handling | global exception handler with generic responses |
+| API Security | CSRF disabled for stateless JWT API, protected endpoints |
+| Software Supply Chain | SCA, SBOM and dependency scanning |
+
+---
+
+## 10. Demonstration Guide
+
+### 10.1 Start the application
+
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
----
+The backend runs on:
 
-### 3.4 Dynamic Application Security Testing (DAST)
+```text
+http://localhost:9393
+```
 
-Describe the execution of runtime security analysis using tools such as OWASP ZAP.
+### 10.2 Create a student account
 
-Topics:
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/users" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body (@{
+        name="Alex"
+        email="alex@test.com"
+        password="Password123"
+    } | ConvertTo-Json)
+```
 
-* Baseline scan
-* Authentication testing (if applicable)
-* Endpoint discovery
-* Vulnerability detection
+Expected result:
 
-Examples of findings:
+- a new user is created;
+- role is automatically `STUDENT`;
+- password is not returned.
 
-* Missing headers
-* Information disclosure
-* Input validation issues
+### 10.3 Login
 
-Include reports and screenshots.
+```powershell
+$login = Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/auth/login" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body (@{
+        email="alex@test.com"
+        password="Password123"
+    } | ConvertTo-Json)
 
----
+$login
+```
 
-### 3.5 Interactive Application Security Testing (IAST)
+Expected result:
 
-Describe whether IAST was implemented.
+- JWT token is returned;
+- user details and role are returned.
 
-If implemented:
+### 10.4 Store Bearer token
 
-* Tool used
-* Runtime monitoring capabilities
-* Vulnerabilities detected during execution
+```powershell
+$token = $login.token
+$token.Length
+```
 
-If not implemented:
+### 10.5 Access protected profile endpoint
 
-* Explain limitations or project constraints.
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/users/me" `
+    -Method GET `
+    -Headers @{ Authorization = "Bearer $token" }
+```
 
----
+Expected result:
 
-### 3.6 Software Composition Analysis (SCA)
+- authenticated user profile is returned.
 
-Describe dependency analysis.
+### 10.6 Access protected endpoint without token
 
-Possible tools:
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/users/me" `
+    -Method GET
+```
 
-* OWASP Dependency Check
-* Dependabot
-* GitHub Dependency Graph
+Expected result:
 
-Topics:
+- request is denied.
 
-* Vulnerable dependencies detection
-* CVE monitoring
-* Dependency updates
+### 10.7 Change password
 
-Include screenshots.
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/users/me/password" `
+    -Method PUT `
+    -Headers @{ Authorization = "Bearer $token" } `
+    -ContentType "application/json" `
+    -Body (@{
+        currentPassword="Password123"
+        newPassword="NewPassword123"
+    } | ConvertTo-Json)
+```
 
----
+Expected result:
 
-### 3.7 Security Configuration and Installation
+- password is changed;
+- old JWT becomes invalid.
 
-Describe the security configuration applied to the application and deployment environment.
+### 10.8 Confirm old token invalidation
 
-Possible topics:
+```powershell
+Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/users/me" `
+    -Method GET `
+    -Headers @{ Authorization = "Bearer $token" }
+```
 
-* Environment variables
-* Secret management
-* JWT configuration
-* HTTPS configuration
-* CORS configuration
-* Spring Security configuration
-* Docker security settings (if applicable)
-* Secure default configurations
+Expected result:
 
-Explain how security settings are applied during deployment.
+- request is denied because the old token version no longer matches.
 
----
+### 10.9 Login with the new password
 
-### 3.8 Deployment Workflow
+```powershell
+$login = Invoke-RestMethod `
+    -Uri "http://localhost:9393/api/auth/login" `
+    -Method POST `
+    -ContentType "application/json" `
+    -Body (@{
+        email="alex@test.com"
+        password="NewPassword123"
+    } | ConvertTo-Json)
 
-Describe the deployment process implemented during the sprint.
+$token = $login.token
+```
 
-Topics:
+Expected result:
 
-* Automated releases
-* Release Please
-* Environment preparation
-* Artifact generation
-* Deployment targets
-* Rollback mechanisms (if any)
-
-Include screenshots.
-
----
-
-### 3.9 Security Gates and Pipeline Enforcement
-
-Describe security controls that must pass before deployment.
-
-Examples:
-
-* Build success
-* Unit tests passing
-* SAST passing
-* SCA passing
-* DAST execution
-* Code review approval
-
-Explain whether deployment or release is blocked when security checks fail.
-
----
-
-## 4. Security Testing
-
-### 4.1 Security Testing Strategy
-
-Describe the overall testing strategy adopted.
-
-Possible testing categories:
-
-* Unit testing
-* Integration testing
-* Security testing
-* Authentication testing
-* Authorization testing
-* Input validation testing
-* Dependency security testing
-* Runtime vulnerability testing
-
-Explain how testing is integrated into the DevSecOps pipeline.
-
----
-
-### 4.2 Security Test Cases
-
-Create a table similar to:
-
-| Test ID | Description                   | Expected Result             |
-|---------|-------------------------------|-----------------------------|
-| ST-01   | Unauthorized endpoint access  | Access denied               |
-| ST-02   | Invalid JWT token             | Authentication failure      |
-| ST-03   | Invalid input validation      | Validation error            |
-| ST-04   | Dependency vulnerability scan | No critical vulnerabilities |
-| ST-05   | Secret detection              | No secrets detected         |
-| ST-06   | DAST scan                     | No high-risk findings       |
-| ST-07   | Security headers verification | Required headers present    |
-
-Discuss how each test was validated.
-
-Include screenshots of test execution and reports.
+- login succeeds;
+- a new JWT token is issued.
 
 ---
 
-## 5. Security Assessment
+## 11. Conclusion
 
-Provide an overall security assessment of the application.
+Sprint 2 consolidated the secure implementation of LearningMore.
 
-Possible topics:
+The project now includes:
 
-### Strengths
+- multiple DDD aggregates;
+- REST API functionality across users, courses, resources, assignments, submissions and chat;
+- role-based authorization;
+- JWT authentication;
+- password hashing;
+- token invalidation;
+- login rate limiting;
+- secure user lifecycle controls;
+- runtime API validation;
+- automated DevSecOps pipeline;
+- SAST, SCA, DAST, mutation testing and runtime testing;
+- logging and traceability evidence;
+- ASVS tracker updates.
 
-* Automated security checks
-* Secure authentication mechanisms
-* Dependency monitoring
-* CI/CD integration
-* Security testing automation
-
-### Limitations
-
-* Features not implemented
-* Known issues
-* Future improvements
-
-### Future Work
-
-Examples:
-
-* Implement IAST tooling
-* Improve container security
-* Add penetration testing
-* Introduce infrastructure scanning
-
----
-
-## 6. Conclusion
-
-Summarize the work performed during Sprint 2.
-
-Highlight:
-
-* DevSecOps adoption
-* Automated security validation
-* Testing improvements
-* Deployment automation
-* Security posture of the application
-
-Conclude by emphasizing how the sprint contributed to a more secure and reliable software delivery process.
-
----
+This sprint improved both the functional maturity and the security posture of the system, aligning the implementation with the SSDLC objectives defined for the project.

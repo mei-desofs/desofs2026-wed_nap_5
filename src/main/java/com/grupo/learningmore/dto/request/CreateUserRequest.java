@@ -1,6 +1,7 @@
 package com.grupo.learningmore.dto.request;
 
 import com.grupo.learningmore.domain.user.UserRole;
+import com.grupo.learningmore.security.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,7 @@ public record CreateUserRequest(
 
         @NotBlank
         @Size(min = 8, max = 64)
+        @ValidPassword
         String password,
 
         @NotNull

@@ -6,7 +6,7 @@
 .\mvnw.cmd spring-boot:run
 ```
 
-A aplicação deve ficar disponível em:
+A aplicação fica disponível em:
 
 ```text
 http://localhost:9393
@@ -17,21 +17,28 @@ http://localhost:9393
 ## 2. Criar utilizador
 
 ```powershell
-Invoke-RestMethod `
+$email = "demo$(Get-Random)@test.com"
+
+$user = Invoke-RestMethod `
     -Uri "http://localhost:9393/api/users" `
     -Method POST `
     -ContentType "application/json" `
     -Body (@{
-        name="Alex"
-        email="alex@test.com"
+        name="Demo User"
+        email=$email
         password="Password123"
+        role="STUDENT"
     } | ConvertTo-Json)
+
+$user
+$email
 ```
 
 Resultado esperado:
 
 * utilizador criado;
-* role atribuída automaticamente como `STUDENT`;
+* ID gerado no formato `USR-...`;
+* role `STUDENT`;
 * password não é devolvida na resposta.
 
 ---
@@ -44,7 +51,7 @@ $login = Invoke-RestMethod `
     -Method POST `
     -ContentType "application/json" `
     -Body (@{
-        email="alex@test.com"
+        email=$email
         password="Password123"
     } | ConvertTo-Json)
 
@@ -53,7 +60,7 @@ $login
 
 Resultado esperado:
 
-* JWT token devolvido;
+* JWT devolvido;
 * dados básicos do utilizador;
 * role do utilizador.
 
@@ -73,22 +80,7 @@ Resultado esperado:
 
 ---
 
-## 5. Testar endpoint protegido sem token
-
-```powershell
-Invoke-RestMethod `
-    -Uri "http://localhost:9393/api/users/me" `
-    -Method GET
-```
-
-Resultado esperado:
-
-* acesso negado;
-* o endpoint exige autenticação.
-
----
-
-## 6. Testar endpoint protegido com Bearer token
+## 5. Testar endpoint protegido com Bearer token
 
 ```powershell
 Invoke-RestMethod `
@@ -104,49 +96,48 @@ Resultado esperado:
 
 ---
 
-## 7. Testar login falhado
+## 6. Testar endpoint protegido sem token
 
 ```powershell
-Invoke-RestMethod `
-    -Uri "http://localhost:9393/api/auth/login" `
-    -Method POST `
-    -ContentType "application/json" `
-    -Body (@{
-        email="alex@test.com"
-        password="WrongPassword123"
-    } | ConvertTo-Json)
+try {
+    Invoke-RestMethod `
+        -Uri "http://localhost:9393/api/users/me" `
+        -Method GET
+} catch {
+    $_.Exception.Response.StatusCode.value__
+}
 ```
 
 Resultado esperado:
 
-* erro de autenticação;
-* tentativa falhada registada nos logs.
+```text
+403
+```
 
 ---
 
-## 8. Testar rate limiting
-
-Repetir várias vezes o login falhado:
+## 7. Testar token inválido
 
 ```powershell
-Invoke-RestMethod `
-    -Uri "http://localhost:9393/api/auth/login" `
-    -Method POST `
-    -ContentType "application/json" `
-    -Body (@{
-        email="alex@test.com"
-        password="WrongPassword123"
-    } | ConvertTo-Json)
+try {
+    Invoke-RestMethod `
+        -Uri "http://localhost:9393/api/users/me" `
+        -Method GET `
+        -Headers @{ Authorization = "Bearer abc123" }
+} catch {
+    $_.Exception.Response.StatusCode.value__
+}
 ```
 
 Resultado esperado:
 
-* após várias tentativas falhadas, o sistema bloqueia temporariamente o login;
-* devolve erro `429 Too Many Requests`.
+```text
+403
+```
 
 ---
 
-## 9. Alterar password
+## 8. Alterar password
 
 ```powershell
 Invoke-RestMethod `
@@ -156,34 +147,44 @@ Invoke-RestMethod `
     -ContentType "application/json" `
     -Body (@{
         currentPassword="Password123"
-        newPassword="NewPassword123"
+        newPassword="NovaPassword123"
     } | ConvertTo-Json)
 ```
 
 Resultado esperado:
 
 * password alterada com sucesso;
-* token antigo fica invalidado por alteração do `tokenVersion`.
+* resposta sem erro;
+* token antigo deixa de ser válido devido ao incremento do `tokenVersion`.
 
 ---
 
-## 10. Confirmar invalidação do token antigo
+## 9. Login com password antiga
 
 ```powershell
-Invoke-RestMethod `
-    -Uri "http://localhost:9393/api/users/me" `
-    -Method GET `
-    -Headers @{ Authorization = "Bearer $token" }
+try {
+    Invoke-RestMethod `
+        -Uri "http://localhost:9393/api/auth/login" `
+        -Method POST `
+        -ContentType "application/json" `
+        -Body (@{
+            email=$email
+            password="Password123"
+        } | ConvertTo-Json)
+} catch {
+    $_.Exception.Response.StatusCode.value__
+}
 ```
 
 Resultado esperado:
 
-* acesso negado;
-* o token antigo deixa de ser aceite.
+```text
+401
+```
 
 ---
 
-## 11. Login com nova password
+## 10. Login com nova password
 
 ```powershell
 $login = Invoke-RestMethod `
@@ -191,11 +192,12 @@ $login = Invoke-RestMethod `
     -Method POST `
     -ContentType "application/json" `
     -Body (@{
-        email="alex@test.com"
-        password="NewPassword123"
+        email=$email
+        password="NovaPassword123"
     } | ConvertTo-Json)
 
 $token = $login.token
+$login
 ```
 
 Resultado esperado:
@@ -205,18 +207,67 @@ Resultado esperado:
 
 ---
 
+## 11. Demonstração em Postman
+
+### Register User
+
+```http
+POST http://localhost:9393/api/users
+```
+
+Body → raw → JSON:
+
+```json
+{
+  "name": "Demo User",
+  "email": "demo@test.com",
+  "password": "Password123",
+  "role": "STUDENT"
+}
+```
+
+### Login
+
+```http
+POST http://localhost:9393/api/auth/login
+```
+
+Body → raw → JSON:
+
+```json
+{
+  "email": "demo@test.com",
+  "password": "Password123"
+}
+```
+
+### Get Profile
+
+```http
+GET http://localhost:9393/api/users/me
+```
+
+Authorization:
+
+```text
+Bearer Token
+```
+
+Colar apenas o token, sem aspas e sem escrever `Bearer`.
+
+---
+
 ## 12. Resumo técnico
 
 Funcionalidades demonstradas:
 
-* registo seguro de utilizador;
-* role pública limitada a `STUDENT`;
+* registo de utilizador;
+* IDs customizados no formato `USR-...`;
 * password hashing com BCrypt;
 * login real;
 * JWT Bearer authentication;
 * endpoints protegidos;
 * RBAC;
-* rate limiting de login;
 * alteração segura de password;
 * invalidação de tokens antigos com `tokenVersion`;
-* logs de eventos de autenticação.
+* logs de eventos de autenticação e ações de utilizador.

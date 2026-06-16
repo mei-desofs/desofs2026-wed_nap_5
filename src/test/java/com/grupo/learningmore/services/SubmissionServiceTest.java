@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -644,5 +646,114 @@ public class SubmissionServiceTest {
         Pageable.unpaged()
     ));
     }
+
+    @Test
+    void submit_shouldGenerateRandomPrefix() throws Exception {
+
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.isEmpty()).thenReturn(false);
+        when(file.getSize()).thenReturn(10L);
+        when(file.getContentType()).thenReturn("application/pdf");
+        when(file.getOriginalFilename()).thenReturn("file.pdf");
+        when(file.getBytes()).thenReturn("data".getBytes());
+
+        Assignment assignment = mock(Assignment.class);
+        when(assignment.canBeSubmitted()).thenReturn(true);
+        when(assignment.getCourseId()).thenReturn("c1");
+        when(assignmentRepository.findById("a1")).thenReturn(Optional.of(assignment));
+
+        when(submissionRepository.existsByAssignmentIdAndUserId(any(), any())).thenReturn(false);
+        when(enrollmentService.isUserEnrolledInCourse(any(), any())).thenReturn(true);
+
+        Submission saved = mock(Submission.class);
+        when(saved.getId()).thenReturn("id1");
+        when(submissionRepository.save(any())).thenReturn(saved);
+
+        ArgumentCaptor<Submission> captor = ArgumentCaptor.forClass(Submission.class);
+
+        submissionService.submit("a1", "u1", file);
+
+        verify(submissionRepository).save(captor.capture());
+
+        Submission submitted = captor.getValue();
+
+        assertTrue(submitted.getFilePath().matches(".*_[a-zA-Z0-9._-]+\\.pdf"));
+    }
+
+    @Test
+    void sanitizeFilename_shouldReturnDefaultWhenNull() throws Exception {
+        Method m = SubmissionService.class.getDeclaredMethod("sanitizeFilename", String.class);
+        m.setAccessible(true);
+
+        String result = (String) m.invoke(submissionService, (String) null);
+
+        assertEquals("submission.bin", result);
+    }
+
+    @Test
+    void sanitizeFilename_shouldReturnDefaultWhenBlank() throws Exception {
+        Method m = SubmissionService.class.getDeclaredMethod("sanitizeFilename", String.class);
+        m.setAccessible(true);
+
+        String result = (String) m.invoke(submissionService, "");
+
+        assertEquals("submission.bin", result);
+    }
+
+    @Test
+    void sanitizeFilename_shouldTruncateLongFilename() throws Exception {
+        Method m = SubmissionService.class.getDeclaredMethod("sanitizeFilename", String.class);
+        m.setAccessible(true);
+
+        String longName = "a".repeat(200) + ".pdf";
+
+        String result = (String) m.invoke(submissionService, longName);
+
+        assertTrue(result.length() <= 100);
+    }
+
+    @Test
+    void getFileExtension_shouldReturnEmptyWhenNull() throws Exception {
+        Method m = SubmissionService.class.getDeclaredMethod("getFileExtension", String.class);
+        m.setAccessible(true);
+
+        String result = (String) m.invoke(submissionService, (String) null);
+
+        assertEquals("", result);
+    }
+
+    @Test
+    void submit_shouldThrowWhenAssignmentNotFound() {
+        when(assignmentRepository.findById("a1")).thenReturn(Optional.empty());
+
+        MultipartFile file = mock(MultipartFile.class);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> submissionService.submit("a1", "u1", file));
+    }
+
+    @Test
+    void getMySubmission_shouldThrowWhenNotFound() {
+        when(submissionRepository.findByAssignmentIdAndUserId("a1", "u1"))
+                .thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> submissionService.getMySubmission("a1", "u1"));
+    }
+
+    @Test
+    void gradeSubmission_shouldThrowWhenSubmissionNotFound() {
+        when(submissionRepository.findById("s1")).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> submissionService.gradeSubmission(
+                        "s1",
+                        BigDecimal.TEN,
+                        "good",
+                        "admin",
+                        true
+                ));
+    }
+
 
 }
