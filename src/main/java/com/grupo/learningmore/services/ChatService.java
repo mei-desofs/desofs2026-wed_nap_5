@@ -72,10 +72,6 @@ public class ChatService {
 
         String sanitizedContent = sanitize(request.content());
 
-        if (!sanitizedContent.equals(request.content())) {
-            log.warn("Message content sanitized - user={}, chatRoom={}", userId, chatRoomId);
-        }
-
         ChatMessage message = new ChatMessage();
         message.setChatRoom(chatRoom);
         message.setContent(sanitizedContent);
